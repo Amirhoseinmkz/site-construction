@@ -1,7 +1,8 @@
 import 'server-only';
 import path from 'node:path';
 import fs from 'node:fs';
-import { DatabaseSync } from 'node:sqlite';
+import type { DatabaseSync } from 'node:sqlite';
+import { createRequire } from 'node:module';
 
 export interface LeadInput {
   fullName: string;
@@ -21,7 +22,9 @@ let db: DatabaseSync | null = null;
 function getDb(): DatabaseSync {
   if (db) return db;
   fs.mkdirSync(DB_DIR, { recursive: true });
-  db = new DatabaseSync(DB_PATH);
+  // Loaded lazily so pages still work on Node versions without node:sqlite
+  const { DatabaseSync: Sqlite } = createRequire(import.meta.url)('node:sqlite') as typeof import('node:sqlite');
+  db = new Sqlite(DB_PATH);
   db.exec(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS leads (
