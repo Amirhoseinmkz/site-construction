@@ -1,377 +1,459 @@
-export type Locale = 'fa' | 'en';
+import type { Locale } from '@/lib/i18n';
 
-export interface Translations {
-  nav: {
-    home: string;
-    services: string;
-    process: string;
-    projects: string;
-    about: string;
-    collaboration: string;
-    contact: string;
-    consultationCta: string;
-  };
-  hero: {
-    badge: string;
-    tagline: string;
-    titleLine1: string;
-    titleLine2: string;
-    description: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
-    stats: {
-      projectsDone: { num: string; label: string };
-      builtArea: { num: string; label: string };
-      experience: { num: string; label: string };
-      satisfaction: { num: string; label: string };
-    };
-    viewModes: {
-      blueprint: string;
-      structural: string;
-      luxuryFacade: string;
-    };
-  };
-  common: {
-    viewDetails: string;
-    requestConsultation: string;
-    all: string;
-    residential: string;
-    commercial: string;
-    renovation: string;
-    partnership: string;
-    area: string;
-    location: string;
-    status: string;
-    completed: string;
-    inProgress: string;
-    dwgSpec: string;
-    downloadCatalog: string;
-    whatsappDirect: string;
-    callDirect: string;
-    regions: {
-      all: string;
-      tehran: string;
-      shemiranat: string;
-      caspian: string;
-      kish: string;
-      international: string;
-    };
-  };
-  sections: {
-    featuredProjectsTitle: string;
-    featuredProjectsSub: string;
-    viewAllProjects: string;
-    servicesTitle: string;
-    servicesSub: string;
-    processTitle: string;
-    processSub: string;
-    calculatorTitle: string;
-    calculatorSub: string;
-    whyUsTitle: string;
-    whyUsSub: string;
-    consultationTitle: string;
-    consultationSub: string;
-  };
-  calculator: {
-    landArea: string;
-    landAreaPlaceholder: string;
-    floors: string;
-    location: string;
-    selectZone: string;
-    zoneTehran1to3: string;
-    zoneTehran4to8: string;
-    zoneNorth: string;
-    zoneOther: string;
-    projectType: string;
-    typeLuxury: string;
-    typeModern: string;
-    typeCommercial: string;
-    calculateBtn: string;
-    estimatedBuildArea: string;
-    estimatedROI: string;
-    ownerShare: string;
-    builderShare: string;
-    recommendedModel: string;
-    disclaimer: string;
-  };
-  contactForm: {
-    title: string;
-    subtitle: string;
-    fullName: string;
-    fullNamePlaceholder: string;
-    phone: string;
-    phonePlaceholder: string;
-    email: string;
-    emailPlaceholder: string;
-    projectType: string;
-    areaApprox: string;
-    areaApproxPlaceholder: string;
-    message: string;
-    messagePlaceholder: string;
-    submit: string;
-    successMessage: string;
-  };
-  footer: {
-    brandDesc: string;
-    quickLinks: string;
-    servicesList: string;
-    contactInfo: string;
-    address: string;
-    addressVal: string;
-    phoneVal: string;
-    emailVal: string;
-    rights: string;
-    designedWithPrecision: string;
-  };
-}
-
-export const translations: Record<Locale, Translations> = {
-  fa: {
-    nav: {
-      home: 'صفحه اصلی',
-      services: 'خدمات مهندسی',
-      process: 'روند ۷ گانه ساخت',
-      projects: 'پروژه‌ها و نمونه‌کارها',
-      about: 'درباره ما و سوابق',
-      collaboration: 'مشارکت و سرمایه‌گذاری',
-      contact: 'ارتباط با ما',
-      consultationCta: 'درخواست مشاوره تخصصی',
-    },
-    hero: {
-      badge: 'گروه معماری و مهندسی میرکاظمی — تاسیس ۱۳۸۸',
-      tagline: 'تلاقی هنر معماری، محاسبات دقیق سازه‌ای و اجرای لوکس',
-      titleLine1: 'از طراحی مفهومی',
-      titleLine2: 'تا تحویل کلید شاهکار معماری',
-      description: 'طراحی، مدلسازی BIM، اجرای اسکلت و نازک‌کاری پروژه‌های فاخر مسکونی، ویلایی و تجاری با بالاترین استانداردهای مهندسی ساختمان و مدیریت پیمان شفاف.',
-      ctaPrimary: 'مشاهده پروژه‌های شاخص',
-      ctaSecondary: 'محاسبه‌گر مشارکت در ساخت',
-      stats: {
-        projectsDone: { num: '+۴۵', label: 'پروژه موفق اجراشده' },
-        builtArea: { num: '+۱۸۰,۰۰۰', label: 'مترمربع زیربنای ساخته‌شده' },
-        experience: { num: '۱۶', label: 'سال تجربه مهندسی مستمر' },
-        satisfaction: { num: '۱۰۰٪', label: 'تعهد به زمان‌بندی و قرارداد' },
-      },
-      viewModes: {
-        blueprint: 'حالت نقشه‌کشی (Wireframe)',
-        structural: 'اسکلت سازه‌ای (Skeleton)',
-        luxuryFacade: 'نمای لوکس نهایی (Facade)',
-      },
-    },
-    common: {
-      viewDetails: 'مشاهده جزئیات کامل و نقشه‌ها',
-      requestConsultation: 'رزرو جلسه مشاوره حضوری',
-      all: 'همه دسته‌ها',
-      residential: 'مسکونی فاخر',
-      commercial: 'تجاری و اداری',
-      renovation: 'بازسازی و نوسازی لوکس',
-      partnership: 'مشارکت در ساخت',
-      area: 'متراژ زیربنا',
-      location: 'موقعیت پروژه',
-      status: 'وضعیت اجرا',
-      completed: 'تحویل داده شده',
-      inProgress: 'در حال احداث و اجرا',
-      dwgSpec: 'مشخصات فنی آرشیو نقشه',
-      downloadCatalog: 'دانلود کاتالوگ و پروفایل جامع شرکت (PDF)',
-      whatsappDirect: 'ارتباط مستقیم در واتساپ',
-      callDirect: 'تماس تلفنی با دفتر مرکزی',
-      regions: {
-        all: 'همه مناطق',
-        tehran: 'تهران و شمیرانات (منطقه ۱ تا ۳)',
-        shemiranat: 'لواسان و دماوند',
-        caspian: 'نوار ساحلی شمال و خزر',
-        kish: 'کیش و مناطق آزاد',
-        international: 'پروژه‌های برون‌مرزی',
-      },
-    },
-    sections: {
-      featuredProjectsTitle: 'شاهکارهای اجرایی میرکاظمی',
-      featuredProjectsSub: 'هر پروژه، روایتی از هماهنگی هندسه مهندسی، متریال درجه‌یک جهانی و ظرافت‌های اجرایی است.',
-      viewAllProjects: 'مشاهده آرشیو کامل پروژه‌ها',
-      servicesTitle: 'خدمات تخصصی مهندسی و ساخت',
-      servicesSub: 'پوشش چرخه کامل حیات ساختمان از تحلیل ژئوتکنیک و مدل‌سازی BIM تا اجرای لوکس و تحویل کلید.',
-      processTitle: 'روند ۷ گانه اجرای بی‌نقص',
-      processSub: 'سیستم گام‌به‌گام و استاندارد مهندسی برای مدیریت زمان، کنترل هزینه و نظارت کیفی دقیق.',
-      calculatorTitle: 'محاسبه‌گر آنلاین مشارکت در ساخت',
-      calculatorSub: 'تخمین اولیه مساحت قابل احداث، درصد سهم مالک و سازنده، و ارزیابی اقتصادی ملک شما.',
-      whyUsTitle: 'چرا گروه ساختمانی میرکاظمی؟',
-      whyUsSub: 'ارزش‌های بنیادینی که ضامن کیفیت سازه و آرامش خاطر سرمایه‌گذاران و کارفرمایان است.',
-      consultationTitle: 'آماده شروع پروژه رویایی خود هستید؟',
-      consultationSub: 'مهندسان مشاور ما آماده ارائه تحلیل اولیه فنی، بازدید از ملک و تهیه برنامه زمان‌بندی و مالی پروژه شما هستند.',
-    },
-    calculator: {
-      landArea: 'مساحت عرصه / زمین (مترمربع)',
-      landAreaPlaceholder: 'مثلاً ۴۵۰',
-      floors: 'تعداد طبقات مدنظر',
-      location: 'منطقه / پهنه شهری',
-      selectZone: 'انتخاب موقعیت ملک',
-      zoneTehran1to3: 'تهران — منطقه ۱، ۲ و ۳ (شمال و شمیرانات)',
-      zoneTehran4to8: 'تهران — سایر مناطق شهری',
-      zoneNorth: 'ویلاهای نوار ساحلی شمال (مازندران / گیلان)',
-      zoneOther: 'سایر شهرها و مناطق آزاد',
-      projectType: 'تیپ ساخت و متریال',
-      typeLuxury: 'سوپرلوکس (متریال وارداتی، هوشمندسازی کامل، مشاعات هتلینگ)',
-      typeModern: 'مدرن و ممتاز (استاندارد عالی مهندسی، معماری مدرن)',
-      typeCommercial: 'تجاری و اداری فاخر',
-      calculateBtn: 'محاسبه آنلاین برآورد و سهم مشارکت',
-      estimatedBuildArea: 'تخمین کل زیربنای ناخالص:',
-      estimatedROI: 'برآورد ارزش افزوده و بازدهی سرمایه‌گذاری:',
-      ownerShare: 'سهم مالک زمین:',
-      builderShare: 'سهم سازنده (گروه میرکاظمی):',
-      recommendedModel: 'مدل قراردادی پیشنهادی:',
-      disclaimer: '* این ارقام تخمین اولیه محاسباتی بوده و پس از بررسی دقیق پهنه طرح تفصیلی، اسناد ثبتی و آزمایش خاک نهایی خواهد شد.',
-    },
-    contactForm: {
-      title: 'فرم ثبت درخواست پروژه و مشاوره فنی',
-      subtitle: 'اطلاعات اولیه پروژه خود را وارد نمایید تا کارشناسان ارشد مهندسی ظرف کمتر از ۲۴ ساعت کاری با شما تماس بگیرند.',
-      fullName: 'نام و نام خانوادگی',
-      fullNamePlaceholder: 'مثلاً مهندس رضایی',
-      phone: 'شماره تماس مستقیم',
-      phonePlaceholder: '۰۹۱۲۳۴۵۶۷۸۹',
-      email: 'پست الکترونیک (اختیاری)',
-      emailPlaceholder: 'name@example.com',
-      projectType: 'موضوع پروژه',
-      areaApprox: 'متراژ تقریبی یا تعداد طبقات',
-      areaApproxPlaceholder: 'مثلاً ۶۰۰ مترمربع در ۵ طبقه',
-      message: 'شرح مختصر نیازمندی‌ها، موقعیت ملک یا انتظارات',
-      messagePlaceholder: 'توضیحات تکمیلی درباره موقعیت دقیق ملک، پروانه ساخت یا سبک معماری مدنظر...',
-      submit: 'ارسال درخواست و تعیین وقت جلسه حضوری',
-      successMessage: 'درخواست شما با موفقیت ثبت گردید. کارشناسان ما به زودی با شما تماس خواهند گرفت.',
-    },
-    footer: {
-      brandDesc: 'گروه ساختمانی میرکاظمی، پیشرو در طراحی پایدار، مهندسی سازه، مدیریت پیمان و اجرای پروژه‌های لوکس مسکونی و تجاری با پایبندی به بالاترین استانداردهای کیفیت جهانی.',
-      quickLinks: 'دسترسی سریع',
-      servicesList: 'دپارتمان‌های مهندسی',
-      contactInfo: 'اطلاعات ارتباطی و دفتر',
-      address: 'دفتر مرکزی',
-      addressVal: 'تهران، زعفرانیه، خیابان مقدس اردبیلی، پلاک ۸۸، برج اداری میرکاظمی',
-      phoneVal: '۰۲۱-۲۲۴۰۰۰۰۰ | ۰۹۱۲-۱۱۱۱۱۱۱',
-      emailVal: 'info@mirkazemigroup.com',
-      rights: 'تمامی حقوق مادی و معنوی متعلق به گروه ساختمانی میرکاظمی است.',
-      designedWithPrecision: 'طراحی شده با استانداردهای مهندسی روز و سینماتیک وب',
-    },
+const fa = {
+  meta: {
+    title: 'گروه ساختمانی میرکاظمی | طراحی، اجرا و مشارکت در ساخت',
+    description:
+      'گروه ساختمانی میرکاظمی؛ طراحی معماری، مدیریت پیمان، مشارکت در ساخت و بازسازی پروژه‌های مسکونی و تجاری در تهران با نظارت مستقیم مهندسان ارشد از سال ۱۳۸۸.',
   },
-  en: {
-    nav: {
-      home: 'Home',
-      services: 'Engineering Services',
-      process: '7-Stage Workflow',
-      projects: 'Projects & Portfolio',
-      about: 'About & Heritage',
-      collaboration: 'Partnership & Investment',
-      contact: 'Contact Us',
-      consultationCta: 'Request Consultation',
-    },
-    hero: {
-      badge: 'Mirkazemi Architecture & Construction Group — Est. 2009',
-      tagline: 'The Convergence of Architectural Art, Rigorous Engineering & Luxury Execution',
-      titleLine1: 'From Concept Design',
-      titleLine2: 'To Key-in-Hand Masterpieces',
-      description: 'Full-cycle architectural design, advanced BIM modeling, structural fabrication, and luxury turnkey construction for landmark residential, private estates, and commercial high-rises.',
-      ctaPrimary: 'Explore Landmark Projects',
-      ctaSecondary: 'Partnership ROI Estimator',
-      stats: {
-        projectsDone: { num: '+45', label: 'Masterpiece Projects' },
-        builtArea: { num: '+180k m²', label: 'Gross Built Area' },
-        experience: { num: '16', label: 'Years of Excellence' },
-        satisfaction: { num: '100%', label: 'On-Time Delivery Rate' },
+  a11y: {
+    skip: 'رفتن به محتوای اصلی',
+    openMenu: 'باز کردن منو',
+    closeMenu: 'بستن منو',
+    switchLang: 'Switch to English',
+    backToTop: 'بازگشت به بالا',
+    skipIntro: 'رد کردن',
+    mainNav: 'ناوبری اصلی',
+  },
+  nav: {
+    home: 'خانه',
+    services: 'خدمات',
+    process: 'روند کار',
+    projects: 'پروژه‌ها',
+    about: 'درباره ما',
+    collaboration: 'همکاری',
+    contact: 'تماس',
+    cta: 'درخواست مشاوره',
+    langShort: 'EN',
+  },
+  home: {
+    heroEyebrow: 'از سال ۱۳۸۸ — تهران',
+    heroTitle: ['ساختن،', 'با دقت مهندسی.'],
+    heroLead:
+      'طراحی معماری، مهندسی سازه و مدیریت پیمان پروژه‌های فاخر؛ با نظارت مستقیم کارگاهی و تحویل کلید در دست.',
+    heroPrimary: 'درخواست مشاوره',
+    heroSecondary: 'مشاهده پروژه‌ها',
+    scroll: 'اسکرول کنید',
+    stats: [
+      { value: 15, suffix: '+', label: 'سال سابقه فعالیت' },
+      { value: 40, suffix: '+', label: 'پروژه اجراشده' },
+      { value: 100, suffix: '٪', label: 'تحویل طبق قرارداد' },
+      { value: 2, suffix: '', label: 'نسل، یک خانواده' },
+    ],
+    marquee: ['طراحی معماری', 'مدیریت پیمان', 'مشارکت در ساخت', 'بازسازی لوکس', 'نظارت مقیم', 'تحویل کلید'],
+    servicesEyebrow: 'خدمات',
+    servicesTitle: 'چهار مسیر، یک استاندارد قطعی ساخت',
+    servicesLead:
+      'از امکان‌سنجی زمین و کانسپت معماری تا مدیریت کارگاه، قرارداد مشارکت و بازسازی؛ هر خدمت بر پایه محاسبات دقیق و ضمانت اجرایی پیش می‌رود.',
+    projectsEyebrow: 'نمونه‌کارها',
+    projectsTitle: 'پروژه‌هایی که امضای ما را دارند',
+    projectsAll: 'همه پروژه‌ها',
+    processEyebrow: 'روند کار',
+    processTitle: 'چهار مرحله، بدون ابهام',
+    processLead: 'از اولین جلسه مشاوره تا روز تحویل کلید، هر مرحله برنامه، خروجی و مسئول مشخص دارد.',
+    whyEyebrow: 'چرا میرکاظمی',
+    whyTitle: 'یک دفتر خانوادگی، با نگاه مهندسی',
+    whyLead: 'نظارت مستقیم مهندسان ارشد، حذف لایه‌های واسطه و تمرکز اختصاصی بر کیفیت ساخت.',
+    why: [
+      { title: 'نظارت مستقیم', text: 'حضور مستمر مهندسان ارشد در کارگاه؛ کنترل آرماتوربندی، بتن‌ریزی و اتصالات طبق نقشه.' },
+      { title: 'شفافیت کامل مالی', text: 'فاکتورهای واقعی دست‌اول، خرید مستقیم مصالح به نرخ کارخانه و صورت‌وضعیت دوره‌ای.' },
+      { title: 'تعهد به زمان', text: 'گانت‌چارت قراردادی از روز اول و گزارش تصویری هفتگی از پیشرفت کار.' },
+      { title: 'ضمانت کتبی', text: 'تحویل با چک‌لیست فنی، شناسنامه ساختمان و گارانتی مکتوب کیفیت اجرا.' },
+    ],
+    calcEyebrow: 'مشارکت در ساخت',
+    calcTitle: 'ملک شما چه ظرفیتی دارد؟',
+    calcLead: 'یک برآورد اولیه و تقریبی از متراژ قابل ساخت و سهم معمول مالک؛ برای عدد دقیق، کارشناسی رایگان بگیرید.',
+    ctaEyebrow: 'شروع همکاری',
+    ctaTitle: 'پروژه بعدی، پروژه شماست.',
+    ctaLead: 'مشخصات خود را ثبت کنید؛ مهندسان ارشد ظرف ۲۴ ساعت کاری با شما تماس می‌گیرند.',
+  },
+  services: {
+    eyebrow: 'خدمات',
+    title: 'چهار ستون مهندسی، یک استاندارد قطعی ساخت',
+    lead:
+      'از نخستین گام امکان‌سنجی زمین و کانسپت معماری تا مدیریت مستقیم کارگاه، قراردادهای شفاف مشارکت و بازسازی‌های لوکس.',
+    stagesLabel: 'مراحل کار',
+    actions: 'اقدامات این مرحله',
+    deliverable: 'خروجی رسمی',
+    ctaTitle: 'پروژه شما در کدام مسیر است؟',
+    ctaLead: 'مهندسان ارشد میرکاظمی آماده بررسی و امکان‌سنجی اولیه پروژه شما هستند.',
+    explore: 'جزئیات خدمت',
+  },
+  projects: {
+    eyebrow: 'نمونه‌کارها',
+    title: 'پروژه‌های اجراشده',
+    lead: 'بخشی از پروژه‌هایی که طراحی و اجرای آن‌ها بر عهده تیم ما بوده است.',
+    filterLabel: 'فیلتر بر اساس نوع پروژه',
+    all: 'همه',
+    categories: { residential: 'مسکونی', commercial: 'تجاری و اداری', renovation: 'بازسازی', villa: 'ویلایی' },
+    status: { completed: 'تحویل قطعی', inProgress: 'در دست اجرا' },
+    view: 'مشاهده پروژه',
+    specs: 'مشخصات پروژه',
+    area: 'زیربنا',
+    floors: 'طبقات',
+    year: 'سال',
+    location: 'موقعیت',
+    structure: 'سازه',
+    category: 'نوع',
+    highlights: 'شاخص‌های اجرایی',
+    gallery: 'گالری',
+    beforeAfter: 'پیش و پس از اجرا',
+    before: 'پیش',
+    after: 'پس',
+    sliderLabel: 'مقایسه تصویر پیش و پس از اجرا',
+    next: 'پروژه بعدی',
+    back: 'بازگشت به پروژه‌ها',
+    sqm: 'متر مربع',
+    empty: 'پروژه‌ای در این دسته یافت نشد.',
+  },
+  process: {
+    eyebrow: 'روند کار',
+    title: 'یک مسیر شفاف، از اول تا آخر',
+    lead: 'از اولین جلسه مشاوره تا روز تحویل کلید، هر مرحله یک برنامه مشخص دارد.',
+    whatHappens: 'چه اتفاقی می‌افتد؟',
+    faqEyebrow: 'پرسش‌های متداول',
+    faqTitle: 'سؤالاتی که زیاد پرسیده می‌شوند',
+  },
+  about: {
+    eyebrow: 'درباره ما',
+    title: 'یک دفتر خانوادگی، با نگاه مهندسی',
+    lead:
+      'گروه ساختمانی میرکاظمی از دل همکاری پدر و پسر شکل گرفته؛ جایی که تجربه سال‌ها کار در ساخت‌وساز با نگاه دقیق و امروزی به مدیریت پروژه ترکیب شده است.',
+    storyEyebrow: 'داستان ما',
+    storyTitle: 'از یک دفتر کوچک، تا ده‌ها پروژه اجراشده',
+    story: [
+      'کار ما با پیمانکاری‌های کوچک شروع شد و امروز به دفتری تبدیل شده که هم‌زمان پروژه‌های مسکونی، تجاری و بازسازی را مدیریت می‌کند. مقیاس خانوادگی ما یک مزیت است، نه محدودیت: تصمیم‌گیری سریع، نظارت مستقیم روی کیفیت اجرا و پاسخگویی بدون واسطه به کارفرما.',
+      'ما معتقدیم بزرگ‌ترین سرمایه یک دفتر ساختمانی، اعتماد کارفرماهایی است که برای پروژه بعدی دوباره سراغ‌مان می‌آیند.',
+    ],
+    valuesEyebrow: 'اصول کاری',
+    valuesTitle: 'ارزش‌های بنیادین ما',
+    values: [
+      { title: 'شفافیت مالی', text: 'پیش‌فاکتور دقیق از ابتدا، بدون هزینه پنهان در میانه راه.' },
+      { title: 'نظارت مستقیم', text: 'حضور مستمر روی پروژه، نه واگذاری کامل به پیمانکار فرعی.' },
+      { title: 'تعهد به زمان‌بندی', text: 'برنامه زمانی مشخص از روز اول، با گزارش پیشرفت منظم.' },
+      { title: 'کیفیت ماندگار', text: 'انتخاب مصالح با دید بلندمدت، نه فقط برای تحویل سریع‌تر.' },
+    ],
+    teamEyebrow: 'تیم ما',
+    teamTitle: 'مدیریت و نظارت مستقیم',
+    team: [
+      { role: 'بنیان‌گذار و مدیر ارشد پروژه‌ها', image: '/images/team-1.jpg' },
+      { role: 'مدیر اجرا و هماهنگی کارگاه', image: '/images/team-2.jpg' },
+    ],
+  },
+  collaboration: {
+    eyebrow: 'همکاری با ما',
+    title: 'با ما بسازید',
+    lead: 'به دنبال متخصصانی هستیم که به کیفیت اجرا اهمیت می‌دهند، و مالکانی که می‌خواهند ملکشان به اثری ماندگار تبدیل شود.',
+    tracks: [
+      {
+        code: '01',
+        title: 'پیمانکاری فرعی',
+        text: 'اگر در یکی از حوزه‌های اجرایی تخصص دارید و می‌خواهید در پروژه‌های ما کار کنید، سوابق خود را برای ما بفرستید.',
+        items: ['اسکلت فلزی و بتنی', 'نازک‌کاری', 'تأسیسات مکانیکی', 'برق و هوشمندسازی', 'نما و سنگ‌کاری'],
       },
-      viewModes: {
-        blueprint: 'Blueprint Drafting (Wireframe)',
-        structural: 'Structural Skeleton (X-Ray)',
-        luxuryFacade: 'Luxury Final Facade (Render)',
+      {
+        code: '02',
+        title: 'مشارکت در ساخت',
+        text: 'اگر زمین یا ملک کلنگی دارید، با قرارداد محضری، تضامین بانکی و سهم عادلانه آن را به یک ساختمان فاخر تبدیل می‌کنیم.',
+        items: ['کارشناسی رایگان ملک', 'قدرالسهم شفاف', 'بلاعوض اسکان', 'سند تک‌برگ برای هر واحد'],
       },
+    ],
+    formTitle: 'ثبت درخواست همکاری',
+  },
+  contact: {
+    eyebrow: 'تماس',
+    title: 'شروع کنیم.',
+    lead: 'برای مشاوره اولیه، بازدید ملک یا برآورد هزینه با ما در تماس باشید. جلسه اول رایگان است.',
+    office: 'دفتر مرکزی',
+    mobile: 'مدیریت و مشاوره فنی',
+    hours: 'ساعات پاسخگویی',
+    social: 'پیام‌رسان‌ها و شبکه‌ها',
+    formTitle: 'فرم درخواست مشاوره',
+    call: 'تماس',
+  },
+  form: {
+    name: 'نام و نام خانوادگی',
+    phone: 'شماره تماس',
+    phoneHint: 'مثلاً ۰۹۱۲۱۲۳۴۵۶۷',
+    type: 'نوع درخواست',
+    types: {
+      consultation: 'مشاوره عمومی',
+      architecture: 'طراحی معماری',
+      management: 'پیمان مدیریت',
+      partnership: 'مشارکت در ساخت',
+      renovation: 'بازسازی',
+      subcontractor: 'پیمانکاری فرعی',
     },
-    common: {
-      viewDetails: 'Explore Full Case Study & Blueprints',
-      requestConsultation: 'Book a Private Consultation',
-      all: 'All Categories',
-      residential: 'Luxury Residential',
-      commercial: 'Commercial & High-Rise',
-      renovation: 'Luxury Restoration & Fit-Out',
-      partnership: 'Construction Joint Venture',
-      area: 'Built Area',
-      location: 'Project Location',
-      status: 'Execution Status',
-      completed: 'Completed & Delivered',
-      inProgress: 'Under Construction',
-      dwgSpec: 'DWG Archive Specifications',
-      downloadCatalog: 'Download Corporate Portfolio (PDF)',
-      whatsappDirect: 'Direct WhatsApp Chat',
-      callDirect: 'Call Headquarters',
-      regions: {
-        all: 'All Regions',
-        tehran: 'Tehran Prime (Districts 1-3)',
-        shemiranat: 'Lavasan & Damavand Estates',
-        caspian: 'Caspian Coastal Luxury',
-        kish: 'Kish Island & Free Zones',
-        international: 'International Projects',
-      },
-    },
-    sections: {
-      featuredProjectsTitle: 'Landmark Portfolios',
-      featuredProjectsSub: 'Each project exemplifies the harmony of engineering precision, world-class materials, and timeless luxury.',
-      viewAllProjects: 'View Complete Archive',
-      servicesTitle: 'Engineering & Construction Disciplines',
-      servicesSub: 'Covering the entire building lifecycle: geotechnical analysis, BIM, structural mastery, and turnkey execution.',
-      processTitle: 'The 7-Stage Flawless Workflow',
-      processSub: 'A standardized engineering framework ensuring timeline adherence, budget control, and microscopic QA.',
-      calculatorTitle: 'Partnership & ROI Feasibility Calculator',
-      calculatorSub: 'Preliminary estimation of permissible build area, owner/developer ratios, and economic yield.',
-      whyUsTitle: 'Why Choose Mirkazemi Group?',
-      whyUsSub: 'Fundamental pillars of trust, technological sophistication, and unyielding material quality.',
-      consultationTitle: 'Ready to Realize Your Vision?',
-      consultationSub: 'Our senior consulting engineers are ready to evaluate your site, conduct feasibility studies, and structure your project roadmap.',
-    },
-    calculator: {
-      landArea: 'Land / Plot Area (m²)',
-      landAreaPlaceholder: 'e.g. 450',
-      floors: 'Target Storeys / Floors',
-      location: 'Urban Zone / District',
-      selectZone: 'Select Location',
-      zoneTehran1to3: 'Tehran — Districts 1, 2 & 3 (Prime North)',
-      zoneTehran4to8: 'Tehran — Other Urban Districts',
-      zoneNorth: 'Caspian Coastal Luxury Estates',
-      zoneOther: 'Other Cities & Free Trade Zones',
-      projectType: 'Construction & Material Tier',
-      typeLuxury: 'Super-Luxury (Imported materials, full smart automation, hotel amenities)',
-      typeModern: 'Modern Premium (High-spec engineering & contemporary aesthetics)',
-      typeCommercial: 'Grade-A Commercial High-Rise',
-      calculateBtn: 'Calculate Feasibility & Ratio',
-      estimatedBuildArea: 'Estimated Gross Built Area:',
-      estimatedROI: 'Projected Value Addition:',
-      ownerShare: 'Landowner Share:',
-      builderShare: 'Mirkazemi Group Share:',
-      recommendedModel: 'Recommended Contract Model:',
-      disclaimer: '* Preliminary analytical estimates subject to detailed zoning verification, deed surveys, and geotechnical soil analysis.',
-    },
-    contactForm: {
-      title: 'Inquire About Your Project',
-      subtitle: 'Submit your project parameters and our senior engineering partners will connect with you within 24 hours.',
-      fullName: 'Full Name',
-      fullNamePlaceholder: 'e.g. Dr. Alexander Rezaei',
-      phone: 'Direct Phone Number',
-      phonePlaceholder: '+98 912 345 6789',
-      email: 'Email Address (Optional)',
-      emailPlaceholder: 'name@example.com',
-      projectType: 'Project Scope',
-      areaApprox: 'Approx. Area or Storeys',
-      areaApproxPlaceholder: 'e.g. 1,200 m² across 6 floors',
-      message: 'Brief Project Outline & Location',
-      messagePlaceholder: 'Provide details regarding location, planning permissions, or architectural preferences...',
-      submit: 'Submit Inquiry & Request Meeting',
-      successMessage: 'Your inquiry has been successfully received. Our engineering team will contact you shortly.',
-    },
-    footer: {
-      brandDesc: 'Mirkazemi Construction Group is a distinguished architectural and civil engineering practice dedicated to sustainable design, BIM coordination, construction management, and luxury turnkey delivery.',
-      quickLinks: 'Navigation',
-      servicesList: 'Engineering Departments',
-      contactInfo: 'Headquarters & Inquiries',
-      address: 'Headquarters',
-      addressVal: '88 Mirkazemi Tower, Moghadas Ardebili St., Zafaraniyeh, Tehran',
-      phoneVal: '+98 21 2240 0000 | +98 912 111 1111',
-      emailVal: 'info@mirkazemigroup.com',
-      rights: 'All rights reserved © 2026 Mirkazemi Construction Group.',
-      designedWithPrecision: 'Engineered with 60fps cinematic WebGL & fluid precision',
-    },
+    area: 'متراژ تقریبی (اختیاری)',
+    message: 'توضیحات (اختیاری)',
+    submit: 'ارسال درخواست',
+    sending: 'در حال ارسال…',
+    privacy: 'اطلاعات شما محرمانه است و فقط توسط تیم مهندسی بررسی می‌شود.',
+    success: 'درخواست شما ثبت شد. ظرف ۲۴ ساعت کاری با شما تماس می‌گیریم.',
+    errorGeneric: 'ارسال انجام نشد. لطفاً دوباره تلاش کنید یا مستقیم تماس بگیرید.',
+    errorName: 'لطفاً نام خود را وارد کنید.',
+    errorPhone: 'شماره تماس معتبر نیست.',
+    errorRate: 'تعداد درخواست‌ها زیاد است؛ چند دقیقه بعد دوباره تلاش کنید.',
+  },
+  calc: {
+    land: 'مساحت زمین',
+    floors: 'تعداد طبقات',
+    zone: 'منطقه',
+    zones: { prime: 'تهران — مناطق ۱ تا ۳', city: 'سایر مناطق تهران', north: 'شمال کشور', other: 'سایر شهرها' },
+    gross: 'زیربنای ناخالص تقریبی',
+    units: 'تعداد واحد تقریبی',
+    share: 'سهم معمول مالک',
+    disclaimer: 'این اعداد صرفاً تخمینی هستند و به ضوابط طرح تفصیلی، تراکم و کارشناسی ملک بستگی دارند.',
+    cta: 'کارشناسی رایگان ملک',
+    sqm: 'م²',
+  },
+  footer: {
+    tagline: 'طراحی معماری، محاسبات سازه و مدیریت پیمان با نظارت مستقیم کارگاهی، از سال ۱۳۸۸.',
+    explore: 'صفحات',
+    services: 'خدمات',
+    contact: 'ارتباط',
+    rights: 'تمام حقوق محفوظ است.',
+  },
+  notFound: {
+    title: 'این صفحه پیدا نشد',
+    text: 'ممکن است آدرس تغییر کرده باشد یا صفحه حذف شده باشد.',
+    back: 'بازگشت به خانه',
+  },
+  error: {
+    title: 'مشکلی پیش آمد',
+    retry: 'تلاش دوباره',
   },
 };
+
+export type Dictionary = typeof fa;
+
+const en: Dictionary = {
+  meta: {
+    title: 'Mirkazemi Construction Group | Design, Build & Development',
+    description:
+      'Mirkazemi Construction Group — architectural design, construction management, joint-venture development and luxury renovation in Tehran, led on-site by senior engineers since 2009.',
+  },
+  a11y: {
+    skip: 'Skip to main content',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    switchLang: 'تغییر زبان به فارسی',
+    backToTop: 'Back to top',
+    skipIntro: 'Skip',
+    mainNav: 'Main navigation',
+  },
+  nav: {
+    home: 'Home',
+    services: 'Services',
+    process: 'Process',
+    projects: 'Projects',
+    about: 'About',
+    collaboration: 'Partner',
+    contact: 'Contact',
+    cta: 'Book a consultation',
+    langShort: 'فا',
+  },
+  home: {
+    heroEyebrow: 'Since 2009 — Tehran',
+    heroTitle: ['Built with', 'engineering precision.'],
+    heroLead:
+      'Architecture, structural engineering and construction management for landmark residences — supervised on-site and delivered turnkey.',
+    heroPrimary: 'Book a consultation',
+    heroSecondary: 'View projects',
+    scroll: 'Scroll',
+    stats: [
+      { value: 15, suffix: '+', label: 'Years of practice' },
+      { value: 40, suffix: '+', label: 'Projects delivered' },
+      { value: 100, suffix: '%', label: 'Delivered to contract' },
+      { value: 2, suffix: '', label: 'Generations, one family' },
+    ],
+    marquee: ['Architecture', 'Construction Management', 'Joint Ventures', 'Luxury Renovation', 'Resident Supervision', 'Turnkey Delivery'],
+    servicesEyebrow: 'Services',
+    servicesTitle: 'Four paths. One uncompromising standard.',
+    servicesLead:
+      'From land feasibility and architectural concept to site management, joint-venture contracts and renovation — every service is driven by precise engineering and contractual guarantees.',
+    projectsEyebrow: 'Selected work',
+    projectsTitle: 'Projects that carry our signature',
+    projectsAll: 'All projects',
+    processEyebrow: 'Process',
+    processTitle: 'Four stages. Zero ambiguity.',
+    processLead: 'From the first consultation to handing over the keys, every stage has a clear plan, deliverable and owner.',
+    whyEyebrow: 'Why Mirkazemi',
+    whyTitle: 'A family practice with an engineering mind',
+    whyLead: 'Direct supervision by senior engineers, no middle layers, and an obsessive focus on build quality.',
+    why: [
+      { title: 'Direct supervision', text: 'Senior engineers on site — rebar, concrete pours and connections checked against the drawings.' },
+      { title: 'Full financial transparency', text: 'First-hand invoices, materials bought at factory rates and periodic progress statements.' },
+      { title: 'Committed to schedule', text: 'A contractual Gantt chart from day one and weekly photo reports on progress.' },
+      { title: 'Written warranty', text: 'Handover with a technical checklist, building logbook and a written quality guarantee.' },
+    ],
+    calcEyebrow: 'Joint venture',
+    calcTitle: 'What could your land become?',
+    calcLead: 'A rough first estimate of buildable area and the typical owner share. For an exact figure, book a free appraisal.',
+    ctaEyebrow: 'Start a project',
+    ctaTitle: 'Your project is next.',
+    ctaLead: 'Leave your details — a senior engineer will call you within one business day.',
+  },
+  services: {
+    eyebrow: 'Services',
+    title: 'Four engineering pillars. One definitive standard.',
+    lead:
+      'From the first land feasibility study and architectural concept to direct site management, transparent joint-venture contracts and luxury renovation.',
+    stagesLabel: 'Stages',
+    actions: 'What we do in this stage',
+    deliverable: 'Official deliverable',
+    ctaTitle: 'Which path is your project on?',
+    ctaLead: 'Our senior engineers are ready to review your project and prepare an initial feasibility.',
+    explore: 'Explore service',
+  },
+  projects: {
+    eyebrow: 'Selected work',
+    title: 'Delivered projects',
+    lead: 'A selection of projects designed and built by our team.',
+    filterLabel: 'Filter by project type',
+    all: 'All',
+    categories: { residential: 'Residential', commercial: 'Commercial', renovation: 'Renovation', villa: 'Villa' },
+    status: { completed: 'Completed', inProgress: 'In progress' },
+    view: 'View project',
+    specs: 'Project specs',
+    area: 'Built area',
+    floors: 'Floors',
+    year: 'Year',
+    location: 'Location',
+    structure: 'Structure',
+    category: 'Type',
+    highlights: 'Highlights',
+    gallery: 'Gallery',
+    beforeAfter: 'Before & after',
+    before: 'Before',
+    after: 'After',
+    sliderLabel: 'Compare before and after images',
+    next: 'Next project',
+    back: 'Back to projects',
+    sqm: 'm²',
+    empty: 'No projects in this category.',
+  },
+  process: {
+    eyebrow: 'Process',
+    title: 'A transparent path, start to finish',
+    lead: 'From the first consultation to the day we hand over the keys, every stage follows a clear plan.',
+    whatHappens: 'What happens',
+    faqEyebrow: 'FAQ',
+    faqTitle: 'Questions we hear often',
+  },
+  about: {
+    eyebrow: 'About',
+    title: 'A family practice with an engineering mind',
+    lead:
+      'Mirkazemi Construction Group grew out of a father-and-son partnership — decades of hands-on building experience combined with a precise, modern approach to project management.',
+    storyEyebrow: 'Our story',
+    storyTitle: 'From a small office to dozens of delivered projects',
+    story: [
+      'We started with small contracting jobs; today we run residential, commercial and renovation projects in parallel. Our family scale is an advantage, not a limit: fast decisions, direct control over build quality and accountability without intermediaries.',
+      'We believe the greatest asset of a building practice is the trust of clients who come back to us for their next project.',
+    ],
+    valuesEyebrow: 'Principles',
+    valuesTitle: 'Our core values',
+    values: [
+      { title: 'Financial transparency', text: 'A precise quote up front — no hidden costs halfway through.' },
+      { title: 'Direct supervision', text: 'Constant presence on site, never fully outsourced to subcontractors.' },
+      { title: 'Schedule commitment', text: 'A clear timeline from day one, with regular progress reports.' },
+      { title: 'Lasting quality', text: 'Materials chosen for the long term, not just for a faster handover.' },
+    ],
+    teamEyebrow: 'Team',
+    teamTitle: 'Hands-on leadership',
+    team: [
+      { role: 'Founder & Head of Projects', image: '/images/team-1.jpg' },
+      { role: 'Site & Delivery Manager', image: '/images/team-2.jpg' },
+    ],
+  },
+  collaboration: {
+    eyebrow: 'Partner with us',
+    title: 'Build with us',
+    lead: 'We look for specialists who care about craftsmanship — and landowners who want their property to become a lasting landmark.',
+    tracks: [
+      {
+        code: '01',
+        title: 'Subcontracting',
+        text: 'If you specialise in one of the building trades and want to work on our projects, send us your track record.',
+        items: ['Steel & concrete frames', 'Interior finishing', 'Mechanical services', 'Electrical & smart home', 'Facade & stonework'],
+      },
+      {
+        code: '02',
+        title: 'Joint-venture development',
+        text: 'Own a plot or an old building? We turn it into a landmark with a notarised contract, bank guarantees and a fair share.',
+        items: ['Free property appraisal', 'Transparent share formula', 'Relocation allowance', 'Individual title deed per unit'],
+      },
+    ],
+    formTitle: 'Partnership request',
+  },
+  contact: {
+    eyebrow: 'Contact',
+    title: "Let's begin.",
+    lead: 'Get in touch for an initial consultation, a site visit or a cost estimate. The first meeting is free.',
+    office: 'Head office',
+    mobile: 'Management & technical advice',
+    hours: 'Office hours',
+    social: 'Messengers & social',
+    formTitle: 'Consultation request',
+    call: 'Call',
+  },
+  form: {
+    name: 'Full name',
+    phone: 'Phone number',
+    phoneHint: 'e.g. +98 912 123 4567',
+    type: 'Request type',
+    types: {
+      consultation: 'General consultation',
+      architecture: 'Architectural design',
+      management: 'Construction management',
+      partnership: 'Joint venture',
+      renovation: 'Renovation',
+      subcontractor: 'Subcontracting',
+    },
+    area: 'Approx. area (optional)',
+    message: 'Message (optional)',
+    submit: 'Send request',
+    sending: 'Sending…',
+    privacy: 'Your details are confidential and reviewed only by our engineering team.',
+    success: 'Thank you — your request is in. We will call you within one business day.',
+    errorGeneric: 'Something went wrong. Please try again or call us directly.',
+    errorName: 'Please enter your name.',
+    errorPhone: 'Please enter a valid phone number.',
+    errorRate: 'Too many requests — please try again in a few minutes.',
+  },
+  calc: {
+    land: 'Land area',
+    floors: 'Floors',
+    zone: 'Location',
+    zones: { prime: 'Tehran — districts 1–3', city: 'Other Tehran districts', north: 'Northern Iran', other: 'Other cities' },
+    gross: 'Approx. gross build area',
+    units: 'Approx. number of units',
+    share: 'Typical owner share',
+    disclaimer: 'Indicative only — actual figures depend on zoning, permitted density and a professional appraisal.',
+    cta: 'Free property appraisal',
+    sqm: 'm²',
+  },
+  footer: {
+    tagline: 'Architectural design, structural engineering and construction management with direct on-site supervision since 2009.',
+    explore: 'Explore',
+    services: 'Services',
+    contact: 'Contact',
+    rights: 'All rights reserved.',
+  },
+  notFound: {
+    title: 'Page not found',
+    text: 'The address may have changed or the page no longer exists.',
+    back: 'Back to home',
+  },
+  error: {
+    title: 'Something went wrong',
+    retry: 'Try again',
+  },
+};
+
+const dictionaries: Record<Locale, Dictionary> = { fa, en };
+
+export function getDictionary(locale: Locale): Dictionary {
+  return dictionaries[locale];
+}
