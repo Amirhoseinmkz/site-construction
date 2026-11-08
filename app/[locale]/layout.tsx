@@ -8,7 +8,6 @@ import { site } from '@/data/site';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { MotionProvider } from '@/components/motion/MotionProvider';
-import { Cursor } from '@/components/motion/Cursor';
 import { QuickContact } from '@/components/layout/QuickContact';
 import { buildMetadata } from '@/lib/seo';
 
@@ -105,7 +104,6 @@ export default async function LocaleLayout({
           <Footer locale={locale} t={t} />
         </MotionProvider>
         <QuickContact locale={locale} />
-        <Cursor />
       </body>
     </html>
   );
