@@ -93,11 +93,10 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
 
         <div
           aria-hidden
-          className="pointer-events-none mt-20 select-none text-center font-brand text-[18vw] font-extralight leading-none tracking-[0.08em] text-bone/[0.04] md:text-[14vw]"
+          data-text="MIRKAZEMI"
+          className="pointer-events-none mt-20 select-none text-center font-brand text-[18vw] font-extralight leading-none tracking-[0.08em] text-bone/[0.04] after:content-[attr(data-text)] md:text-[14vw]"
           dir="ltr"
-        >
-          MIRKAZEMI
-        </div>
+        />
 
         <div className="mt-6 flex flex-col-reverse items-start justify-between gap-4 border-t border-bone/10 pt-6 text-sm text-bone-dim md:flex-row md:items-center">
           <p>
