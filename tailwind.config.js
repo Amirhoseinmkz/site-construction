@@ -1,68 +1,48 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './data/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './data/**/*.ts'],
   theme: {
+    container: {
+      center: true,
+      padding: { DEFAULT: '1.25rem', md: '2rem', xl: '3rem' },
+      screens: { '2xl': '1440px' },
+    },
     extend: {
       colors: {
-        background: '#07080a',
-        surface: {
-          50: '#1c1f24',
-          100: '#14171b',
-          200: '#0d0f12',
-          DEFAULT: '#0a0c0e',
+        ink: {
+          950: 'rgb(var(--ink-950) / <alpha-value>)',
+          900: 'rgb(var(--ink-900) / <alpha-value>)',
+          800: 'rgb(var(--ink-800) / <alpha-value>)',
+          700: 'rgb(var(--ink-700) / <alpha-value>)',
         },
-        steel: {
-          light: '#26292B',
-          DEFAULT: '#1B1D1F',
-          dark: '#111214',
+        bone: {
+          DEFAULT: 'rgb(var(--bone) / <alpha-value>)',
+          muted: 'rgb(var(--bone-muted) / <alpha-value>)',
+          dim: 'rgb(var(--bone-dim) / <alpha-value>)',
         },
-        concrete: {
-          light: '#EAEBE7',
-          DEFAULT: '#D6D1C6',
-          dark: '#8A909A',
+        ember: {
+          DEFAULT: 'rgb(var(--ember) / <alpha-value>)',
+          soft: 'rgb(var(--ember-soft) / <alpha-value>)',
+          deep: 'rgb(var(--ember-deep) / <alpha-value>)',
         },
-        blueprint: {
-          light: '#4A6E93',
-          DEFAULT: '#2B4C6F',
-          dark: '#1B314B',
-          glow: 'rgba(74, 110, 147, 0.45)',
-        },
-        amber: {
-          light: '#f5be64',
-          DEFAULT: '#DDA13B',
-          dark: '#b57e25',
-          glow: 'rgba(221, 161, 59, 0.35)',
-        },
-        glass: {
-          border: 'rgba(255, 255, 255, 0.08)',
-          bg: 'rgba(13, 15, 18, 0.65)',
-        }
+        steel: 'rgb(var(--steel) / <alpha-value>)',
+        line: 'rgb(var(--bone) / 0.1)',
       },
       fontFamily: {
-        sans: ['var(--font-vazirmatn)', 'Vazirmatn', 'system-ui', 'sans-serif'],
-        display: ['var(--font-syne)', 'Syne', 'Clash Display', 'Space Grotesk', 'sans-serif'],
-        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        brand: ['var(--font-brand)', 'var(--font-sans)', 'sans-serif'],
+        serif: ['var(--font-serif)', 'var(--font-sans)', 'serif'],
       },
-      animation: {
-        'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
-        'grid-float': 'gridFloat 20s linear infinite',
+      fontSize: {
+        eyebrow: ['0.75rem', { lineHeight: '1.2', letterSpacing: '0.22em' }],
+        'display-xl': ['clamp(2.75rem, 7.5vw, 7.5rem)', { lineHeight: '1.02', letterSpacing: '-0.02em' }],
+        'display-lg': ['clamp(2.25rem, 5vw, 4.75rem)', { lineHeight: '1.08', letterSpacing: '-0.015em' }],
+        'display-md': ['clamp(1.75rem, 3.2vw, 3rem)', { lineHeight: '1.15' }],
       },
-      keyframes: {
-        pulseGlow: {
-          '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
-          '50%': { opacity: '0.8', transform: 'scale(1.05)' },
-        },
-        gridFloat: {
-          '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(40px)' },
-        }
-      }
+      transitionTimingFunction: {
+        cine: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
     },
   },
   plugins: [],
-}
+};

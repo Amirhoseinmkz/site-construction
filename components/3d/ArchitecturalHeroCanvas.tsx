@@ -1,386 +1,256 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { useLanguage } from '../ui/LanguageContext';
-import { Box, Layers, Sparkles, Compass, Eye } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export type ViewMode = 'wireframe' | 'structural' | 'facade';
+gsap.registerPlugin(ScrollTrigger);
 
-export const ArchitecturalHeroCanvas: React.FC = () => {
-  const { t, locale } = useLanguage();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentMode, setCurrentMode] = useState<ViewMode>('wireframe');
-  const [fps, setFps] = useState<number>(60);
+const FLOORS = 12;
+const FLOOR_H = 0.62;
+const EMBER = 0xd9a44a;
+const BONE = 0xece8e1;
 
-  // References for Three.js objects
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const buildingGroupRef = useRef<THREE.Group | null>(null);
-  const materialsRef = useRef<{
-    wireframe: THREE.Material[];
-    structural: THREE.Material[];
-    facade: THREE.Material[];
-  }>({ wireframe: [], structural: [], facade: [] });
+/**
+ * A blueprint tower that assembles floor by floor as the hero scrolls.
+ * Performance: shared geometries/materials, unlit materials, no shadows, DPR ≤ 1.5,
+ * renders only while visible, full disposal on unmount.
+ */
+export default function ArchitecturalHeroCanvas({ triggerId, onReady }: { triggerId: string; onReady?: () => void }) {
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    const mount = mountRef.current;
+    if (!mount) return;
 
-    // 1. Scene
+    // ---------- Renderer ----------
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    } catch {
+      return; // no WebGL: poster stays visible
+    }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setClearColor(0x000000, 0);
+    renderer.domElement.setAttribute('aria-hidden', 'true');
+    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block';
+    mount.appendChild(renderer.domElement);
+
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
-    scene.fog = new THREE.FogExp2(0x07080a, 0.028);
+    scene.fog = new THREE.Fog(0x09090a, 14, 34);
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(12, 10, 16);
-    camera.lookAt(0, 3, 0);
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+    const target = new THREE.Vector3(0, FLOORS * FLOOR_H * 0.45, 0);
 
-    // 3. Renderer with clamped pixel ratio
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    rendererRef.current = renderer;
-    container.appendChild(renderer.domElement);
+    // ---------- Shared resources ----------
+    const disposables: { dispose: () => void }[] = [];
+    const track = <T extends { dispose: () => void }>(r: T) => (disposables.push(r), r);
 
-    // 4. Lighting Rig
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+    const slabBox = track(new THREE.BoxGeometry(3.2, 0.08, 2.4));
+    const slabEdges = track(new THREE.EdgesGeometry(slabBox));
+    const volumeBox = track(new THREE.BoxGeometry(3.0, FLOOR_H - 0.08, 2.2));
+    const volumeEdges = track(new THREE.EdgesGeometry(volumeBox));
+    const columnGeo = track(new THREE.BoxGeometry(0.06, FLOOR_H, 0.06));
 
-    const dirLight = new THREE.DirectionalLight(0xffeedd, 2.0);
-    dirLight.position.set(15, 25, 15);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    scene.add(dirLight);
+    const emberLine = track(new THREE.LineBasicMaterial({ color: EMBER, transparent: true, opacity: 0.95 }));
+    const boneLine = track(new THREE.LineBasicMaterial({ color: BONE, transparent: true, opacity: 0.22 }));
+    const glass = track(
+      new THREE.MeshBasicMaterial({ color: EMBER, transparent: true, opacity: 0.02, depthWrite: false, side: THREE.DoubleSide })
+    );
+    const columnMat = track(new THREE.MeshBasicMaterial({ color: BONE, transparent: true, opacity: 0.55 }));
 
-    const amberLight = new THREE.PointLight(0xdda13b, 3.5, 20);
-    amberLight.position.set(-6, 8, -4);
-    scene.add(amberLight);
+    // ---------- Tower ----------
+    const tower = new THREE.Group();
+    scene.add(tower);
 
-    const cyanLight = new THREE.PointLight(0x4a6e93, 2.5, 25);
-    cyanLight.position.set(6, -2, 8);
-    scene.add(cyanLight);
+    const floors: { group: THREE.Group; baseY: number }[] = [];
+    for (let i = 0; i < FLOORS; i++) {
+      const group = new THREE.Group();
+      const baseY = i * FLOOR_H;
+      // gentle taper + alternating cantilever for an architectural silhouette
+      const taper = 1 - i * 0.018;
+      group.scale.set(taper, 1, taper);
+      group.position.x = i % 4 === 3 ? 0.35 : 0;
 
-    // 5. Blueprint Ground Grid
-    const gridHelper = new THREE.GridHelper(40, 40, 0xdda13b, 0x1f2b38);
-    gridHelper.position.y = -0.01;
-    (gridHelper.material as THREE.Material).transparent = true;
-    (gridHelper.material as THREE.Material).opacity = 0.45;
-    scene.add(gridHelper);
-
-    // 6. Architectural Building Group
-    const buildingGroup = new THREE.Group();
-    buildingGroupRef.current = buildingGroup;
-    scene.add(buildingGroup);
-
-    // Store references for mode switching
-    const wireframeMaterials: THREE.Material[] = [];
-    const structuralMaterials: THREE.Material[] = [];
-    const facadeMaterials: THREE.Material[] = [];
-
-    // Create Architectural Tower Floors & Core
-    const floorCount = 8;
-    const floorHeight = 1.0;
-    const buildingWidth = 5.0;
-    const buildingDepth = 4.0;
-
-    // Base podium / Foundation
-    const podiumGeo = new THREE.BoxGeometry(7, 0.4, 6);
-    const podiumMat = new THREE.MeshStandardMaterial({
-      color: 0x121519,
-      roughness: 0.8,
-      metalness: 0.2,
-    });
-    const podium = new THREE.Mesh(podiumGeo, podiumMat);
-    podium.position.y = 0.2;
-    podium.receiveShadow = true;
-    buildingGroup.add(podium);
-    facadeMaterials.push(podiumMat);
-
-    // Central Concrete Elevator Core
-    const coreGeo = new THREE.BoxGeometry(1.6, floorCount * floorHeight + 1.2, 1.4);
-    const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x4a6e93, wireframe: true });
-    const coreStructMat = new THREE.MeshStandardMaterial({ color: 0x3a424d, roughness: 0.9 });
-    const coreFacadeMat = new THREE.MeshStandardMaterial({ color: 0x1a1d22, roughness: 0.6, metalness: 0.4 });
-    const coreMesh = new THREE.Mesh(coreGeo, coreWireMat);
-    coreMesh.position.y = (floorCount * floorHeight + 1.2) / 2;
-    buildingGroup.add(coreMesh);
-    wireframeMaterials.push(coreWireMat);
-    structuralMaterials.push(coreStructMat);
-    facadeMaterials.push(coreFacadeMat);
-
-    // Floors, Slabs & Columns
-    for (let i = 0; i < floorCount; i++) {
-      const yPos = 0.4 + i * floorHeight + floorHeight / 2;
-      const floorScale = 1 - (i * 0.035); // subtle modern taper
-
-      // Floor Slab
-      const slabGeo = new THREE.BoxGeometry(buildingWidth * floorScale, 0.12, buildingDepth * floorScale);
-      const slabWire = new THREE.MeshBasicMaterial({ color: 0xdda13b, wireframe: true });
-      const slabStruct = new THREE.MeshStandardMaterial({ color: 0x4e5560, roughness: 0.7 });
-      const slabFacade = new THREE.MeshStandardMaterial({ color: 0x0f1114, roughness: 0.3, metalness: 0.8 });
-      const slabMesh = new THREE.Mesh(slabGeo, slabWire);
-      slabMesh.position.y = yPos;
-      buildingGroup.add(slabMesh);
-      wireframeMaterials.push(slabWire);
-      structuralMaterials.push(slabStruct);
-      facadeMaterials.push(slabFacade);
-
-      // 4 Corner Structural Columns
-      const colHeight = floorHeight - 0.12;
-      const colGeo = new THREE.BoxGeometry(0.18, colHeight, 0.18);
-      const colPositions = [
-        [-(buildingWidth * floorScale) / 2 + 0.3, yPos + colHeight / 2, -(buildingDepth * floorScale) / 2 + 0.3],
-        [(buildingWidth * floorScale) / 2 - 0.3, yPos + colHeight / 2, -(buildingDepth * floorScale) / 2 + 0.3],
-        [-(buildingWidth * floorScale) / 2 + 0.3, yPos + colHeight / 2, (buildingDepth * floorScale) / 2 - 0.3],
-        [(buildingWidth * floorScale) / 2 - 0.3, yPos + colHeight / 2, (buildingDepth * floorScale) / 2 - 0.3],
-      ];
-
-      colPositions.forEach(([cx, cy, cz]) => {
-        const colWire = new THREE.MeshBasicMaterial({ color: 0x4a6e93, wireframe: true });
-        const colStruct = new THREE.MeshStandardMaterial({ color: 0x8a909a, metalness: 0.6, roughness: 0.3 });
-        const colFacade = new THREE.MeshStandardMaterial({ color: 0xdda13b, metalness: 0.9, roughness: 0.2 });
-        const colMesh = new THREE.Mesh(colGeo, colWire);
-        colMesh.position.set(cx, cy, cz);
-        buildingGroup.add(colMesh);
-        wireframeMaterials.push(colWire);
-        structuralMaterials.push(colStruct);
-        facadeMaterials.push(colFacade);
-      });
-
-      // Glass Curtain Wall Facade Envelope (For Facade mode)
-      const glassGeo = new THREE.BoxGeometry(buildingWidth * floorScale - 0.05, colHeight, buildingDepth * floorScale - 0.05);
-      const glassMat = new THREE.MeshPhysicalMaterial({
-        color: 0x112233,
-        transparent: true,
-        opacity: 0.45,
-        roughness: 0.1,
-        metalness: 0.1,
-        transmission: 0.6,
-        ior: 1.5,
-      });
-      const glassMesh = new THREE.Mesh(glassGeo, glassMat);
-      glassMesh.position.y = yPos + colHeight / 2;
-      glassMesh.visible = false;
-      buildingGroup.add(glassMesh);
-      facadeMaterials.push(glassMat);
+      const slab = new THREE.LineSegments(slabEdges, emberLine);
+      const volume = new THREE.LineSegments(volumeEdges, boneLine);
+      volume.position.y = FLOOR_H / 2;
+      const fill = new THREE.Mesh(volumeBox, glass);
+      fill.position.y = FLOOR_H / 2;
+      group.add(slab, volume, fill);
+      tower.add(group);
+      floors.push({ group, baseY });
     }
 
-    // Cantilever Balcony / Sky Lounge at Floor 5
-    const balconyGeo = new THREE.BoxGeometry(2.5, 0.15, 2.0);
-    const balconyMat = new THREE.MeshStandardMaterial({ color: 0xdda13b, metalness: 0.8, roughness: 0.2 });
-    const balcony = new THREE.Mesh(balconyGeo, balconyMat);
-    balcony.position.set(2.4, 0.4 + 4 * floorHeight, 0);
-    buildingGroup.add(balcony);
-    facadeMaterials.push(balconyMat);
+    // Columns as a single instanced mesh (4 per floor)
+    const columns = new THREE.InstancedMesh(columnGeo, columnMat, FLOORS * 4);
+    track(columns);
+    tower.add(columns);
+    const m4 = new THREE.Matrix4();
+    const corners = [
+      [-1.45, -1.05],
+      [1.45, -1.05],
+      [-1.45, 1.05],
+      [1.45, 1.05],
+    ];
 
-    // Floating Architectural Particle Grid
-    const particleCount = 200;
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
-    for (let p = 0; p < particleCount * 3; p += 3) {
-      particlePositions[p] = (Math.random() - 0.5) * 30;
-      particlePositions[p + 1] = Math.random() * 15;
-      particlePositions[p + 2] = (Math.random() - 0.5) * 30;
+    // Ground blueprint grid
+    const grid = new THREE.GridHelper(40, 40, EMBER, BONE);
+    const gridMat = grid.material as THREE.Material;
+    gridMat.transparent = true;
+    gridMat.opacity = 0.08;
+    track(grid.geometry);
+    track(gridMat);
+    grid.position.y = -0.02;
+    scene.add(grid);
+
+    // Floating dust
+    const dustCount = 240;
+    const dustPos = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      dustPos[i * 3] = (Math.random() - 0.5) * 18;
+      dustPos[i * 3 + 1] = Math.random() * 10;
+      dustPos[i * 3 + 2] = (Math.random() - 0.5) * 18;
     }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0xdda13b,
-      size: 0.08,
-      transparent: true,
-      opacity: 0.6,
-    });
-    const particleSystem = new THREE.Points(particleGeo, particleMat);
-    scene.add(particleSystem);
+    const dustGeo = track(new THREE.BufferGeometry());
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = track(
+      new THREE.PointsMaterial({ color: EMBER, size: 0.035, transparent: true, opacity: 0.6, depthWrite: false })
+    );
+    const dust = new THREE.Points(dustGeo, dustMat);
+    scene.add(dust);
 
-    materialsRef.current = {
-      wireframe: wireframeMaterials,
-      structural: structuralMaterials,
-      facade: facadeMaterials,
-    };
+    // ---------- State ----------
+    const state = { build: 0, scroll: 0, mx: 0, my: 0, angle: -0.6 };
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    // 7. Mouse Parallax & Smooth Rotation
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetRotationY = 0;
-    let targetRotationX = 0;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      const y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
-      mouseX = x;
-      mouseY = y;
-      targetRotationY = x * 0.45;
-      targetRotationX = y * 0.2;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Resize Handler
-    const handleResize = () => {
-      if (!container || !rendererRef.current) return;
-      const newW = container.clientWidth;
-      const newH = container.clientHeight;
-      camera.aspect = newW / newH;
-      camera.updateProjectionMatrix();
-      rendererRef.current.setSize(newW, newH);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // 8. Animation Loop
-    let animationFrameId: number;
-    let lastTime = performance.now();
-    let frameCount = 0;
-    let fpsTimer = 0;
-
-    const animate = (time: number) => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      // FPS counter calculation
-      frameCount++;
-      if (time - fpsTimer > 1000) {
-        setFps(Math.round((frameCount * 1000) / (time - fpsTimer)));
-        frameCount = 0;
-        fpsTimer = time;
-      }
-
-      // Continuous gentle rotation + mouse tilt
-      if (buildingGroup) {
-        buildingGroup.rotation.y += 0.003;
-        buildingGroup.rotation.y += (targetRotationY - buildingGroup.rotation.y * 0.1) * 0.02;
-        buildingGroup.rotation.x += (targetRotationX - buildingGroup.rotation.x) * 0.02;
-      }
-
-      // Subtle particle float
-      if (particleSystem) {
-        particleSystem.rotation.y += 0.0008;
-      }
-
-      renderer.render(scene, camera);
-    };
-
-    animate(performance.now());
-
-    // Cleanup
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
-      if (rendererRef.current && rendererRef.current.domElement) {
-        container.removeChild(rendererRef.current.domElement);
-      }
-      renderer.dispose();
-      podiumGeo.dispose();
-      coreGeo.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
-    };
-  }, []);
-
-  // Mode Switcher Handler
-  const handleModeChange = (mode: ViewMode) => {
-    setCurrentMode(mode);
-    if (!buildingGroupRef.current) return;
-
-    buildingGroupRef.current.children.forEach((child, index) => {
-      if (child instanceof THREE.Mesh) {
-        if (mode === 'wireframe') {
-          if (child.material instanceof THREE.MeshBasicMaterial) {
-            child.material.wireframe = true;
-            child.visible = true;
-          } else if (child.material instanceof THREE.MeshPhysicalMaterial) {
-            child.visible = false;
-          }
-        } else if (mode === 'structural') {
-          if (child.material instanceof THREE.MeshBasicMaterial) {
-            child.material.wireframe = false;
-            child.visible = true;
-          } else if (child.material instanceof THREE.MeshPhysicalMaterial) {
-            child.visible = false;
-          }
-        } else if (mode === 'facade') {
-          if (child.material instanceof THREE.MeshBasicMaterial) {
-            child.material.wireframe = false;
-          }
-          child.visible = true;
+    const applyBuild = () => {
+      const p = Math.min(1, state.build + state.scroll * 0.75);
+      const progress = p * FLOORS;
+      for (let i = 0; i < FLOORS; i++) {
+        const t = Math.min(1, Math.max(0, progress - i));
+        const e = ease(t);
+        const { group, baseY } = floors[i];
+        group.visible = t > 0;
+        group.position.y = baseY + (1 - e) * 2.2;
+        for (let c = 0; c < 4; c++) {
+          const [x, z] = corners[c];
+          const s = group.scale.x;
+          m4.makeScale(1, Math.max(0.001, e), 1);
+          m4.setPosition(x * s + group.position.x, group.position.y + (FLOOR_H * e) / 2, z * s);
+          columns.setMatrixAt(i * 4 + c, m4);
         }
       }
+      columns.instanceMatrix.needsUpdate = true;
+      glass.opacity = 0.015 + 0.11 * Math.max(0, p - 0.35);
+      boneLine.opacity = 0.18 + 0.2 * p;
+    };
+
+    // Intro auto-build, then scroll continues it
+    const intro = gsap.to(state, { build: 0.55, duration: 2.6, ease: 'power2.inOut', delay: 0.3 });
+    const st = ScrollTrigger.create({
+      trigger: `#${triggerId}`,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.6,
+      onUpdate: (self) => {
+        state.scroll = self.progress;
+      },
     });
-  };
 
-  return (
-    <div className="relative w-full h-[520px] md:h-[620px] lg:h-[700px] select-none">
-      {/* Three.js Canvas Container */}
-      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+    // ---------- Resize ----------
+    const resize = () => {
+      const w = mount.clientWidth;
+      const h = mount.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize);
+    ro.observe(mount);
+    resize();
 
-      {/* Dynamic View Mode HUD Controls */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 p-1.5 rounded-full bg-[#0d1014]/85 backdrop-blur-xl border border-white/15 shadow-2xl shadow-black/80">
-        <button
-          onClick={() => handleModeChange('wireframe')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-            currentMode === 'wireframe'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/20'
-              : 'text-neutral-300 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <Box className="w-3.5 h-3.5" />
-          <span>{t.hero.viewModes.blueprint}</span>
-        </button>
+    // ---------- Pointer parallax ----------
+    const onPointer = (e: PointerEvent) => {
+      state.mx = (e.clientX / window.innerWidth - 0.5) * 2;
+      state.my = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener('pointermove', onPointer, { passive: true });
 
-        <button
-          onClick={() => handleModeChange('structural')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-            currentMode === 'structural'
-              ? 'bg-gradient-to-r from-blueprint-light to-blueprint text-white shadow-lg shadow-blueprint/30'
-              : 'text-neutral-300 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <Layers className="w-3.5 h-3.5" />
-          <span>{t.hero.viewModes.structural}</span>
-        </button>
+    // ---------- Loop (only while visible) ----------
+    let running = false;
+    let inView = true;
+    let raf = 0;
+    let last = performance.now();
+    let firstFrame = true;
+    const cam = { x: 0, y: 0 };
 
-        <button
-          onClick={() => handleModeChange('facade')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-            currentMode === 'facade'
-              ? 'bg-gradient-to-r from-amber-400 to-yellow-200 text-black shadow-lg shadow-amber-400/30'
-              : 'text-neutral-300 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>{t.hero.viewModes.luxuryFacade}</span>
-        </button>
-      </div>
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
 
-      {/* Telemetry HUD Overlays */}
-      <div className="absolute top-6 start-6 pointer-events-none flex flex-col gap-1 text-[10px] font-mono text-amber-400/80 tracking-widest uppercase">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span>WEBGL 3D VOLUMETRIC ENGINE ACTIVE</span>
-        </div>
-        <div className="text-neutral-400">FPS: {fps} // RES: DYNAMIC DPR-2</div>
-        <div className="text-neutral-400">STRUCTURE: REINFORCED RC CORE & CANTILEVER</div>
-      </div>
+      state.angle += dt * 0.06;
+      cam.x += (state.mx * 0.5 - cam.x) * 0.04;
+      cam.y += (state.my * 0.4 - cam.y) * 0.04;
 
-      <div className="absolute top-6 end-6 pointer-events-none hidden sm:flex flex-col items-end gap-1 text-[10px] font-mono text-neutral-400 tracking-wider uppercase">
-        <div className="flex items-center gap-1 text-amber-300">
-          <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '16s' }} />
-          <span>AZIMUTH: 315° NW</span>
-        </div>
-        <div>LAT: 35.792° N // LON: 51.418° E</div>
-      </div>
-    </div>
-  );
-};
+      const radius = 15 - state.scroll * 2.5;
+      camera.position.set(
+        Math.sin(state.angle + cam.x * 0.3) * radius,
+        5.2 + cam.y * -1.2 + state.scroll * 2,
+        Math.cos(state.angle + cam.x * 0.3) * radius
+      );
+      camera.lookAt(target);
+      dust.rotation.y += dt * 0.02;
+
+      applyBuild();
+      renderer.render(scene, camera);
+      if (firstFrame) {
+        firstFrame = false;
+        onReady?.();
+      }
+    };
+
+    const start = () => {
+      if (running || !inView || document.hidden) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        inView ? start() : stop();
+      },
+      { threshold: 0 }
+    );
+    io.observe(mount);
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
+    start();
+
+    // ---------- Cleanup ----------
+    return () => {
+      stop();
+      intro.kill();
+      st.kill();
+      io.disconnect();
+      ro.disconnect();
+      window.removeEventListener('pointermove', onPointer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      disposables.forEach((d) => d.dispose());
+      renderer.dispose();
+      renderer.forceContextLoss();
+      renderer.domElement.remove();
+    };
+  }, [triggerId, onReady]);
+
+  return <div ref={mountRef} className="absolute inset-0" />;
+}
