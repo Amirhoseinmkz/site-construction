@@ -62,11 +62,11 @@ export default async function ProjectPage({ params }: Params) {
           <div className="vignette absolute inset-0" />
         </div>
         <div className="container">
-          <Link href={`/${locale}/projects`} className="link-underline text-sm text-bone-muted hover:text-bone" data-reveal>
+          <Link href={`/${locale}/projects`} className="hero-in link-underline text-sm text-bone-muted hover:text-bone">
             <span aria-hidden className="flip-x-rtl me-2 inline-block">←</span>
             {p.back}
           </Link>
-          <div className="mt-8 flex flex-wrap items-center gap-4" data-reveal>
+          <div className="hero-in mt-8 flex flex-wrap items-center gap-4">
             <span className="font-brand text-sm tracking-[0.3em] text-ember" dir="ltr">
               {project.code}
             </span>
@@ -78,8 +78,8 @@ export default async function ProjectPage({ params }: Params) {
               {p.status[project.status]}
             </span>
           </div>
-          <SplitText as="h1" text={project.title[locale]} className="mt-5 max-w-5xl text-display-xl font-black" delay={0.1} />
-          <p className="mt-6 text-lg text-bone-muted" data-reveal>
+          <SplitText as="h1" text={project.title[locale]} className="mt-5 max-w-5xl text-display-xl font-black" delay={0.1} css />
+          <p className="hero-in mt-6 text-lg text-bone-muted" style={{ animationDelay: '0.3s' }}>
             {project.location[locale]}
           </p>
         </div>

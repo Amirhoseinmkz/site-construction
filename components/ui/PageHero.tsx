@@ -23,17 +23,18 @@ export function PageHero({ eyebrow, title, lead, image, serif, children }: Props
         <div className="blueprint-bg absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
       </div>
       <div className="container">
-        <p className="eyebrow" data-reveal>
+        <p className="eyebrow hero-in">
           {eyebrow}
         </p>
         <SplitText
           as="h1"
           text={title}
           className={`mt-6 max-w-5xl text-display-lg ${serif ? 'font-serif italic' : 'font-black'}`}
-          delay={0.1}
+          delay={0.05}
+          css
         />
         {lead && (
-          <p className="mt-8 max-w-2xl text-lg text-bone-muted md:text-xl" data-reveal>
+          <p className="hero-in mt-8 max-w-2xl text-lg text-bone-muted md:text-xl" style={{ animationDelay: '0.25s' }}>
             {lead}
           </p>
         )}

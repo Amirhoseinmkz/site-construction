@@ -43,11 +43,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             fill
             priority
             sizes="100vw"
-            className="animate-[kenburns_14s_ease-out_both] object-cover opacity-30 blur-[1px] saturate-[0.7]"
+            className="animate-[kenburns_14s_ease-out_both] object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-ink-950/70 via-ink-950/40 to-ink-950" />
           <div className="blueprint-bg absolute inset-0 opacity-60 [mask-image:radial-gradient(70%_60%_at_50%_40%,black,transparent)]" />
-          <div className="absolute -top-40 start-1/2 h-[60vh] w-[60vw] -translate-x-1/2 rounded-full bg-ember/10 blur-[120px] rtl:translate-x-1/2" />
+          <div className="absolute inset-x-0 top-0 h-[70vh] bg-[radial-gradient(50%_60%_at_50%_0%,rgb(var(--ember)/0.12),transparent)]" />
         </div>
 
         {/* WebGL tower (desktop / capable devices) */}
@@ -57,7 +57,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="vignette pointer-events-none absolute inset-0 -z-10" />
 
         <div className="container">
-          <p className="eyebrow" data-reveal>
+          <p className="eyebrow hero-in">
             {h.heroEyebrow}
           </p>
           <SplitText
@@ -70,13 +70,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </span>,
             ]}
             className="mt-6 max-w-5xl text-display-xl font-black"
-            delay={0.2}
+            delay={0.1}
+            css
           />
           <div className="mt-10 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-            <p className="max-w-xl text-lg text-bone-muted md:text-xl" data-reveal>
+            <p className="hero-in max-w-xl text-lg text-bone-muted md:text-xl" style={{ animationDelay: '0.3s' }}>
               {h.heroLead}
             </p>
-            <div className="flex flex-wrap gap-3" data-reveal>
+            <div className="hero-in flex flex-wrap gap-3" style={{ animationDelay: '0.4s' }}>
               <Link href={`/${locale}/contact`} className="btn-primary">
                 {h.heroPrimary}
                 <span aria-hidden className="flip-x-rtl">→</span>
@@ -285,7 +286,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* ───────────── CTA + FORM ───────────── */}
       <section aria-labelledby="cta-title" className="relative overflow-hidden py-24 md:py-36">
-        <div aria-hidden className="absolute -bottom-40 start-1/2 h-[50vh] w-[70vw] -translate-x-1/2 rounded-full bg-ember/10 blur-[140px] rtl:translate-x-1/2" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-[60vh] bg-[radial-gradient(50%_60%_at_50%_100%,rgb(var(--ember)/0.1),transparent)]" />
         <div className="container grid gap-16 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <p className="eyebrow" data-reveal>

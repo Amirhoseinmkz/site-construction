@@ -93,14 +93,14 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
       </div>
 
       <div className="flex flex-col justify-between gap-10 border-t border-bone/10 pt-10 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0" aria-live="polite">
-        <dl className="space-y-8">
-          <div>
+        <div className="space-y-8">
+          <dl>
             <dt className="text-sm text-bone-muted">{t.gross}</dt>
             <dd className="mt-1 text-display-md font-bold text-bone">
               ~{nf.format(gross)} <span className="text-lg font-normal text-bone-dim">{t.sqm}</span>
             </dd>
-          </div>
-          <div className="grid grid-cols-2 gap-6">
+          </dl>
+          <dl className="grid grid-cols-2 gap-6">
             <div>
               <dt className="text-sm text-bone-muted">{t.units}</dt>
               <dd className="mt-1 text-3xl font-bold text-bone">~{nf.format(units)}</dd>
@@ -112,8 +112,8 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
                 {locale === 'fa' ? '٪' : '%'}
               </dd>
             </div>
-          </div>
-        </dl>
+          </dl>
+        </div>
         <div>
           <p className="text-sm text-bone-dim">{t.disclaimer}</p>
           <Link href={`/${locale}/contact?subject=partnership`} className="btn-primary mt-6">
