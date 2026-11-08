@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Syne:wght@400;600;700;800&family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #07080a;
+  --bg-surface: #0e1115;
+  --amber-gold: #dda13b;
+  --blueprint-blue: #2b4c6f;
+  --steel-grey: #8a909a;
+  --font-vazirmatn: 'Vazirmatn', sans-serif;
+  --font-syne: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #07080a;
+  color: #e5e7eb;
+  scroll-behavior: smooth;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  font-family: var(--font-vazirmatn);
+  background-color: #07080a;
+  color: #f3f4f6;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+[dir="ltr"] body {
+  font-family: var(--font-syne), var(--font-vazirmatn);
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #07080a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f252d;
+  border-radius: 4px;
+  border: 1px solid rgba(221, 161, 59, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dda13b;
+}
+
+/* Selection */
+::selection {
+  background: #dda13b;
+  color: #07080a;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(13, 16, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-glow {
+  background: rgba(14, 18, 23, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(221, 161, 59, 0.25);
+  box-shadow: 0 0 30px rgba(221, 161, 59, 0.08);
+}
+
+/* Fluid Typography Helpers */
+.text-fluid-hero {
+  font-size: clamp(2.25rem, 5.5vw + 1rem, 4.75rem);
+  line-height: 1.15;
+}
+
+.text-fluid-h2 {
+  font-size: clamp(1.75rem, 3.5vw + 0.5rem, 3rem);
+  line-height: 1.25;
+}
+
+.text-fluid-body {
+  font-size: clamp(0.95rem, 1vw + 0.5rem, 1.15rem);
+}
+
+/* Glowing text */
+.text-glow-amber {
+  text-shadow: 0 0 20px rgba(221, 161, 59, 0.5);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 20px rgba(74, 110, 147, 0.6);
+}
