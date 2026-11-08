@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;700&amp;display=swap');
+      .badge-bg {
+        fill: #EAEBE7;
+      }
+      .badge-border {
+        fill: none;
+        stroke: rgba(27, 29, 31, 0.2);
+        stroke-width: 1.5;
+      }
+      .grid-line {
+        stroke: rgba(27, 29, 31, 0.06);
+        stroke-width: 1;
+      }
+      .logo-mark {
+        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 200;
+        font-size: 38px;
+        letter-spacing: 11px;
+        fill: #1B1D1F;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+      .logo-sub {
+        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 700;
+        font-size: 13.5px;
+        letter-spacing: 3.8px;
+        fill: #5A5D61;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+      .corner-mark {
+        stroke: #2B4C6F;
+        stroke-width: 2;
+        fill: none;
+      }
+    </style>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="600" height="600" class="badge-bg" />
+
+  <!-- Subtle Blueprint Grid -->
+  <line x1="100" y1="0" x2="100" y2="600" class="grid-line" />
+  <line x1="200" y1="0" x2="200" y2="600" class="grid-line" />
+  <line x1="300" y1="0" x2="300" y2="600" class="grid-line" />
+  <line x1="400" y1="0" x2="400" y2="600" class="grid-line" />
+  <line x1="500" y1="0" x2="500" y2="600" class="grid-line" />
+  <line x1="0" y1="100" x2="600" y2="100" class="grid-line" />
+  <line x1="0" y1="200" x2="600" y2="200" class="grid-line" />
+  <line x1="0" y1="300" x2="600" y2="300" class="grid-line" />
+  <line x1="0" y1="400" x2="600" y2="400" class="grid-line" />
+  <line x1="0" y1="500" x2="600" y2="500" class="grid-line" />
+
+  <!-- Outer Architectural Border -->
+  <rect x="40" y="40" width="520" height="520" class="badge-border" />
+  
+  <!-- Architectural Corner Crosshairs -->
+  <path d="M30 40 H50 M40 30 V50" class="corner-mark" />
+  <path d="M550 40 H570 M560 30 V50" class="corner-mark" />
+  <path d="M30 560 H50 M40 550 V570" class="corner-mark" />
+  <path d="M550 560 H570 M560 550 V570" class="corner-mark" />
+
+  <!-- Center Monogram / Logo Mark -->
+  <text x="305.5" y="278" class="logo-mark">MIRKAZEMI</text>
+  <line x1="255" y1="304" x2="345" y2="304" stroke="#DDA13B" stroke-width="2" />
+  <text x="302" y="328" class="logo-sub">CONSTRUCTION GROUP</text>
+</svg>
