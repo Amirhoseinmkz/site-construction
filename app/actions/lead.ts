@@ -2,7 +2,7 @@
 
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { saveLead } from '@/lib/db';
+import { saveLead } from '@/lib/db/leads';
 
 export type LeadState =
   | { status: 'idle' }

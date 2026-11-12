@@ -21,6 +21,7 @@ export interface Service {
   stages: ServiceStage[];
 }
 
+/** SEED DATA — copied into the database (services, stages + translations) when it is empty. */
 export const services: Service[] = [
   {
     slug: 'architecture',
@@ -543,7 +544,3 @@ export const services: Service[] = [
     ],
   },
 ];
-
-export function getService(slug: string) {
-  return services.find((s) => s.slug === slug);
-}
