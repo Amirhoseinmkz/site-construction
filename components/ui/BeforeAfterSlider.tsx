@@ -26,7 +26,7 @@ export function BeforeAfterSlider({ before, after, beforeLabel, afterLabel, labe
     <div
       ref={box}
       dir="ltr"
-      className="relative aspect-[16/10] touch-pan-y select-none overflow-hidden bg-ink-800"
+      className="relative aspect-[16/10] touch-pan-y select-none overflow-hidden rounded-2xl bg-surface"
       onPointerDown={(e) => {
         dragging.current = true;
         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
@@ -40,8 +40,8 @@ export function BeforeAfterSlider({ before, after, beforeLabel, afterLabel, labe
       <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
         <Image src={before} alt={beforeLabel} fill sizes="(min-width:1024px) 80vw, 100vw" className="object-cover" />
       </div>
-      <span className="absolute left-4 top-4 rounded-full bg-ink-950/70 px-3 py-1 text-xs text-bone">{beforeLabel}</span>
-      <span className="absolute right-4 top-4 rounded-full bg-ink-950/70 px-3 py-1 text-xs text-bone">{afterLabel}</span>
+      <span className="theme-dark absolute left-4 top-4 rounded-full px-3.5 py-1.5 text-xs">{beforeLabel}</span>
+      <span className="theme-dark absolute right-4 top-4 rounded-full px-3.5 py-1.5 text-xs">{afterLabel}</span>
       <div
         role="slider"
         tabIndex={0}
@@ -58,11 +58,11 @@ export function BeforeAfterSlider({ before, after, beforeLabel, afterLabel, labe
           else return;
           e.preventDefault();
         }}
-        className="absolute inset-y-0 w-10 -translate-x-1/2 cursor-ew-resize"
+        className="absolute inset-y-0 w-11 -translate-x-1/2 cursor-ew-resize focus-visible:outline-none"
         style={{ left: `${pos}%` }}
       >
-        <span className="absolute inset-y-0 left-1/2 w-px bg-ember" />
-        <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-ember bg-ink-950/80 text-ember">
+        <span className="absolute inset-y-0 left-1/2 w-px bg-cream" />
+        <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-cream text-ink shadow-lg shadow-black/20">
           ↔
         </span>
       </div>

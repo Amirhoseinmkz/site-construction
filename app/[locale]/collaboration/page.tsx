@@ -3,13 +3,13 @@ import { localizeDigits } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { PageHero } from '@/components/ui/PageHero';
-import { SplitText } from '@/components/motion/SplitText';
+import { Heading } from '@/components/ui/Heading';
 import { LeadForm } from '@/components/ui/LeadForm';
 import { PartnershipCalculator } from '@/components/ui/PartnershipCalculator';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const { locale, t } = await resolveLocale(params);
-  return buildMetadata({ locale, path: '/collaboration', title: t.collaboration.eyebrow, description: t.collaboration.lead });
+  return buildMetadata({ locale, path: '/collaboration', title: t.collaboration.label, description: t.collaboration.lead });
 }
 
 export default async function CollaborationPage({ params }: LocaleParams) {
@@ -18,20 +18,19 @@ export default async function CollaborationPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHero eyebrow={c.eyebrow} title={c.title} lead={c.lead} image="/images/proj-res-2.jpg" />
+      <PageHero label={c.label} title={c.title} lead={c.lead} />
 
-      <section className="pb-24 md:pb-32">
-        <div className="container grid gap-8 md:grid-cols-2">
-          {c.tracks.map((tr) => (
-            <article key={tr.code} className="group relative border border-bone/10 bg-ink-900/60 p-8 transition-colors duration-500 hover:border-ember/40 md:p-12" data-reveal>
-              <span className="font-brand text-sm tracking-[0.3em] text-ember" dir="ltr">
-                {localizeDigits(tr.code, locale)}
-              </span>
-              <h2 className="mt-8 text-display-md font-bold">{tr.title}</h2>
-              <p className="mt-4 text-bone-muted">{tr.text}</p>
-              <ul className="mt-8 flex flex-wrap gap-2">
+      {/* Two ways to work with us */}
+      <section className="py-section">
+        <div className="container grid gap-6 md:grid-cols-2 md:gap-8">
+          {c.tracks.map((tr, i) => (
+            <article key={tr.title} className="flex flex-col rounded-[1.75rem] border border-line p-7 md:p-12" data-reveal>
+              <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+              <h2 className="display t-h2 mt-10 md:mt-20">{tr.title}</h2>
+              <p className="mt-5 max-w-md text-muted">{tr.text}</p>
+              <ul className="mt-10 border-t border-fg">
                 {tr.items.map((it) => (
-                  <li key={it} className="rounded-full border border-bone/15 px-4 py-1.5 text-sm text-bone-muted">
+                  <li key={it} className="border-b border-line py-3.5">
                     {it}
                   </li>
                 ))}
@@ -41,31 +40,30 @@ export default async function CollaborationPage({ params }: LocaleParams) {
         </div>
       </section>
 
-      <section id="calculator" className="border-t border-bone/10 bg-ink-900 py-24 md:py-32">
+      {/* Calculator */}
+      <section id="calculator" aria-labelledby="calc-title" className="theme-surface scroll-mt-20 py-section">
         <div className="container">
-          <p className="eyebrow" data-reveal>
-            {t.home.calcEyebrow}
+          <p className="label" data-reveal>
+            {c.calcLabel}
           </p>
-          <SplitText text={t.home.calcTitle} className="mb-12 mt-5 text-display-md font-bold" />
+          <Heading id="calc-title" text={c.calcTitle} className="mb-12 mt-6 md:mb-16" />
           <div data-reveal>
             <PartnershipCalculator locale={locale} t={t.calc} />
           </div>
         </div>
       </section>
 
-      <section className="py-24 md:py-32">
-        <div className="container grid gap-14 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <SplitText text={c.formTitle} className="text-display-md font-bold" />
+      {/* Request */}
+      <section aria-labelledby="collab-form-title" className="py-section">
+        <div className="container grid gap-x-8 gap-y-12 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <Heading id="collab-form-title" text={c.formTitle} />
+            <p className="lead mt-6 max-w-md" data-reveal>
+              {t.home.contact.lead}
+            </p>
           </div>
-          <div className="lg:col-span-7 lg:col-start-6" data-reveal>
-            <LeadForm
-              locale={locale}
-              t={t.form}
-              source="collaboration"
-              types={['partnership', 'subcontractor', 'consultation']}
-              defaultType="partnership"
-            />
+          <div className="lg:col-span-6 lg:col-start-7" data-reveal>
+            <LeadForm locale={locale} t={t.form} source="collaboration" types={['partnership', 'subcontractor', 'consultation']} defaultType="partnership" />
           </div>
         </div>
       </section>

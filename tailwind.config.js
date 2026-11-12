@@ -3,12 +3,9 @@ const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
 
 module.exports = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
+  // `.container` is defined in globals.css (fluid gutters, one max width)
+  corePlugins: { container: false },
   theme: {
-    container: {
-      center: true,
-      padding: { DEFAULT: '1.25rem', md: '2.5rem', xl: '4rem' },
-      screens: { '2xl': '1520px' },
-    },
     extend: {
       colors: {
         // Raw palette
@@ -19,6 +16,7 @@ module.exports = {
         surface: token('surface'),
         fg: token('fg'),
         muted: token('muted'),
+        danger: token('danger'),
         line: 'rgb(var(--fg) / 0.14)',
       },
       fontFamily: {

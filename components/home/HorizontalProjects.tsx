@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { localizeDigits, type Locale } from '@/lib/i18n';
+import { Heading } from '@/components/ui/Heading';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,17 +21,18 @@ export interface ProjectSlide {
 }
 
 interface Props {
-  locale: string;
-  eyebrow: string;
+  locale: Locale;
+  label: string;
   title: string;
   allLabel: string;
   slides: ProjectSlide[];
 }
 
 /** Pinned horizontal gallery on desktop; native swipe carousel on touch / reduced motion. */
-export function HorizontalProjects({ locale, eyebrow, title, allLabel, slides }: Props) {
+export function HorizontalProjects({ locale, label, title, allLabel, slides }: Props) {
   const section = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  const nn = (n: number) => localizeDigits(String(n).padStart(2, '0'), locale);
 
   useEffect(() => {
     const el = section.current;
@@ -39,7 +42,7 @@ export function HorizontalProjects({ locale, eyebrow, title, allLabel, slides }:
     mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
       const rtl = document.documentElement.dir === 'rtl';
       const distance = () => Math.max(0, tr.scrollWidth - window.innerWidth);
-      const tween = gsap.to(tr, {
+      gsap.to(tr, {
         x: () => (rtl ? distance() : -distance()),
         ease: 'none',
         scrollTrigger: {
@@ -52,80 +55,58 @@ export function HorizontalProjects({ locale, eyebrow, title, allLabel, slides }:
           anticipatePin: 1,
         },
       });
-      // subtle inner parallax for each image while the track moves
-      tr.querySelectorAll<HTMLElement>('[data-hparallax]').forEach((img) => {
-        gsap.fromTo(
-          img,
-          { xPercent: rtl ? 6 : -6 },
-          {
-            xPercent: rtl ? -6 : 6,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: img.parentElement,
-              containerAnimation: tween,
-              start: rtl ? 'right right' : 'left right',
-              end: rtl ? 'left left' : 'right left',
-              scrub: true,
-            },
-          }
-        );
-      });
     });
     return () => mm.revert();
   }, []);
 
   return (
-    <section ref={section} aria-labelledby="featured-title" className="relative overflow-hidden bg-ink-950 py-24 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0">
-      <div className="container mb-10 flex flex-wrap items-end justify-between gap-6 lg:mb-14">
+    <section
+      ref={section}
+      aria-labelledby="work-title"
+      className="theme-dark relative overflow-hidden py-section lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0"
+    >
+      <div className="container mb-10 flex flex-wrap items-end justify-between gap-x-10 gap-y-6 lg:mb-[5vh]">
         <div>
-          <p className="eyebrow">{eyebrow}</p>
-          <h2 id="featured-title" className="mt-5 max-w-2xl text-display-md font-bold">
-            {title}
-          </h2>
+          <p className="label">{label}</p>
+          <Heading id="work-title" text={title} className="mt-6" />
         </div>
         <Link href={`/${locale}/projects`} className="btn-ghost">
           {allLabel}
-          <span aria-hidden className="flip-x-rtl">→</span>
+          <span aria-hidden className="arrow">
+            →
+          </span>
         </Link>
       </div>
 
       <div
         ref={track}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:gap-8 md:px-8 lg:snap-none lg:overflow-visible lg:px-[max(3rem,calc((100vw-1440px)/2+3rem))] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-[max(var(--gutter),calc((100vw-1520px)/2+var(--gutter)))] scroll-px-[var(--gutter)] pb-2 [scrollbar-width:none] md:gap-8 lg:w-max lg:snap-none lg:overflow-visible [&::-webkit-scrollbar]:hidden"
       >
         {slides.map((p, i) => (
           <Link
             key={p.slug}
             href={`/${locale}/projects/${p.slug}`}
-            className="group relative block w-[82vw] shrink-0 snap-start sm:w-[60vw] lg:w-[38vw] xl:w-[34vw]"
+            className="group block w-[76vw] shrink-0 snap-start sm:w-[46vw] lg:w-[min(40vh,30vw)]"
           >
-            <div className="relative aspect-[4/5] overflow-hidden bg-ink-800 lg:aspect-[5/6]">
-              <div data-hparallax className="absolute inset-[-8%]">
-                <Image
-                  src={p.image.src}
-                  alt={p.title}
-                  fill
-                  sizes="(min-width:1024px) 38vw, 82vw"
-                  className="object-cover transition-transform duration-[1.4s] ease-cine group-hover:scale-105"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/10 to-transparent" />
-              <span className="absolute start-5 top-5 font-brand text-xs tracking-[0.25em] text-bone/80" dir="ltr">
-                {String(i + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-              </span>
-              <span className="absolute end-5 top-5 rounded-full border border-bone/25 px-3 py-1 text-xs text-bone/90 backdrop-blur-sm">
-                {p.category}
-              </span>
-              <div className="absolute inset-x-5 bottom-5">
-                <p className="font-brand text-xs tracking-[0.25em] text-ember" dir="ltr">
-                  {p.code}
-                </p>
-                <h3 className="mt-2 text-2xl font-bold text-bone md:text-3xl">{p.title}</h3>
-                <p className="mt-1 text-sm text-bone-muted">
-                  {p.location} · {p.meta}
-                </p>
-              </div>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-surface">
+              <Image
+                src={p.image.src}
+                alt=""
+                fill
+                sizes="(min-width:1024px) 30vw, (min-width:640px) 46vw, 76vw"
+                className="photo object-cover group-hover:scale-[1.04]"
+              />
             </div>
+            <div className="mt-5 flex items-baseline justify-between gap-4 text-sm text-muted">
+              <span className="num">
+                {nn(i + 1)} / {nn(slides.length)}
+              </span>
+              <span>{p.category}</span>
+            </div>
+            <h3 className="display t-h3 mt-3">{p.title}</h3>
+            <p className="mt-2 text-sm text-muted">
+              {p.location} · {p.meta}
+            </p>
           </Link>
         ))}
       </div>

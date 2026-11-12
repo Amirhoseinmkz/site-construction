@@ -114,6 +114,17 @@ function setupReveals(root: HTMLElement) {
     });
   });
 
+  // Line drawings that draw themselves when scrolled into view
+  gsap.utils.toArray<SVGElement>('[data-draw]', root).forEach((el) => {
+    gsap.to(el.querySelectorAll('path, line, rect, circle'), {
+      strokeDashoffset: 0,
+      duration: 1.4,
+      ease: 'power2.inOut',
+      stagger: 0.035,
+      scrollTrigger: { trigger: el, start: 'top 82%', once: true },
+    });
+  });
+
   // Scroll progress bars bound to a section (data-progress="vertical|horizontal")
   gsap.utils.toArray<HTMLElement>('[data-progress]', root).forEach((el) => {
     const section = el.closest<HTMLElement>('[data-progress-root]') || el.parentElement!;
@@ -178,9 +189,18 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     const raf = requestAnimationFrame(refresh);
     document.fonts?.ready.then(refresh);
     window.addEventListener('load', refresh, { once: true });
+    // Accordions change the page height: re-measure once they have finished opening
+    let timer = 0;
+    const onToggle = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(refresh, 650);
+    };
+    main.addEventListener('toggle', onToggle, true);
 
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      main.removeEventListener('toggle', onToggle, true);
       window.removeEventListener('load', refresh);
       ctx.revert();
     };

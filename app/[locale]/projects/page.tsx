@@ -1,19 +1,20 @@
 import type { Metadata } from 'next';
-import { projects, projectCategories } from '@/data/projects';
 import { formatNumber } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
+import { getProjects, type ProjectCategory } from '@/lib/db/content';
 import { PageHero } from '@/components/ui/PageHero';
 import { ProjectGrid } from '@/components/ui/ProjectGrid';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const { locale, t } = await resolveLocale(params);
-  return buildMetadata({ locale, path: '/projects', title: t.projects.title, description: t.projects.lead, image: '/images/proj-com-1.jpg' });
+  return buildMetadata({ locale, path: '/projects', title: t.projects.label, description: t.projects.lead, image: '/images/proj-com-1.jpg' });
 }
 
 export default async function ProjectsPage({ params }: LocaleParams) {
   const { locale, t } = await resolveLocale(params);
   const p = t.projects;
+  const projects = getProjects(locale);
 
   const items = projects.map((pr) => ({
     slug: pr.slug,
@@ -22,18 +23,27 @@ export default async function ProjectsPage({ params }: LocaleParams) {
     categoryLabel: p.categories[pr.category],
     statusLabel: p.status[pr.status],
     inProgress: pr.status === 'inProgress',
-    title: pr.title[locale],
-    location: pr.location[locale],
+    title: pr.title,
+    location: pr.location,
     meta: `${formatNumber(pr.area, locale)} ${p.sqm}`,
     image: pr.image,
   }));
 
-  const filters = [{ key: 'all', label: p.all }, ...projectCategories.map((c) => ({ key: c, label: p.categories[c] }))];
+  // Only offer categories that actually have projects
+  const categories = (Object.keys(p.categories) as ProjectCategory[]).filter((c) => projects.some((pr) => pr.category === c));
+  const filters = [
+    { key: 'all', label: p.all, count: formatNumber(projects.length, locale) },
+    ...categories.map((c) => ({
+      key: c,
+      label: p.categories[c],
+      count: formatNumber(projects.filter((pr) => pr.category === c).length, locale),
+    })),
+  ];
 
   return (
     <>
-      <PageHero eyebrow={p.eyebrow} title={p.title} lead={p.lead} />
-      <section className="pb-28 md:pb-40">
+      <PageHero label={p.label} title={p.title} lead={p.lead} />
+      <section className="py-14 pb-section md:py-20">
         <div className="container">
           <ProjectGrid locale={locale} items={items} filters={filters} filterLabel={p.filterLabel} emptyLabel={p.empty} />
         </div>
