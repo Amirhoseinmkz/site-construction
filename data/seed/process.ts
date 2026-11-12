@@ -7,6 +7,7 @@ export interface ProcessPhase {
   points: L<string[]>;
 }
 
+/** SEED DATA — copied into the database (process_phases, faqs + translations) when it is empty. */
 export const processPhases: ProcessPhase[] = [
   {
     index: '01',

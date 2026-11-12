@@ -12,7 +12,7 @@ export function BackToTop({ label }: { label: string }) {
         else window.scrollTo({ top: 0 });
         document.getElementById('main')?.focus({ preventScroll: true });
       }}
-      className="group inline-flex items-center gap-2 text-bone-muted transition-colors hover:text-ember"
+      className="group inline-flex items-center gap-2 transition-colors hover:text-fg"
     >
       {label}
       <span aria-hidden className="transition-transform duration-500 ease-cine group-hover:-translate-y-1">

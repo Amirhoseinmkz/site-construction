@@ -104,6 +104,16 @@ function setupReveals(root: HTMLElement) {
     );
   });
 
+  // Manifesto text: words light up one by one as the block crosses the viewport
+  gsap.utils.toArray<HTMLElement>('[data-scrub-words]', root).forEach((el) => {
+    gsap.to(el.children, {
+      opacity: 1,
+      ease: 'none',
+      stagger: 0.1,
+      scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 55%', scrub: true },
+    });
+  });
+
   // Scroll progress bars bound to a section (data-progress="vertical|horizontal")
   gsap.utils.toArray<HTMLElement>('[data-progress]', root).forEach((el) => {
     const section = el.closest<HTMLElement>('[data-progress-root]') || el.parentElement!;

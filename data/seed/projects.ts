@@ -22,6 +22,7 @@ export interface Project {
 }
 
 /**
+ * SEED DATA — copied into the database (projects + project_translations) when it is empty.
  * Content is based on the project list of the previous site.
  * NOTE: summaries/highlights are editorial copy — confirm details with the team before launch.
  */
@@ -143,9 +144,3 @@ export const projects: Project[] = [
     image: { src: '/images/proj-com-2.jpg', width: 800, height: 534 },
   },
 ];
-
-export const projectCategories: ProjectCategory[] = ['residential', 'commercial', 'renovation', 'villa'];
-
-export function getProject(slug: string) {
-  return projects.find((p) => p.slug === slug);
-}

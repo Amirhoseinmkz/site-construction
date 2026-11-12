@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from './i18n';
-import { getDictionary } from '@/data/translations';
+import { getDictionary } from '@/dictionaries';
 
 /** Resolves and validates the locale param for a page. */
 export async function resolveLocale(params: Promise<{ locale: string }>) {
