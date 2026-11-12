@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useId, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
-import type { Dictionary } from '@/data/translations';
+import type { Dictionary } from '@/dictionaries';
 
 type Zone = 'prime' | 'city' | 'north' | 'other';
 
@@ -30,15 +30,16 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
   const [lo, hi] = SHARE[zone];
 
   return (
-    <div className="grid gap-12 border border-bone/10 bg-ink-900/60 p-6 md:p-10 lg:grid-cols-2">
-      <div className="space-y-10">
+    <div className="grid overflow-hidden rounded-[1.75rem] border border-line bg-bg lg:grid-cols-2">
+      {/* Inputs */}
+      <div className="space-y-11 p-7 md:p-12">
         <div>
-          <div className="flex items-baseline justify-between">
-            <label htmlFor={`${id}-land`} className="text-bone-muted">
+          <div className="flex items-baseline justify-between gap-4">
+            <label htmlFor={`${id}-land`} className="text-muted">
               {t.land}
             </label>
-            <output htmlFor={`${id}-land`} className="text-2xl font-bold text-bone">
-              {nf.format(land)} <span className="text-sm font-normal text-bone-dim">{t.sqm}</span>
+            <output htmlFor={`${id}-land`} className="text-xl font-medium">
+              {nf.format(land)} <span className="text-sm font-normal text-muted">{t.sqm}</span>
             </output>
           </div>
           <input
@@ -49,16 +50,16 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
             step={25}
             value={land}
             onChange={(e) => setLand(Number(e.target.value))}
-            className="range mt-4 w-full"
+            className="range mt-6 w-full"
           />
         </div>
 
         <div>
-          <div className="flex items-baseline justify-between">
-            <label htmlFor={`${id}-floors`} className="text-bone-muted">
+          <div className="flex items-baseline justify-between gap-4">
+            <label htmlFor={`${id}-floors`} className="text-muted">
               {t.floors}
             </label>
-            <output htmlFor={`${id}-floors`} className="text-2xl font-bold text-bone">
+            <output htmlFor={`${id}-floors`} className="text-xl font-medium">
               {nf.format(floors)}
             </output>
           </div>
@@ -70,21 +71,15 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
             step={1}
             value={floors}
             onChange={(e) => setFloors(Number(e.target.value))}
-            className="range mt-4 w-full"
+            className="range mt-6 w-full"
           />
         </div>
 
         <fieldset>
-          <legend className="text-bone-muted">{t.zone}</legend>
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <legend className="text-muted">{t.zone}</legend>
+          <div className="mt-5 flex flex-wrap gap-2">
             {(Object.keys(t.zones) as Zone[]).map((z) => (
-              <button
-                key={z}
-                type="button"
-                aria-pressed={zone === z}
-                onClick={() => setZone(z)}
-                className="rounded-full border border-bone/15 px-4 py-2.5 text-sm text-bone-muted transition-colors hover:border-bone/40 aria-pressed:border-ember aria-pressed:bg-ember/10 aria-pressed:text-bone"
-              >
+              <button key={z} type="button" aria-pressed={zone === z} onClick={() => setZone(z)} className="chip">
                 {t.zones[z]}
               </button>
             ))}
@@ -92,33 +87,38 @@ export function PartnershipCalculator({ locale, t }: { locale: Locale; t: Dictio
         </fieldset>
       </div>
 
-      <div className="flex flex-col justify-between gap-10 border-t border-bone/10 pt-10 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0" aria-live="polite">
-        <div className="space-y-8">
-          <dl>
-            <dt className="text-sm text-bone-muted">{t.gross}</dt>
-            <dd className="mt-1 text-display-md font-bold text-bone">
-              ~{nf.format(gross)} <span className="text-lg font-normal text-bone-dim">{t.sqm}</span>
+      {/* Result */}
+      <div className="theme-dark flex flex-col justify-between gap-12 p-7 md:p-12" aria-live="polite">
+        <dl className="space-y-9">
+          <div>
+            <dt className="text-sm text-muted">{t.gross}</dt>
+            <dd className="display t-stat mt-3">
+              {nf.format(gross)} <span className="font-sans text-base font-normal tracking-normal text-muted">{t.sqm}</span>
             </dd>
-          </dl>
-          <dl className="grid grid-cols-2 gap-6">
+          </div>
+          <div className="grid grid-cols-2 gap-6 border-t border-line pt-7">
             <div>
-              <dt className="text-sm text-bone-muted">{t.units}</dt>
-              <dd className="mt-1 text-3xl font-bold text-bone">~{nf.format(units)}</dd>
+              <dt className="text-sm text-muted">{t.units}</dt>
+              <dd className="display t-h2 mt-2">{nf.format(units)}</dd>
             </div>
             <div>
-              <dt className="text-sm text-bone-muted">{t.share}</dt>
-              <dd className="mt-1 text-3xl font-bold text-ember">
-                {nf.format(lo)}–{nf.format(hi)}
-                {locale === 'fa' ? '٪' : '%'}
+              <dt className="text-sm text-muted">{t.share}</dt>
+              <dd className="display t-h2 mt-2">
+                {nf.format(lo)}
+                {locale === 'fa' ? ' تا ' : '–'}
+                {nf.format(hi)}
+                <span className="[unicode-bidi:isolate]">{locale === 'fa' ? '٪' : '%'}</span>
               </dd>
             </div>
-          </dl>
-        </div>
+          </div>
+        </dl>
         <div>
-          <p className="text-sm text-bone-dim">{t.disclaimer}</p>
-          <Link href={`/${locale}/contact?subject=partnership`} className="btn-primary mt-6">
+          <p className="text-sm text-muted">{t.disclaimer}</p>
+          <Link href={`/${locale}/contact?subject=partnership`} className="btn-primary mt-7">
             {t.cta}
-            <span aria-hidden className="flip-x-rtl">→</span>
+            <span aria-hidden className="arrow">
+              →
+            </span>
           </Link>
         </div>
       </div>

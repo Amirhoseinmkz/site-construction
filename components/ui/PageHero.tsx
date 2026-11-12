@@ -1,43 +1,26 @@
-import Image from 'next/image';
-import { SplitText } from '@/components/motion/SplitText';
+import { Heading } from './Heading';
 
 interface Props {
-  eyebrow: string;
+  label: string;
   title: string;
   lead?: string;
-  image?: string;
-  serif?: boolean;
   children?: React.ReactNode;
 }
 
-export function PageHero({ eyebrow, title, lead, image, serif, children }: Props) {
+/** Typographic opening for inner pages: label, display title, lead set to the far column. */
+export function PageHero({ label, title, lead, children }: Props) {
   return (
-    <section className="relative isolate overflow-hidden pb-16 pt-40 md:pb-24 md:pt-52">
-      <div className="absolute inset-0 -z-10">
-        {image && (
-          <div data-parallax="18" className="absolute inset-[-12%]">
-            <Image src={image} alt="" fill priority sizes="100vw" className="object-cover opacity-25 saturate-[0.6]" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink-950/60 via-ink-950/70 to-ink-950" />
-        <div className="blueprint-bg absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
-      </div>
+    <section className="border-b border-line pb-14 pt-[calc(var(--header-h)+clamp(3.5rem,9vw,8rem))] md:pb-20">
       <div className="container">
-        <p className="eyebrow hero-in">
-          {eyebrow}
-        </p>
-        <SplitText
-          as="h1"
-          text={title}
-          className={`mt-6 max-w-5xl text-display-lg ${serif ? 'font-serif italic' : 'font-black'}`}
-          delay={0.05}
-          css
-        />
-        {lead && (
-          <p className="hero-in mt-8 max-w-2xl text-lg text-bone-muted md:text-xl" style={{ animationDelay: '0.25s' }}>
-            {lead}
-          </p>
-        )}
+        <p className="label enter">{label}</p>
+        <div className="mt-7 grid items-end gap-x-8 gap-y-8 lg:grid-cols-12">
+          <Heading as="h1" size="t-h1" text={title} css delay={0.05} className="lg:col-span-8" />
+          {lead && (
+            <p className="lead enter max-w-xl lg:col-span-4" style={{ animationDelay: '0.3s' }}>
+              {lead}
+            </p>
+          )}
+        </div>
         {children}
       </div>
     </section>

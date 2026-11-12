@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { localizeDigits } from '@/lib/i18n';
 import { site } from '@/data/site';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
@@ -10,18 +11,19 @@ type Subject = (typeof SUBJECTS)[number];
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const { locale, t } = await resolveLocale(params);
-  return buildMetadata({ locale, path: '/contact', title: t.contact.eyebrow, description: t.contact.lead });
+  return buildMetadata({ locale, path: '/contact', title: t.contact.label, description: t.contact.lead });
 }
 
-export default async function ContactPage({
-  params,
-  searchParams,
-}: LocaleParams & { searchParams: Promise<{ subject?: string }> }) {
+export default async function ContactPage({ params, searchParams }: LocaleParams & { searchParams: Promise<{ subject?: string }> }) {
   const { locale, t } = await resolveLocale(params);
   const { subject } = await searchParams;
   const c = t.contact;
   const defaultType = SUBJECTS.includes(subject as Subject) ? (subject as Subject) : undefined;
 
+  const phones = [
+    [c.office, site.phones.office],
+    [c.mobile, site.phones.mobile],
+  ] as const;
   const social = [
     ['WhatsApp', site.social.whatsapp],
     ['Telegram', site.social.telegram],
@@ -31,54 +33,45 @@ export default async function ContactPage({
 
   return (
     <>
-      <PageHero eyebrow={c.eyebrow} title={c.title} lead={c.lead} serif={locale === 'en'} />
+      <PageHero label={c.label} title={c.title} lead={c.lead} />
 
-      <section className="pb-24 md:pb-36">
-        <div className="container grid gap-16 lg:grid-cols-12">
-          <div className="space-y-12 lg:col-span-4">
-            {(
-              [
-                [c.office, site.phones.office],
-                [c.mobile, site.phones.mobile],
-              ] as const
-            ).map(([label, phone]) => (
-              <div key={label} data-reveal>
-                <p className="text-sm text-bone-dim">{label}</p>
-                <a
-                  href={`tel:${phone.tel}`}
-                  className="ltr-nums mt-2 text-3xl font-bold text-bone transition-colors hover:text-ember md:text-4xl"
-                >
-                  {phone.display}
-                </a>
-              </div>
-            ))}
-            <div data-reveal>
-              <p className="text-sm text-bone-dim">{c.hours}</p>
-              <p className="mt-2 text-bone">{site.hours[locale]}</p>
-              <p className="mt-1 text-bone-muted">{site.city[locale]}</p>
-            </div>
-            <div data-reveal>
-              <p className="text-sm text-bone-dim">{c.social}</p>
-              <ul className="mt-4 grid grid-cols-2 gap-2">
-                {social.map(([label, url]) => (
-                  <li key={label}>
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between border border-bone/10 px-4 py-3 font-brand text-sm text-bone-muted transition-colors hover:border-ember hover:text-bone"
-                    >
-                      {label}
-                      <span aria-hidden className="text-ember">↗</span>
+      <section className="py-14 pb-section md:py-20">
+        <div className="container grid gap-x-8 gap-y-14 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <dl className="border-t border-fg">
+              {phones.map(([label, phone]) => (
+                <div key={label} className="border-b border-line py-7" data-reveal>
+                  <dt className="text-sm text-muted">{label}</dt>
+                  <dd className="mt-2">
+                    <a href={`tel:${phone.tel}`} className="nav-link ltr display t-h3">
+                      {localizeDigits(phone.display, locale)}
                     </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  </dd>
+                </div>
+              ))}
+              <div className="border-b border-line py-7" data-reveal>
+                <dt className="text-sm text-muted">{c.hours}</dt>
+                <dd className="mt-2">
+                  {site.hours[locale]}
+                  <span className="block text-muted">{site.city[locale]}</span>
+                </dd>
+              </div>
+              <div className="py-7" data-reveal>
+                <dt className="text-sm text-muted">{c.social}</dt>
+                <dd className="mt-4 flex flex-wrap gap-2">
+                  {social.map(([label, url]) => (
+                    <a key={label} href={url} target="_blank" rel="noopener noreferrer" className="chip">
+                      {label}
+                      <span aria-hidden>↗</span>
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            </dl>
           </div>
 
-          <div className="border border-bone/10 bg-ink-900/60 p-6 md:p-12 lg:col-span-7 lg:col-start-6" data-reveal>
-            <h2 className="mb-10 text-2xl font-bold">{c.formTitle}</h2>
+          <div className="theme-surface rounded-[1.75rem] p-7 md:p-12 lg:col-span-7 lg:col-start-6" data-reveal>
+            <h2 className="display t-h3 mb-10">{c.formTitle}</h2>
             <LeadForm
               locale={locale}
               t={t.form}

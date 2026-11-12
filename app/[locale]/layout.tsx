@@ -1,14 +1,14 @@
 import '../globals.css';
 import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
-import { fontBrand, fontSans, fontSerif } from '@/lib/fonts';
+import { fontVariables } from '@/lib/fonts';
 import { dirOf, isLocale, locales, siteUrl, type Locale } from '@/lib/i18n';
-import { getDictionary } from '@/data/translations';
+import { getDictionary } from '@/dictionaries';
 import { site } from '@/data/site';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { MotionProvider } from '@/components/motion/MotionProvider';
 import { QuickContact } from '@/components/layout/QuickContact';
+import { MotionProvider } from '@/components/motion/MotionProvider';
 import { buildMetadata } from '@/lib/seo';
 
 export function generateStaticParams() {
@@ -20,8 +20,8 @@ export const dynamicParams = false;
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#09090a',
-  colorScheme: 'dark',
+  themeColor: '#F4F0E6',
+  colorScheme: 'light',
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -36,10 +36,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /**
- * Runs before paint: enables motion-only initial states (hidden reveals) when the user allows motion.
+ * Runs before paint: enables the hidden initial states of scroll reveals when motion is allowed.
  * Fails safe: if the app bundle never boots, the class is removed after 3.5s so content is always visible.
  */
-const bootScript = `(function(){try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-motion');setTimeout(function(){if(!window.__mkzMotion){d.classList.remove('js-motion')}},3500)}if(sessionStorage.getItem('mkz-intro')){d.classList.add('intro-seen')}}catch(e){}})();`;
+const bootScript = `(function(){try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-motion');setTimeout(function(){if(!window.__mkzMotion){d.classList.remove('js-motion')}},3500)}}catch(e){}})();`;
 
 function jsonLd(locale: Locale) {
   return {
@@ -76,23 +76,15 @@ export default async function LocaleLayout({
   const t = getDictionary(locale);
 
   return (
-    <html
-      lang={locale}
-      dir={dirOf(locale)}
-      className={`${fontSans.variable} ${fontBrand.variable} ${fontSerif.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang={locale} dir={dirOf(locale)} className={fontVariables} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(locale)) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(locale)) }} />
       </head>
       <body className="grain">
         <a
           href="#main"
-          className="fixed start-4 top-4 z-[100] -translate-y-24 rounded-full bg-ember px-5 py-2 font-semibold text-ink-950 transition-transform focus:translate-y-0"
+          className="fixed start-4 top-4 z-[100] -translate-y-24 rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-transform focus:translate-y-0"
         >
           {t.a11y.skip}
         </a>

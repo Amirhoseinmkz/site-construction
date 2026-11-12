@@ -1,9 +1,18 @@
 import type { MetadataRoute } from 'next';
 import { locales, siteUrl } from '@/lib/i18n';
-import { projects } from '@/data/projects';
+import { getProjectSlugs } from '@/lib/db/content';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ['', '/services', '/projects', '/process', '/about', '/collaboration', '/contact', ...projects.map((p) => `/projects/${p.slug}`)];
+  const paths = [
+    '',
+    '/services',
+    '/projects',
+    '/process',
+    '/about',
+    '/collaboration',
+    '/contact',
+    ...getProjectSlugs().map((slug) => `/projects/${slug}`),
+  ];
   return paths.flatMap((path) =>
     locales.map((locale) => ({
       url: `${siteUrl}/${locale}${path}`,

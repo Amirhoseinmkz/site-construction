@@ -26,7 +26,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
   ] as const;
 
   return (
-    <footer className="theme-dark">
+    <footer className="theme-dark border-t border-line">
       <div className="container pb-10 pt-section">
         <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
