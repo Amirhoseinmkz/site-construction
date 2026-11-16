@@ -1,84 +1,49 @@
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
+import { localizeDigits } from '@/lib/i18n';
 import type { Dictionary } from '@/dictionaries';
 import { site } from '@/data/site';
-import { getServices } from '@/lib/db/content';
 import { Logo } from './Logo';
-import { BackToTop } from './BackToTop';
+import { Heading } from '@/components/ui/Heading';
 import { SocialLinks } from '@/components/ui/Social';
 
 export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
-  const services = getServices(locale);
-  const year = new Intl.NumberFormat(locale === 'fa' ? 'fa-IR-u-ca-persian' : 'en-US', { useGrouping: false }).format(
-    locale === 'fa' ? Number(new Intl.DateTimeFormat('en-US-u-ca-persian', { year: 'numeric' }).format(new Date()).replace(/\D/g, '')) : new Date().getFullYear()
-  );
-  const pages = [
-    ['projects', '/projects'],
-    ['process', '/process'],
-    ['about', '/about'],
-    ['collaboration', '/collaboration'],
-    ['contact', '/contact'],
-  ] as const;
+  const year = locale === 'fa'
+    ? Number(new Intl.DateTimeFormat('en-US-u-ca-persian', { year: 'numeric' }).format(new Date()).replace(/\D/g, ''))
+    : new Date().getFullYear();
 
   return (
-    <footer className="theme-dark border-t border-line">
-      <div className="container pb-10 pt-section">
-        <div className="grid gap-14 md:grid-cols-12">
+    <footer data-header-tone="dark" className="theme-dark">
+      <div className="container pb-8 pt-section">
+        <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-10">
+          <Heading text={t.home.contact.title} size="t-1" className="max-w-4xl" />
+          <Link href={`/${locale}/contact`} className="btn-glow" data-reveal>
+            {t.nav.cta}
+            <span aria-hidden className="arrow">
+              →
+            </span>
+          </Link>
+        </div>
+
+        <div className="mt-section grid gap-10 border-t border-line pt-10 md:grid-cols-12 md:items-end">
           <div className="md:col-span-4">
             <Logo />
-            <p className="mt-8 max-w-xs text-muted">{t.footer.tagline}</p>
+            <p className="mt-6 max-w-xs text-sm text-muted">{t.footer.tagline}</p>
           </div>
-
-          <nav aria-label={t.footer.pages} className="md:col-span-2">
-            <h2 className="text-sm text-muted">{t.footer.pages}</h2>
-            <ul className="mt-5 space-y-2.5">
-              {pages.map(([key, path]) => (
-                <li key={key}>
-                  <Link href={`/${locale}${path}`} className="nav-link">
-                    {t.nav[key]}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-label={t.footer.services} className="md:col-span-3">
-            <h2 className="text-sm text-muted">{t.footer.services}</h2>
-            <ul className="mt-5 space-y-2.5">
-              {services.map((s) => (
-                <li key={s.slug}>
-                  <Link href={`/${locale}/services#${s.slug}`} className="nav-link">
-                    {s.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="md:col-span-3">
-            <h2 className="text-sm text-muted">{t.footer.contact}</h2>
-            <ul className="mt-5 space-y-2.5">
-              <li>
-                <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr">
-                  {site.phones.office.display}
-                </a>
-              </li>
-              <li>
-                <a href={`tel:${site.phones.mobile.tel}`} className="nav-link ltr">
-                  {site.phones.mobile.display}
-                </a>
-              </li>
-            </ul>
-            <SocialLinks className="mt-6" />
+          <div className="md:col-span-5">
+            <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3">
+              {localizeDigits(site.phones.office.display, locale)}
+            </a>
+            <p className="mt-2 text-sm text-muted">{site.hours[locale]}</p>
+          </div>
+          <div className="md:col-span-3 md:justify-self-end">
+            <SocialLinks />
           </div>
         </div>
 
-        <div className="mt-section flex flex-col-reverse items-start justify-between gap-4 border-t border-line pt-6 text-sm text-muted md:flex-row md:items-center">
-          <p>
-            © {year} {site.name[locale]}. {t.footer.rights}
-          </p>
-          <BackToTop label={t.a11y.backToTop} />
-        </div>
+        <p className="mt-12 text-sm text-muted">
+          © {localizeDigits(String(year), locale)} {site.name[locale]}. {t.footer.rights}
+        </p>
       </div>
     </footer>
   );

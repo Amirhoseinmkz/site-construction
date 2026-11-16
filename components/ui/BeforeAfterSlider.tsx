@@ -61,8 +61,8 @@ export function BeforeAfterSlider({ before, after, beforeLabel, afterLabel, labe
         className="absolute inset-y-0 w-11 -translate-x-1/2 cursor-ew-resize focus-visible:outline-none"
         style={{ left: `${pos}%` }}
       >
-        <span className="absolute inset-y-0 left-1/2 w-px bg-cream" />
-        <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-cream text-ink shadow-lg shadow-black/20">
+        <span className="absolute inset-y-0 left-1/2 w-px bg-white" />
+        <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-[#0a0e14] shadow-lg shadow-black/20">
           ↔
         </span>
       </div>

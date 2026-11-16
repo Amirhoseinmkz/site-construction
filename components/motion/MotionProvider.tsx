@@ -42,11 +42,15 @@ function setupReveals(root: HTMLElement) {
         y: 0,
         clipPath: 'inset(0% 0 0 0)',
         filter: 'blur(0px)',
-        duration: 1.2,
+        duration: 1,
         ease: 'power3.out',
-        stagger: 0.09,
+        stagger: 0.07,
         overwrite: true,
-        clearProps: 'filter',
+        // Once in, drop the filter entirely. (clearProps would hand control back to the CSS
+        // hidden state, `filter: blur()`, and leave the element permanently soft.)
+        onComplete: () => {
+          gsap.set(batch, { filter: 'none' });
+        },
       }),
   });
 
@@ -197,7 +201,8 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     }
     first.current = false;
 
-    const ctx = gsap.context(() => setupReveals(main), main);
+    // Reveals live in <main> and in the footer, so the whole body is the scope
+    const ctx = gsap.context(() => setupReveals(document.body), document.body);
     const refresh = () => ScrollTrigger.refresh();
     const raf = requestAnimationFrame(refresh);
     document.fonts?.ready.then(refresh);
