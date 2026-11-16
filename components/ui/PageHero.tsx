@@ -10,7 +10,7 @@ interface Props {
 /** Typographic opening for inner pages: label, display title, lead set to the far column. */
 export function PageHero({ label, title, lead, children }: Props) {
   return (
-    <section className="border-b border-line pb-14 pt-[calc(var(--header-h)+clamp(3.5rem,9vw,8rem))] md:pb-20">
+    <section className="pb-14 pt-[calc(var(--header-h)+clamp(3.5rem,9vw,8rem))] md:pb-20">
       <div className="container">
         <p className="label enter">{label}</p>
         <div className="mt-7 grid items-end gap-x-8 gap-y-8 lg:grid-cols-12">
@@ -22,6 +22,7 @@ export function PageHero({ label, title, lead, children }: Props) {
           )}
         </div>
         {children}
+        <span aria-hidden className="rule-in mt-12 block h-px bg-fg md:mt-16" />
       </div>
     </section>
   );

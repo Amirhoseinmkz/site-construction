@@ -1,6 +1,6 @@
 import { Inter, Montserrat, Newsreader, Vazirmatn } from 'next/font/google';
 
-/** Persian text. Latin glyphs come from Inter (listed first in the stack). */
+/** Persian text: Vazirmatn, heavy for display, light for accents, medium for menus. */
 export const fontPersian = Vazirmatn({
   subsets: ['arabic'],
   weight: 'variable',

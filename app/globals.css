@@ -19,6 +19,7 @@
   --fg: var(--ink);
   --muted: 92 88 80; /* #5C5850 — 6:1 on cream */
   --danger: 158 43 24; /* #9E2B18 — form errors */
+  --glow: 242 214 160; /* warm window light in the night hero */
 
   --header-h: 4.75rem;
   --gutter: clamp(1.25rem, 4.4vw, 4rem);
@@ -99,7 +100,8 @@
 /* ════════════════════════════════════════════════════════════════
    TYPOGRAPHY
    English: a light serif at display sizes with tight tracking.
-   Persian: Vazirmatn, heavy for display and light for accents.
+   Persian: Vazirmatn — extra-bold for display with a light accent line,
+   medium weight for menus.
    Letter-spacing is always 0 in Persian (it breaks letter joining).
    ════════════════════════════════════════════════════════════════ */
 @layer components {
@@ -121,7 +123,7 @@
     font-family: var(--font-persian), sans-serif;
     font-weight: 800;
     letter-spacing: 0;
-    line-height: 1.35;
+    line-height: 1.4;
   }
 
   .t-hero {
@@ -140,19 +142,19 @@
     line-height: 1.15;
   }
   [lang='fa'] .t-hero {
-    font-size: clamp(2.7rem, min(7.6vw, 13.5svh), 7.5rem);
-    line-height: 1.35;
+    font-size: clamp(2.6rem, min(7.2vw, 12.5svh), 7rem);
+    line-height: 1.2;
   }
   [lang='fa'] .t-h1 {
     font-size: clamp(2.3rem, 5.4vw, 5rem);
   }
   [lang='fa'] .t-h2 {
     font-size: clamp(1.85rem, 3.6vw, 3.25rem);
-    line-height: 1.45;
+    line-height: 1.5;
   }
   [lang='fa'] .t-h3 {
     font-size: clamp(1.35rem, 2vw, 1.85rem);
-    line-height: 1.5;
+    line-height: 1.6;
     font-weight: 700;
   }
 
@@ -164,7 +166,7 @@
   [lang='fa'] .accent {
     font-family: inherit;
     font-style: normal;
-    font-weight: 300;
+    font-weight: 200;
   }
 
   .lead {
@@ -187,9 +189,9 @@
   [lang='fa'] .statement {
     font-family: var(--font-persian), sans-serif;
     font-size: clamp(1.4rem, 2.5vw, 2.4rem);
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 0;
-    line-height: 1.75;
+    line-height: 1.85;
   }
   .statement-sm {
     font-size: clamp(1.3rem, 2vw, 1.85rem);
@@ -231,6 +233,13 @@
   [lang='fa'] .label {
     font-size: 0.9rem;
     letter-spacing: 0;
+  }
+
+  /* Persian menus read better a touch larger and firmer */
+  [lang='fa'] header nav,
+  [lang='fa'] footer nav {
+    font-size: 1.02rem;
+    font-weight: 500;
   }
 
   /* Numerals / codes — always left-to-right */
@@ -399,6 +408,7 @@
 .js-motion [data-reveal] {
   opacity: 0;
   transform: translate3d(0, 2rem, 0);
+  filter: blur(6px); /* a soft focus-pull as content arrives */
 }
 .js-motion [data-reveal='fade'] {
   transform: none;
@@ -406,6 +416,7 @@
 .js-motion [data-reveal='clip'] {
   opacity: 1;
   transform: none;
+  filter: none;
   clip-path: inset(100% 0 0 0);
 }
 .js-motion [data-split] .split-line > span {
@@ -472,6 +483,77 @@
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/* ── Night hero: windows light up, the crane load sways, stars breathe ── */
+@keyframes light-on {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.9;
+  }
+  45% {
+    opacity: 0.3;
+  }
+  60%,
+  100% {
+    opacity: var(--lit, 0.85);
+  }
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+@keyframes rule-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+.lights {
+  filter: drop-shadow(0 0 6px rgb(var(--glow) / 0.55));
+}
+.draw .lights > * {
+  fill: rgb(var(--glow));
+  opacity: 0;
+  animation: light-on 1.6s ease-out forwards;
+  animation-delay: var(--d, 2s);
+}
+.crane-load {
+  transform-box: view-box;
+  transform-origin: 1238px 30px;
+  animation: sway 7s ease-in-out 3s infinite;
+}
+.draw .stars > * {
+  fill: currentColor;
+  opacity: 0;
+  animation: fade-in 1.5s ease 1.6s forwards, twinkle 5s ease-in-out infinite;
+  animation-delay: 1.6s, var(--d, 3s);
+}
+.rule-in {
+  transform-origin: left;
+  animation: rule-in 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.25s both;
+}
+[dir='rtl'] .rule-in {
+  transform-origin: right;
+}
+/* Every route fades in softly (opacity only: a transform would break pinning) */
+.page-enter {
+  animation: fade-in 0.7s ease both;
 }
 
 /* Above-the-fold entrances are pure CSS so first paint never waits for JS */

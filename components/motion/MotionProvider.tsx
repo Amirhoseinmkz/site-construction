@@ -41,10 +41,12 @@ function setupReveals(root: HTMLElement) {
         opacity: 1,
         y: 0,
         clipPath: 'inset(0% 0 0 0)',
-        duration: 1.1,
+        filter: 'blur(0px)',
+        duration: 1.2,
         ease: 'power3.out',
         stagger: 0.09,
         overwrite: true,
+        clearProps: 'filter',
       }),
   });
 
@@ -111,6 +113,17 @@ function setupReveals(root: HTMLElement) {
       ease: 'none',
       stagger: 0.1,
       scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 55%', scrub: true },
+    });
+  });
+
+  // Cinematic exit: hero layers drift at different speeds and fade as the hero scrolls away
+  gsap.utils.toArray<HTMLElement>('[data-drift]', root).forEach((el) => {
+    const fade = el.dataset.driftFade;
+    gsap.to(el, {
+      yPercent: Number(el.dataset.drift || 0),
+      ...(fade ? { opacity: Number(fade) } : {}),
+      ease: 'none',
+      scrollTrigger: { trigger: el.closest('section') || el, start: 'top top', end: 'bottom top', scrub: true },
     });
   });
 
