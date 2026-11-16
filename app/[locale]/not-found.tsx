@@ -10,18 +10,18 @@ export default function NotFound() {
   const locale = pathname.startsWith('/en') ? 'en' : 'fa';
   const t = getDictionary(locale).notFound;
   return (
-    <section className="flex min-h-[86svh] items-center pt-[var(--header-h)]">
+    <section className="flex min-h-[90svh] items-center pt-[var(--header-h)]">
       <div className="container">
-        <p className="label enter">
+        <p className="display t-mega enter text-muted/40">
           <span className="num">{localizeDigits('404', locale)}</span>
         </p>
-        <h1 className="display t-h1 enter mt-7" style={{ animationDelay: '0.1s' }}>
+        <h1 className="display t-2 enter mt-4" style={{ animationDelay: '0.1s' }}>
           {t.title}
         </h1>
-        <p className="lead enter mt-6 max-w-md" style={{ animationDelay: '0.2s' }}>
+        <p className="lead enter mt-5 max-w-md" style={{ animationDelay: '0.2s' }}>
           {t.text}
         </p>
-        <Link href={`/${locale}`} className="btn-primary enter mt-10" style={{ animationDelay: '0.3s' }}>
+        <Link href={`/${locale}`} className="btn-glow enter mt-9" style={{ animationDelay: '0.3s' }}>
           {t.back}
           <span aria-hidden className="arrow">
             →

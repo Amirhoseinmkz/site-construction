@@ -6,34 +6,36 @@ import { useEffect, useRef, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
 import type { Dictionary } from '@/dictionaries';
 import { site } from '@/data/site';
+import { localizeDigits } from '@/lib/i18n';
 import { Logo } from './Logo';
 import { useLenis } from '@/components/motion/MotionProvider';
 import { SocialLinks } from '@/components/ui/Social';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
-type NavKey = 'services' | 'projects' | 'process' | 'about' | 'collaboration';
+type NavKey = 'home' | 'services' | 'projects' | 'about' | 'collaboration' | 'contact';
 const NAV: { key: NavKey; path: string }[] = [
+  { key: 'home', path: '' },
   { key: 'services', path: '/services' },
   { key: 'projects', path: '/projects' },
-  { key: 'process', path: '/process' },
   { key: 'about', path: '/about' },
   { key: 'collaboration', path: '/collaboration' },
+  { key: 'contact', path: '/contact' },
 ];
 
 export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav' | 'a11y'> }) {
   const pathname = usePathname();
   const lenis = useLenis();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [overDark, setOverDark] = useState(false);
+  const [tone, setTone] = useState<'dark' | 'light' | null>(null);
   const lastY = useRef(0);
-  const menuButton = useRef<HTMLButtonElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
 
   const rest = pathname.replace(/^\/(fa|en)/, '');
-  const otherLocale: Locale = locale === 'fa' ? 'en' : 'fa';
-  const isActive = (path: string) => rest === path || rest.startsWith(`${path}/`);
+  const other: Locale = locale === 'fa' ? 'en' : 'fa';
+  const isActive = (path: string) => (path === '' ? rest === '' : rest === path || rest.startsWith(`${path}/`));
 
-  // Solid bar after leaving the top; hides on scroll down, returns on scroll up
+  // Hide on the way down, return on the way up; take the tone of whatever is under the bar
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -41,24 +43,29 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        setScrolled(y > 24);
-        // Turn the bar dark while it sits over a dark hero
-        const dark = document.querySelector('[data-header-dark]');
-        setOverDark(!!dark && dark.getBoundingClientRect().bottom > 40);
-        if (y > 400 && y > lastY.current + 4) setHidden(true);
-        else if (y < lastY.current - 4 || y <= 400) setHidden(false);
+        if (y > 300 && y > lastY.current + 6) setHidden(true);
+        else if (y < lastY.current - 6 || y <= 300) setHidden(false);
         lastY.current = y;
+        const under = [...document.querySelectorAll<HTMLElement>('[data-header-tone]')].find((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top <= 40 && r.bottom > 40;
+        });
+        setTone(under ? ((under.dataset.tone ?? under.dataset.headerTone) as 'dark' | 'light') : null);
         ticking = false;
       });
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, [pathname]);
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // While the menu is open: lock scrolling, close on Escape
+  // While the menu is open: stop scrolling, close on Escape
   useEffect(() => {
     if (!open) return;
     lenis?.stop();
@@ -66,7 +73,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpen(false);
-        menuButton.current?.focus();
+        button.current?.focus();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -78,106 +85,93 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
   }, [open, lenis]);
 
   const rememberLocale = () => {
-    document.cookie = `NEXT_LOCALE=${otherLocale}; path=/; max-age=31536000; samesite=lax`;
+    document.cookie = `NEXT_LOCALE=${other}; path=/; max-age=31536000; samesite=lax`;
   };
+  const toneClass = open || tone === 'dark' ? 'theme-dark' : tone === 'light' ? 'theme-light' : '';
 
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 text-fg transition-[transform,background-color,border-color] duration-500 ease-cine ${
-          open ? 'theme-dark !bg-transparent' : overDark ? 'theme-dark' : ''
-        } ${hidden && !open ? '-translate-y-full' : ''} ${
-          scrolled && !open ? 'border-b border-line bg-bg/85 backdrop-blur-md' : 'border-b border-transparent'
+        className={`fixed inset-x-0 top-0 z-[70] !bg-transparent transition-transform duration-700 ease-cine ${toneClass} ${
+          hidden && !open ? '-translate-y-full' : ''
         }`}
       >
         <div className="container flex h-[var(--header-h)] items-center justify-between gap-6">
           <Link href={`/${locale}`} aria-label={t.nav.home} className="shrink-0">
             <Logo />
           </Link>
-
-          <nav aria-label={t.a11y.mainNav} className="hidden lg:block">
-            <ul className="flex items-center gap-9 text-[0.95rem]">
-              {NAV.map((item) => (
-                <li key={item.key}>
-                  <Link
-                    href={`/${locale}${item.path}`}
-                    aria-current={isActive(item.path) ? 'page' : undefined}
-                    className="nav-link"
-                  >
-                    {t.nav[item.key]}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3">
             <Link
-              href={`/${otherLocale}${rest}`}
-              hrefLang={otherLocale}
-              lang={otherLocale}
+              href={`/${other}${rest}`}
+              hrefLang={other}
+              lang={other}
               onClick={rememberLocale}
               aria-label={t.a11y.switchLang}
-              className="nav-link text-[0.95rem]"
+              className="nav-link px-2 text-[0.95rem]"
             >
               {t.nav.langShort}
             </Link>
-            <Link href={`/${locale}/contact`} className="btn-primary hidden !px-5 !py-2.5 text-sm sm:inline-flex">
-              {t.nav.cta}
-            </Link>
             <button
-              ref={menuButton}
+              ref={button}
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? t.a11y.closeMenu : t.a11y.openMenu}
-              className="-me-2 grid h-11 w-11 place-items-center lg:hidden"
+              aria-controls="site-menu"
+              className="group inline-flex items-center gap-3 rounded-full border border-fg/25 py-2.5 ps-5 pe-4 text-[0.95rem] transition-colors duration-500 ease-cine hover:border-fg"
             >
-              <span className="relative block h-2.5 w-6">
-                <span
-                  className={`absolute inset-x-0 top-0 h-px bg-current transition-transform duration-500 ease-cine ${
-                    open ? 'translate-y-[5px] rotate-45' : ''
-                  }`}
-                />
-                <span
-                  className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-500 ease-cine ${
-                    open ? '-translate-y-[4px] -rotate-45' : ''
-                  }`}
-                />
+              <span>{open ? t.nav.close : t.nav.menu}</span>
+              <span aria-hidden className="relative block h-2.5 w-5">
+                <span className={`absolute inset-x-0 top-0 h-px bg-current transition-transform duration-500 ease-cine ${open ? 'translate-y-[5px] rotate-45' : ''}`} />
+                <span className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-500 ease-cine ${open ? '-translate-y-[4px] -rotate-45' : ''}`} />
               </span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Full-screen menu (mobile / tablet) */}
-      <div id="mobile-menu" hidden={!open} className="theme-dark fixed inset-0 z-40 flex flex-col pt-[var(--header-h)] lg:hidden">
-        <nav aria-label={t.a11y.mainNav} className="container flex flex-1 flex-col justify-center">
-          <ul>
-            {[{ key: 'home' as const, path: '' }, ...NAV, { key: 'contact' as const, path: '/contact' }].map((item, i) => (
-              <li key={item.key} className="overflow-hidden border-b border-line">
-                <Link
-                  href={`/${locale}${item.path}`}
-                  aria-current={(item.path === '' ? rest === '' : isActive(item.path)) ? 'page' : undefined}
-                  className="menu-item display flex items-baseline justify-between py-3 text-4xl aria-[current=page]:opacity-50 sm:text-5xl"
-                  style={{ animationDelay: `${60 + i * 50}ms` }}
-                >
-                  {t.nav[item.key]}
-                  <span className="num font-sans text-xs text-muted">0{i + 1}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="container flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-muted">
-          <SocialLinks />
-          <a href={`tel:${site.phones.office.tel}`} className="ltr">
-            {site.phones.office.display}
-          </a>
-          <Link href={`/${locale}/contact`} className="btn-primary !py-2.5">
-            {t.nav.cta}
-          </Link>
+      {/* Full-screen menu */}
+      <div
+        id="site-menu"
+        data-open={open}
+        inert={!open}
+        aria-hidden={!open}
+        className="menu theme-dark fixed inset-0 z-[60] flex flex-col overflow-y-auto pt-[var(--header-h)]"
+      >
+        <div className="container grid flex-1 content-center gap-12 py-10 lg:grid-cols-12">
+          <nav aria-label={t.a11y.mainNav} className="lg:col-span-8">
+            <ul>
+              {NAV.map((item, i) => (
+                <li key={item.key} className="menu-item overflow-hidden" style={{ ['--i' as string]: i }}>
+                  <Link
+                    href={`/${locale}${item.path}`}
+                    aria-current={isActive(item.path) ? 'page' : undefined}
+                    className="group flex items-baseline gap-5 py-1.5 transition-opacity duration-500 aria-[current=page]:text-glow"
+                  >
+                    <span className="num w-8 shrink-0 text-xs text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+                    <span className="display t-1 transition-transform duration-700 ease-cine [font-size:clamp(2.3rem,min(7vw,9.5svh),6.25rem)] group-hover:translate-x-3 rtl:group-hover:-translate-x-3">
+                      {t.nav[item.key]}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="menu-item flex flex-col justify-end gap-8 lg:col-span-4" style={{ ['--i' as string]: 6 }}>
+            <div>
+              <p className="label !flex">{t.nav.contact}</p>
+              <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3 mt-3">
+                {localizeDigits(site.phones.office.display, locale)}
+              </a>
+              <br />
+              <a href={`tel:${site.phones.mobile.tel}`} className="nav-link ltr display t-3 mt-1">
+                {localizeDigits(site.phones.mobile.display, locale)}
+              </a>
+              <p className="mt-3 text-sm text-muted">{site.hours[locale]}</p>
+            </div>
+            <SocialLinks />
+            <ThemeToggle dayLabel={t.nav.day} nightLabel={t.nav.night} />
+          </div>
         </div>
       </div>
     </>

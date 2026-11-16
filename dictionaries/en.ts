@@ -23,15 +23,20 @@ export const en: Dictionary = {
     collaboration: 'Partner',
     contact: 'Contact',
     cta: 'Book a consultation',
+    menu: 'Menu',
+    close: 'Close',
+    day: 'Day',
+    night: 'Night',
     langShort: 'فا',
   },
   home: {
     hero: {
       label: 'Tehran — since 2009',
-      title: ['We build with', 'engineering precision.'],
+      title: ['We build', 'with precision.'],
       lead: 'Design, construction and turnkey delivery — supervised on site by senior engineers.',
       primary: 'Book a consultation',
       secondary: 'View projects',
+      scroll: 'Scroll',
     },
     stats: [
       { value: 15, suffix: '+', label: 'Years of practice' },

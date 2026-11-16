@@ -22,6 +22,10 @@ export const fa = {
     collaboration: 'همکاری',
     contact: 'تماس',
     cta: 'درخواست مشاوره',
+    menu: 'منو',
+    close: 'بستن',
+    day: 'روز',
+    night: 'شب',
     langShort: 'EN',
   },
   home: {
@@ -31,6 +35,7 @@ export const fa = {
       lead: 'طراحی، ساخت و تحویل کلید؛ زیر نظر مستقیم مهندسان ارشد.',
       primary: 'درخواست مشاوره',
       secondary: 'دیدن پروژه‌ها',
+      scroll: 'اسکرول',
     },
     stats: [
       { value: 15, suffix: '+', label: 'سال سابقه' },

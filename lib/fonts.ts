@@ -1,49 +1,50 @@
-import { Inter, Montserrat, Newsreader, Vazirmatn } from 'next/font/google';
+import localFont from 'next/font/local';
 
-/** Persian text: Vazirmatn, heavy for display, light for accents, medium for menus. */
-export const fontPersian = Vazirmatn({
-  subsets: ['arabic'],
-  weight: 'variable',
+/**
+ * All typefaces are open-source (SIL OFL) and self-hosted from app/fonts, so
+ * nothing depends on a network fetch at dev, build or run time.
+ */
+
+/** Persian — Vazirmatn, variable weight. The non-Latin cut lets Latin text fall through to the Latin faces. */
+export const fontPersian = localFont({
+  src: './../app/fonts/Vazirmatn-NL.woff2',
+  weight: '100 900',
   display: 'swap',
   variable: '--font-persian',
+  fallback: ['Tahoma', 'sans-serif'],
 });
 
-/** Latin UI and body text. */
-export const fontLatin = Inter({
-  subsets: ['latin'],
-  weight: 'variable',
+/** Latin body and UI. */
+export const fontSans = localFont({
+  src: './../app/fonts/Inter.woff2',
+  weight: '100 900',
   display: 'swap',
-  variable: '--font-latin',
+  variable: '--font-sans',
+  fallback: ['system-ui', 'sans-serif'],
 });
 
-/** Latin display serif for editorial headlines. */
-export const fontSerif = Newsreader({
-  subsets: ['latin'],
-  weight: 'variable',
-  style: 'normal',
+/** Latin display — an elegant, high-contrast serif for large headlines. */
+export const fontDisplay = localFont({
+  src: [
+    { path: './../app/fonts/InstrumentSerif.woff2', weight: '400', style: 'normal' },
+    { path: './../app/fonts/InstrumentSerif-Italic.woff2', weight: '400', style: 'italic' },
+  ],
   display: 'swap',
-  variable: '--font-serif',
-  adjustFontFallback: false,
+  variable: '--font-display',
+  adjustFontFallback: 'Times New Roman',
+  fallback: ['Georgia', 'serif'],
 });
 
-/** Italic cut, used only for accent words — not preloaded. */
-export const fontSerifItalic = Newsreader({
-  subsets: ['latin'],
-  weight: 'variable',
-  style: 'italic',
+/** Brand wordmark only. */
+export const fontBrand = localFont({
+  src: [
+    { path: './../app/fonts/Montserrat-200.woff2', weight: '200', style: 'normal' },
+    { path: './../app/fonts/Montserrat-600.woff2', weight: '600', style: 'normal' },
+  ],
   display: 'swap',
-  preload: false,
-  variable: '--font-serif-italic',
-  adjustFontFallback: false,
-});
-
-/** Brand wordmark only (matches the original logo). */
-export const fontBrand = Montserrat({
-  subsets: ['latin'],
-  weight: ['200', '600'],
-  display: 'swap',
-  preload: false,
   variable: '--font-brand',
+  preload: false,
+  fallback: ['system-ui', 'sans-serif'],
 });
 
-export const fontVariables = [fontPersian, fontLatin, fontSerif, fontSerifItalic, fontBrand].map((f) => f.variable).join(' ');
+export const fontVariables = [fontPersian, fontSans, fontDisplay, fontBrand].map((f) => f.variable).join(' ');

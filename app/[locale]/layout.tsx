@@ -7,7 +7,6 @@ import { getDictionary } from '@/dictionaries';
 import { site } from '@/data/site';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { QuickContact } from '@/components/layout/QuickContact';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { buildMetadata } from '@/lib/seo';
 
@@ -20,8 +19,7 @@ export const dynamicParams = false;
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#F4F0E6',
-  colorScheme: 'light',
+  themeColor: '#0A0E14',
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -36,10 +34,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /**
- * Runs before paint: enables the hidden initial states of scroll reveals when motion is allowed.
- * Fails safe: if the app bundle never boots, the class is removed after 3.5s so content is always visible.
+ * Runs before paint: applies the saved day/night theme (night by default) and
+ * enables the hidden initial states of scroll reveals when motion is allowed.
+ * Fails safe: if the app bundle never boots, the reveal class is removed after
+ * 3.5s so content is always visible.
  */
-const bootScript = `(function(){try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-motion');setTimeout(function(){if(!window.__mkzMotion){d.classList.remove('js-motion')}},3500)}}catch(e){}})();`;
+const bootScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('mkz-theme');if(t==='light'||t==='dark')d.dataset.theme=t;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-motion');setTimeout(function(){if(!window.__mkzMotion){d.classList.remove('js-motion')}},3500)}}catch(e){}})();`;
 
 function jsonLd(locale: Locale) {
   return {
@@ -88,6 +88,7 @@ export default async function LocaleLayout({
         >
           {t.a11y.skip}
         </a>
+        <div aria-hidden className="read-line" />
         <MotionProvider>
           <Header locale={locale} t={{ nav: t.nav, a11y: t.a11y }} />
           <main id="main" tabIndex={-1} className="outline-none">
@@ -95,7 +96,6 @@ export default async function LocaleLayout({
           </main>
           <Footer locale={locale} t={t} />
         </MotionProvider>
-        <QuickContact locale={locale} />
       </body>
     </html>
   );

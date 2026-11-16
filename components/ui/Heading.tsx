@@ -24,7 +24,7 @@ function clauses(text: string): string[] {
  * closing clause is set in the accent cut (serif italic in English, light
  * weight in Persian) — the typographic signature of the site.
  */
-export function Heading({ text, as = 'h2', size = 't-h2', className = '', ...rest }: Props) {
+export function Heading({ text, as = 'h2', size = 't-1', className = '', ...rest }: Props) {
   const parts = clauses(text);
   const lines =
     parts.length === 2
