@@ -5,6 +5,7 @@ import { site } from '@/data/site';
 import { getServices } from '@/lib/db/content';
 import { Logo } from './Logo';
 import { BackToTop } from './BackToTop';
+import { SocialLinks } from '@/components/ui/Social';
 
 export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
   const services = getServices(locale);
@@ -18,18 +19,12 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
     ['collaboration', '/collaboration'],
     ['contact', '/contact'],
   ] as const;
-  const social = [
-    ['Instagram', site.social.instagram],
-    ['Telegram', site.social.telegram],
-    ['WhatsApp', site.social.whatsapp],
-    ['LinkedIn', site.social.linkedin],
-  ] as const;
 
   return (
     <footer className="theme-dark border-t border-line">
       <div className="container pb-10 pt-section">
         <div className="grid gap-14 md:grid-cols-12">
-          <div className="md:col-span-5">
+          <div className="md:col-span-4">
             <Logo />
             <p className="mt-8 max-w-xs text-muted">{t.footer.tagline}</p>
           </div>
@@ -60,7 +55,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
             </ul>
           </nav>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-3">
             <h2 className="text-sm text-muted">{t.footer.contact}</h2>
             <ul className="mt-5 space-y-2.5">
               <li>
@@ -73,14 +68,8 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
                   {site.phones.mobile.display}
                 </a>
               </li>
-              {social.map(([label, url]) => (
-                <li key={label}>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="nav-link">
-                    {label}
-                  </a>
-                </li>
-              ))}
             </ul>
+            <SocialLinks className="mt-6" />
           </div>
         </div>
 

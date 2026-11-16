@@ -29,30 +29,38 @@ export default async function HomePage({ params }: LocaleParams) {
 
   return (
     <>
-      {/* ───────────── HERO ───────────── */}
+      {/* ───────────── HERO (night elevation) ───────────── */}
       <section
         aria-labelledby="hero-title"
-        className="flex min-h-[100svh] flex-col overflow-hidden border-b border-fg pt-[calc(var(--header-h)+clamp(1.5rem,4.5vw,3.5rem))]"
+        data-header-dark
+        className="theme-dark relative isolate flex min-h-[100svh] flex-col overflow-hidden border-b border-fg pt-[calc(var(--header-h)+clamp(1.5rem,4.5vw,3.5rem))]"
       >
+        {/* low warm haze along the skyline */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(55%_55%_at_70%_100%,rgb(var(--glow)/0.11),transparent_70%)] rtl:bg-[radial-gradient(55%_55%_at_30%_100%,rgb(var(--glow)/0.11),transparent_70%)]"
+        />
         <div className="container flex flex-1 flex-col">
-          <p className="label enter">{h.hero.label}</p>
-          <SplitText
-            as="h1"
-            id="hero-title"
-            css
-            delay={0.1}
-            className="display t-hero mt-6"
-            lines={[
-              h.hero.title[0],
-              <span key="accent" className="accent">
-                {h.hero.title[1]}
-              </span>,
-            ]}
-          />
+          <div data-drift="-35" data-drift-fade="0">
+            <p className="label enter">{h.hero.label}</p>
+            <SplitText
+              as="h1"
+              id="hero-title"
+              css
+              delay={0.1}
+              className="display t-hero mt-6"
+              lines={[
+                h.hero.title[0],
+                <span key="accent" className="accent">
+                  {h.hero.title[1]}
+                </span>,
+              ]}
+            />
+          </div>
 
           {/* Lead and drawing share one cell on desktop: text top-start, drawing on the ground line */}
           <div className="mt-8 grid flex-1 lg:mt-10">
-            <div className="z-10 col-start-1 row-start-1 self-start lg:max-w-[22rem] xl:max-w-[26rem]">
+            <div className="z-10 col-start-1 row-start-1 self-start lg:max-w-[22rem] xl:max-w-[26rem]" data-drift="-40" data-drift-fade="0">
               <p className="lead enter" style={{ animationDelay: '0.35s' }}>
                 {h.hero.lead}
               </p>
@@ -68,7 +76,9 @@ export default async function HomePage({ params }: LocaleParams) {
                 </Link>
               </div>
             </div>
-            <HeroDrawing className="col-start-1 mt-12 self-end lg:row-start-1 lg:mt-0" />
+            <div className="col-start-1 mt-12 self-end lg:row-start-1 lg:mt-0" data-drift="10">
+              <HeroDrawing />
+            </div>
           </div>
         </div>
       </section>

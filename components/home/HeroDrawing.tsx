@@ -101,20 +101,48 @@ function elevation(): Shape[] {
   line(1306, 6, 1380, 30, 27);
   rect(1362, 30, 20, 16, 27);
   rect(1312, 36, 14, 12, 27);
-  line(1238, 30, 1238, 84, 28, true);
-  line(1238, 84, 1222, 93, 28);
-  line(1238, 84, 1254, 93, 28);
-  line(1218, 93, 1258, 93, 28);
 
   return s;
 }
 
+/** The hook, slings and load hanging from the jib — drawn in their own group so they can sway. */
+const LOAD: Shape[] = [
+  { k: 'line', d: [1238, 30, 1238, 84], i: 28, soft: true },
+  { k: 'line', d: [1238, 84, 1222, 93], i: 28, soft: false },
+  { k: 'line', d: [1238, 84, 1254, 93], i: 28, soft: false },
+  { k: 'rect', d: [1214, 93, 48, 9], i: 29, soft: false },
+];
+
+/** Lit windows: [x, y, w, h, brightness]. They switch on one by one after the drawing completes. */
+function windows(): [number, number, number, number, number][] {
+  const w: [number, number, number, number, number][] = [];
+  // main building: the glazed bay on each floor is four panes
+  const pattern = [[0, 1, 3], [1, 2], [0, 2, 3], [1], [0, 1, 2]];
+  pattern.forEach((panes, k) => {
+    const top = 72 + 44 * k;
+    panes.forEach((p) => w.push([942 + 33 * p, top + 12, 29, 30, 0.55 + ((k + p) % 3) * 0.15]));
+  });
+  w.push([886, 118, 12, 40, 0.45], [1066, 306, 72, 52, 0.75]); // stairwell, lobby
+  // neighbouring block and its shopfronts
+  w.push([614, 211, 30, 24, 0.6], [746, 211, 30, 24, 0.5], [680, 263, 30, 24, 0.7], [608, 318, 52, 26, 0.45]);
+  w.push([1314, 38, 10, 8, 0.9]); // crane cab
+  return w;
+}
+
 const SHAPES = elevation();
+const WINDOWS = windows();
+// light the windows in a scattered, deterministic order
+const ORDER = WINDOWS.map((_, n) => n).sort((a, b) => ((a * 7) % 11) - ((b * 7) % 11));
+const STARS: [number, number, number][] = [
+  [64, 40, 1.4], [168, 96, 1], [262, 28, 1.2], [356, 150, 1], [430, 62, 1.5], [520, 190, 1],
+  [588, 34, 1], [812, 58, 1.3], [770, 150, 1], [1020, 16, 1], [1172, 90, 1.2], [1420, 120, 1],
+];
 
 /**
- * Hero line drawing. Pure SVG + CSS: every stroke is normalised to length 1
- * and drawn in with a staggered `stroke-dashoffset` animation (see `.draw`),
- * so it costs no JavaScript and is fully drawn under reduced motion.
+ * Hero line drawing, set at night. Pure SVG + CSS: every stroke is normalised
+ * to length 1 and drawn in with a staggered `stroke-dashoffset` animation (see
+ * `.draw`); then windows light up one by one, stars breathe and the crane load
+ * sways. No JavaScript, and fully drawn and lit under reduced motion.
  * The ground line is the bottom edge of the box — give the parent a border.
  */
 export function HeroDrawing({ className = '' }: { className?: string }) {
@@ -127,17 +155,47 @@ export function HeroDrawing({ className = '' }: { className?: string }) {
       aria-hidden
       className={`draw block aspect-[5/3] w-full [stroke-width:2] md:aspect-[4/1] md:[stroke-width:1.2] rtl:-scale-x-100 ${className}`}
     >
-      {SHAPES.map((sh, n) => {
-        const common = {
-          pathLength: 1,
-          strokeOpacity: sh.soft ? 0.4 : undefined,
-          style: { '--i': sh.i } as CSSProperties,
-        };
-        if (sh.k === 'line') return <line {...common} key={n} x1={sh.d[0]} y1={sh.d[1]} x2={sh.d[2]} y2={sh.d[3]} />;
-        if (sh.k === 'rect') return <rect {...common} key={n} x={sh.d[0]} y={sh.d[1]} width={sh.d[2]} height={sh.d[3]} />;
-        if (sh.k === 'circle') return <circle {...common} key={n} cx={sh.d[0]} cy={sh.d[1]} r={sh.d[2]} />;
-        return <path {...common} key={n} d={sh.d} />;
-      })}
+      <g className="stars" stroke="none">
+        {STARS.map(([cx, cy, r], n) => (
+          <circle key={n} cx={cx} cy={cy} r={r} style={{ '--d': `${2 + (n % 5) * 0.9}s` } as CSSProperties} />
+        ))}
+      </g>
+      <defs>
+        <radialGradient id="moon-glow">
+          <stop offset="0" stopColor="rgb(var(--glow))" stopOpacity="0.22" />
+          <stop offset="1" stopColor="rgb(var(--glow))" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx={700} cy={96} r={70} fill="url(#moon-glow)" stroke="none" />
+      <circle cx={700} cy={96} r={22} pathLength={1} strokeOpacity={0.5} style={{ '--i': 6 } as CSSProperties} />
+
+      <g className="lights" stroke="none">
+        {ORDER.map((n, k) => {
+          const [x, y, w, h, lit] = WINDOWS[n];
+          return <rect key={n} x={x} y={y} width={w} height={h} style={{ '--d': `${2.1 + k * 0.17}s`, '--lit': lit } as CSSProperties} />;
+        })}
+      </g>
+
+      {SHAPES.map((sh, n) => (
+        <Stroke key={n} sh={sh} />
+      ))}
+      <g className="crane-load">
+        {LOAD.map((sh, n) => (
+          <Stroke key={n} sh={sh} />
+        ))}
+      </g>
     </svg>
   );
+}
+
+function Stroke({ sh }: { sh: Shape }) {
+  const common = {
+    pathLength: 1,
+    strokeOpacity: sh.soft ? 0.4 : undefined,
+    style: { '--i': sh.i } as CSSProperties,
+  };
+  if (sh.k === 'line') return <line {...common} x1={sh.d[0]} y1={sh.d[1]} x2={sh.d[2]} y2={sh.d[3]} />;
+  if (sh.k === 'rect') return <rect {...common} x={sh.d[0]} y={sh.d[1]} width={sh.d[2]} height={sh.d[3]} />;
+  if (sh.k === 'circle') return <circle {...common} cx={sh.d[0]} cy={sh.d[1]} r={sh.d[2]} />;
+  return <path {...common} d={sh.d} />;
 }

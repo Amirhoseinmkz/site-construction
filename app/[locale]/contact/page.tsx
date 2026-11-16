@@ -5,6 +5,7 @@ import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { PageHero } from '@/components/ui/PageHero';
 import { LeadForm } from '@/components/ui/LeadForm';
+import { SOCIALS, SocialIcon } from '@/components/ui/Social';
 
 const SUBJECTS = ['architecture', 'management', 'partnership', 'renovation', 'consultation', 'subcontractor'] as const;
 type Subject = (typeof SUBJECTS)[number];
@@ -23,12 +24,6 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
   const phones = [
     [c.office, site.phones.office],
     [c.mobile, site.phones.mobile],
-  ] as const;
-  const social = [
-    ['WhatsApp', site.social.whatsapp],
-    ['Telegram', site.social.telegram],
-    ['Instagram', site.social.instagram],
-    ['LinkedIn', site.social.linkedin],
   ] as const;
 
   return (
@@ -59,10 +54,10 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
               <div className="py-7" data-reveal>
                 <dt className="text-sm text-muted">{c.social}</dt>
                 <dd className="mt-4 flex flex-wrap gap-2">
-                  {social.map(([label, url]) => (
-                    <a key={label} href={url} target="_blank" rel="noopener noreferrer" className="chip">
-                      {label}
-                      <span aria-hidden>↗</span>
+                  {SOCIALS.map(({ name, url }) => (
+                    <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="chip !py-2.5">
+                      <SocialIcon name={name} />
+                      {name}
                     </a>
                   ))}
                 </dd>

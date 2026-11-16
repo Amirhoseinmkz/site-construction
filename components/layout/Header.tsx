@@ -8,6 +8,7 @@ import type { Dictionary } from '@/dictionaries';
 import { site } from '@/data/site';
 import { Logo } from './Logo';
 import { useLenis } from '@/components/motion/MotionProvider';
+import { SocialLinks } from '@/components/ui/Social';
 
 type NavKey = 'services' | 'projects' | 'process' | 'about' | 'collaboration';
 const NAV: { key: NavKey; path: string }[] = [
@@ -24,6 +25,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [overDark, setOverDark] = useState(false);
   const lastY = useRef(0);
   const menuButton = useRef<HTMLButtonElement>(null);
 
@@ -40,6 +42,9 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
       requestAnimationFrame(() => {
         const y = window.scrollY;
         setScrolled(y > 24);
+        // Turn the bar dark while it sits over a dark hero
+        const dark = document.querySelector('[data-header-dark]');
+        setOverDark(!!dark && dark.getBoundingClientRect().bottom > 40);
         if (y > 400 && y > lastY.current + 4) setHidden(true);
         else if (y < lastY.current - 4 || y <= 400) setHidden(false);
         lastY.current = y;
@@ -49,7 +54,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -80,7 +85,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     <>
       <header
         className={`fixed inset-x-0 top-0 z-50 text-fg transition-[transform,background-color,border-color] duration-500 ease-cine ${
-          open ? 'theme-dark !bg-transparent' : ''
+          open ? 'theme-dark !bg-transparent' : overDark ? 'theme-dark' : ''
         } ${hidden && !open ? '-translate-y-full' : ''} ${
           scrolled && !open ? 'border-b border-line bg-bg/85 backdrop-blur-md' : 'border-b border-transparent'
         }`}
@@ -166,6 +171,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
           </ul>
         </nav>
         <div className="container flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-muted">
+          <SocialLinks />
           <a href={`tel:${site.phones.office.tel}`} className="ltr">
             {site.phones.office.display}
           </a>
