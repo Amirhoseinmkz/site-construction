@@ -153,6 +153,14 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
     line-height: 1.4;
   }
 
+  .t-hero {
+    font-size: clamp(3.2rem, min(7.2vw, 14svh), 8rem);
+    line-height: 0.94;
+  }
+  [lang='fa'] .t-hero {
+    font-size: clamp(2.8rem, min(6vw, 12svh), 6.5rem);
+    line-height: 1.3;
+  }
   .t-mega {
     font-size: clamp(3.6rem, min(13.5vw, 24svh), 15rem);
     line-height: 0.9;
@@ -536,115 +544,65 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   THE FILM — the home page's scroll-driven building site.
-   The stage is held with plain CSS `position: sticky` (never a GSAP
-   pin, which injects wrapper elements into DOM that React owns).
-   Film.tsx writes only CSS variables: `--p` (0 → 1 progress), the
-   colour tokens, and `data-ch` (the current chapter). Without JS, with
-   reduced motion, the film is just its first, cream "day" frame.
+   THE SITE DRAWING — hero and process chapters (see SiteArt.tsx)
+   Nothing on the home page holds or pins the scroll: every section moves
+   one-for-one with the wheel. The drawing is driven by two registered
+   numbers; their defaults are the finished building in daylight, so with no
+   JS, no animation or reduced motion you simply get the complete drawing.
    ════════════════════════════════════════════════════════════════ */
-.film[data-on] {
-  height: 800svh; /* a longer scroll gives every chapter time to be read */
+@property --p {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
 }
-.film[data-on] > .film-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-}
-.film-stage {
-  /* The first frame is always morning (cream), whatever the site theme; Film.tsx recolours it while scrolling */
-  --bg: 234 230 220;
-  --fg: 12 17 24;
-  --muted: 86 93 103;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  height: 100svh;
-  background: rgb(var(--bg));
-  color: rgb(var(--fg));
-}
-/* Scroll-only furniture is hidden when the film does not run (no JS, reduced motion) */
-.film:not([data-on]) .film-ui {
-  display: none !important;
+@property --n {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
 }
 
-.film-art {
-  position: absolute;
-  inset: 0;
+.site-art {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   overflow: visible;
-}
-/* the scene is built to sit on the far side from the text, so it mirrors in RTL */
-[dir='rtl'] .film-art {
-  transform: scaleX(-1);
 }
 .film-dolly {
   transform-box: view-box;
   transform-origin: 1100px 760px;
-  transform: scale(calc(1 + var(--p, 0) * 0.16)) translateY(calc(var(--p, 0) * 18px));
+  transform: scale(calc(1 + var(--p, 1) * 0.1));
 }
 .film-far {
-  transform: translateX(calc(var(--p, 0) * -34px));
+  transform: translateX(calc(var(--p, 1) * -28px));
 }
 .film-near {
-  transform: translateX(calc(var(--p, 0) * 46px));
-}
-/* Portrait screens: the text takes the top of the screen and the whole building sits below it.
-   The building is at 75% of the artwork (25% once mirrored for RTL); centre it on the screen. */
-@media (max-aspect-ratio: 1/1) {
-  .film-art {
-    inset: auto auto 0 auto;
-    height: 100%;
-    width: 94svh;
-    left: calc(50vw - 70.5svh);
-  }
-  [dir='rtl'] .film-art {
-    left: calc(50vw - 23.5svh);
-  }
-}
-/* Squarer landscape screens (small laptops, tablets held sideways) have less room beside the text */
-@media (min-aspect-ratio: 1/1) and (max-aspect-ratio: 4/3) {
-  .film-shift {
-    transform: translateX(120px);
-  }
-}
-
-/* Tall tablets show the four key points too, so the drawing is smaller and stays below them */
-@media (max-aspect-ratio: 1/1) and (min-width: 600px) {
-  .film-art {
-    width: 68svh;
-    left: calc(50vw - 51svh);
-  }
-  [dir='rtl'] .film-art {
-    left: calc(50vw - 17svh);
-  }
+  transform: translateX(calc(var(--p, 1) * 38px));
 }
 
 /* Progressive strokes: `--a` start, `--d` duration, both in progress units */
 .film-draw {
   stroke-dasharray: 1;
-  stroke-dashoffset: clamp(0, calc(1 - (var(--p, 0) - var(--a, 0)) / var(--d, 0.1)), 1);
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p, 1) - var(--a, 0)) / var(--d, 0.1)), 1);
 }
 .film-fade {
-  opacity: clamp(0, calc((var(--p, 0) - var(--a, 0)) / var(--d, 0.05)), var(--o, 1));
+  opacity: clamp(0, calc((var(--p, 1) - var(--a, 0)) / var(--d, 0.05)), var(--o, 1));
 }
 .film-out {
-  opacity: clamp(0, calc(1 - (var(--p, 0) - var(--a, 0.8)) / var(--d, 0.08)), 1);
+  opacity: clamp(0, calc(1 - (var(--p, 1) - var(--a, 0.8)) / var(--d, 0.08)), 1);
 }
 .film-lights > * {
   fill: rgb(var(--glow));
-  opacity: clamp(0, calc((var(--p, 0) - var(--t, 0.8)) * 16), var(--lit, 0.9));
+  opacity: clamp(0, calc((var(--n, 0) - var(--t, 0.5)) * 14), var(--lit, 0.9));
 }
 .film-lights {
   filter: drop-shadow(0 0 7px rgb(var(--glow) / 0.65));
 }
 .film-night {
-  opacity: clamp(0, calc((var(--p, 0) - var(--t, 0.55)) * 4), 1);
+  opacity: clamp(0, calc((var(--n, 0) - var(--t, 0.3)) * 5), 1);
 }
 .film-sun {
-  opacity: clamp(0, calc(1 - var(--p, 0) * 4), 1);
-  transform: translateY(calc(var(--p, 0) * 260px));
+  opacity: clamp(0, calc(1 - var(--n, 0) * 4), 1);
+  transform: translateY(calc(var(--n, 0) * 260px));
 }
 .film-crane-load {
   transform-box: view-box;
@@ -657,118 +615,44 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
   animation-delay: var(--d, 0s);
 }
 
-/* Text layers */
-/* A soft halo in the stage colour keeps text legible where it crosses a drawing */
-.film-hero :is(p, h1),
-.film-cap :is(p, li),
-.film-finale p {
-  text-shadow: 0 0 6px rgb(var(--bg)), 0 0 14px rgb(var(--bg)), 0 0 26px rgb(var(--bg));
+/* ── Hero: a morning on site that turns to night, once, over ~9 seconds ──
+   The stage colours are computed from `--n`, so every token (text, buttons,
+   lines) follows the sky with no JavaScript. */
+.hero-stage {
+  --e: clamp(0, calc((var(--n) - 0.05) / 0.55), 1);
+  --ink: clamp(0, calc((var(--n) - 0.2) / 0.2), 1);
+  --bg: calc(234 + (10 - 234) * var(--e)) calc(230 + (14 - 230) * var(--e)) calc(220 + (20 - 220) * var(--e));
+  --fg: calc(12 + (237 - 12) * var(--ink)) calc(17 + (233 - 17) * var(--ink)) calc(24 + (224 - 24) * var(--ink));
+  --muted: calc(86 + (152 - 86) * var(--ink)) calc(93 + (160 - 93) * var(--ink)) calc(103 + (170 - 103) * var(--ink));
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
 }
-.film-hero {
-  transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.film[data-on] .film-stage:not([data-ch='0']) .film-hero {
-  opacity: 0;
-  transform: translateY(-2.5rem);
-  pointer-events: none;
-}
-.film-cap {
-  opacity: 0;
-  transform: translateY(1.5rem);
-  transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
-.film-stage[data-ch='1'] .film-cap[data-i='1'],
-.film-stage[data-ch='2'] .film-cap[data-i='2'],
-.film-stage[data-ch='3'] .film-cap[data-i='3'],
-.film-stage[data-ch='4'] .film-cap[data-i='4'] {
-  opacity: 1;
-  transform: none;
-}
-.film-finale {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(2rem);
-  transition: opacity 0.9s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.9s;
-}
-.film-stage[data-ch='5'] .film-finale {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition-delay: 0s;
-}
-.film-dot {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 9999px;
-  background: rgb(var(--fg) / 0.28);
-  transition: background-color 0.5s ease, transform 0.5s ease;
-}
-.film-stage[data-ch='0'] .film-dot[data-i='0'],
-.film-stage[data-ch='1'] .film-dot[data-i='1'],
-.film-stage[data-ch='2'] .film-dot[data-i='2'],
-.film-stage[data-ch='3'] .film-dot[data-i='3'],
-.film-stage[data-ch='4'] .film-dot[data-i='4'],
-.film-stage[data-ch='5'] .film-dot[data-i='5'] {
-  background: rgb(var(--glow));
-  transform: scale(1.8);
-}
-.scroll-cue span {
-  transform-origin: top;
-  animation: cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-@keyframes cue {
-  0% {
-    transform: scaleY(0);
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stage {
+    animation: hero-build 6.5s cubic-bezier(0.45, 0.05, 0.3, 1) 0.3s both, hero-night 4s ease-in-out 5.6s both;
   }
-  50% {
-    transform: scaleY(1);
-    transform-origin: top;
+}
+@keyframes hero-build {
+  from {
+    --p: 0;
   }
-  51% {
-    transform-origin: bottom;
+  to {
+    --p: 1;
   }
-  100% {
-    transform: scaleY(0);
-    transform-origin: bottom;
+}
+@keyframes hero-night {
+  from {
+    --n: 0;
+  }
+  to {
+    --n: 1;
   }
 }
 
-/* ── The reel: projects slide sideways as you scroll down ── */
-.reel-stage {
-  position: relative;
-}
-.reel-track {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding-inline: var(--gutter);
-  scroll-padding-inline: var(--gutter);
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-}
-.reel-track::-webkit-scrollbar {
-  display: none;
-}
-.reel-track > * {
-  scroll-snap-align: start;
-}
-@media (min-width: 900px) {
-  .reel[data-on] > .reel-stage {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .reel[data-on] .reel-track {
-    overflow: visible;
-    width: max-content;
-    scroll-snap-type: none;
-    gap: 2rem;
-    will-change: transform;
+/* Touch screens have no hover, so photographs keep most of their colour */
+@media (hover: none) {
+  .photo {
+    filter: grayscale(0.3) contrast(1.04) brightness(0.96);
   }
 }
 

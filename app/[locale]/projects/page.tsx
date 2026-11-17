@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { formatNumber, localizeDigits } from '@/lib/i18n';
+import { formatNumber } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { getProjects, type ProjectCategory } from '@/lib/db/content';
 import { PageHead } from '@/components/ui/PageHead';
-import { ProjectIndex } from '@/components/ui/ProjectIndex';
+import { ProjectSheets } from '@/components/ui/ProjectSheets';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const { locale, t } = await resolveLocale(params);
@@ -16,15 +16,20 @@ export default async function ProjectsPage({ params }: LocaleParams) {
   const p = t.projects;
   const projects = getProjects(locale);
 
-  const items = projects.map((pr, i) => ({
+  const items = projects.map((pr) => ({
     slug: pr.slug,
-    num: localizeDigits(String(i + 1).padStart(2, '0'), locale),
+    code: pr.code,
     category: pr.category,
     categoryLabel: p.categories[pr.category],
     inProgress: pr.status === 'inProgress',
     statusLabel: p.status.inProgress,
     title: pr.title,
-    meta: `${formatNumber(pr.area, locale)} ${p.sqm}`,
+    place: pr.location,
+    facts: [
+      { label: p.category, value: p.categories[pr.category] },
+      { label: p.area, value: `${formatNumber(pr.area, locale)} ${p.sqm}` },
+      { label: p.statusLabel, value: p.status[pr.status] },
+    ],
     image: pr.image,
   }));
 
@@ -34,12 +39,28 @@ export default async function ProjectsPage({ params }: LocaleParams) {
     ...categories.map((c) => ({ key: c, label: p.categories[c], count: formatNumber(projects.filter((pr) => pr.category === c).length, locale) })),
   ];
 
+  const totalArea = projects.reduce((n, pr) => n + pr.area, 0);
+  const underway = projects.filter((pr) => pr.status === 'inProgress').length;
+  const summary = [
+    [formatNumber(projects.length, locale), p.label],
+    [`${formatNumber(totalArea, locale)} ${p.sqm}`, p.area],
+    ...(underway ? [[formatNumber(underway, locale), p.status.inProgress]] : []),
+  ];
+
   return (
     <>
-      <PageHead label={p.label} title={p.title} lead={p.lead} />
+      <PageHead compact label={p.label} title={p.title} lead={p.lead} />
       <section className="pb-section">
         <div className="container">
-          <ProjectIndex locale={locale} items={items} filters={filters} filterLabel={p.filterLabel} emptyLabel={p.empty} />
+          <dl className="mb-12 grid max-w-2xl grid-cols-3 gap-6 md:mb-16" data-reveal>
+            {summary.map(([v, k]) => (
+              <div key={k}>
+                <dd className="display t-3">{v}</dd>
+                <dt className="mt-1 text-xs text-muted">{k}</dt>
+              </div>
+            ))}
+          </dl>
+          <ProjectSheets locale={locale} items={items} filters={filters} filterLabel={p.filterLabel} emptyLabel={p.empty} />
         </div>
       </section>
     </>
