@@ -22,6 +22,15 @@
   color-scheme: dark;
 }
 
+/* On Persian pages every text face is Vazirmatn (the wordmark in the logo is the one exception) */
+html[lang='fa'] {
+  --font-sans: var(--font-persian);
+  --font-display: var(--font-persian);
+}
+html[lang='fa'] :is(input, textarea, select, button, option) {
+  font-family: var(--font-persian), sans-serif;
+}
+
 [data-theme='light'] {
   --bg: 234 230 220; /* #EAE6DC */
   --surface: 223 218 206;
@@ -530,7 +539,7 @@
    reduced motion, the film is just its first, cream "day" frame.
    ════════════════════════════════════════════════════════════════ */
 .film[data-on] {
-  height: 640svh;
+  height: 800svh; /* a longer scroll gives every chapter time to be read */
 }
 .film[data-on] > .film-stage {
   position: sticky;
@@ -627,6 +636,12 @@
 }
 
 /* Text layers */
+/* A soft halo in the stage colour keeps text legible where it crosses a drawing */
+.film-hero :is(p, h1),
+.film-cap :is(p, li),
+.film-finale p {
+  text-shadow: 0 0 6px rgb(var(--bg)), 0 0 14px rgb(var(--bg)), 0 0 26px rgb(var(--bg));
+}
 .film-hero {
   transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }

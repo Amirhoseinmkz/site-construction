@@ -1,11 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { localizeDigits } from '@/lib/i18n';
+import { formatNumber, localizeDigits } from '@/lib/i18n';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { getProcessPhases, getProjects, getServices } from '@/lib/db/content';
+import { site } from '@/data/site';
 import { Heading } from '@/components/ui/Heading';
+import { LeadForm } from '@/components/ui/LeadForm';
 import { Film } from '@/components/home/Film';
 import { Reel } from '@/components/home/Reel';
+import { PlotDrawing } from '@/components/home/PlotDrawing';
 
 export default async function HomePage({ params }: LocaleParams) {
   const { locale, t } = await resolveLocale(params);
@@ -16,34 +19,66 @@ export default async function HomePage({ params }: LocaleParams) {
 
   return (
     <>
-      {/* The film: a site is surveyed, drawn, built and handed over as you scroll */}
+      {/* 1 · THE FILM — a site is surveyed, drawn, built and handed over as you scroll */}
       <Film
         label={h.hero.label}
         title={h.hero.title as [string, string]}
+        lead={h.hero.lead}
         scroll={h.hero.scroll}
-        chapters={phases.map((p) => ({ index: localizeDigits(p.index, locale), title: p.title }))}
+        chapters={phases.map((p) => ({ index: localizeDigits(p.index, locale), title: p.title, text: p.text, points: p.points }))}
         total={localizeDigits(String(phases.length).padStart(2, '0'), locale)}
         finaleTitle={h.contact.title}
+        finaleLead={h.contact.lead}
         cta={t.nav.cta}
         ctaHref={`/${locale}/contact`}
       />
 
-      {/* One sentence, lit word by word */}
-      <section className="py-section">
-        <div className="container">
-          <p className="statement max-w-6xl" data-scrub-words>
-            {h.manifesto.split(' ').map((w, i) => (
-              <span key={i}>{w} </span>
-            ))}
+      {/* 2 · WHO WE ARE — one sentence, lit word by word, and the numbers behind it */}
+      <section aria-label={t.nav.about} className="py-section">
+        <div className="container grid gap-y-10 lg:grid-cols-12">
+          <p className="label self-start lg:col-span-3 lg:mt-4" data-reveal>
+            {t.nav.about}
           </p>
+          <div className="lg:col-span-9">
+            <p className="statement" data-scrub-words>
+              {h.manifesto.split(' ').map((w, i) => (
+                <span key={i}>{w} </span>
+              ))}
+            </p>
+            <p className="lead mt-10 max-w-2xl" data-reveal>
+              {t.about.lead}
+            </p>
+            <Link href={`/${locale}/about`} className="link mt-8 inline-flex items-center gap-2" data-reveal>
+              {t.about.storyLabel}
+              <span aria-hidden className="arrow">
+                →
+              </span>
+            </Link>
+          </div>
         </div>
+        <dl className="container mt-section grid grid-cols-2 gap-y-12 border-t border-line pt-12 lg:grid-cols-4 lg:pt-16">
+          {h.stats.map((s) => (
+            <div key={s.label} data-reveal className="flex flex-col-reverse justify-end gap-3">
+              <dt className="max-w-[16rem] text-sm text-muted">{s.label}</dt>
+              <dd className="display t-stat">
+                <span data-count={s.value}>{localizeDigits(String(s.value), locale)}</span>
+                <span className="[unicode-bidi:isolate]">{s.suffix}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      {/* Four ways in */}
-      <section aria-labelledby="services-title" className="pb-section">
+      {/* 3 · SERVICES — four ways in, each in a sentence */}
+      <section aria-labelledby="services-title" className="theme-surface py-section">
         <div className="container">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <Heading id="services-title" text={h.services.title} size="t-2" />
+            <div>
+              <p className="label" data-reveal>
+                {h.services.label}
+              </p>
+              <Heading id="services-title" text={h.services.title} size="t-2" className="mt-5" />
+            </div>
             <Link href={`/${locale}/services`} className="btn-ghost" data-reveal>
               {h.services.link}
               <span aria-hidden className="arrow">
@@ -57,14 +92,16 @@ export default async function HomePage({ params }: LocaleParams) {
               <li key={s.slug} className="border-b border-line" data-reveal>
                 <Link
                   href={`/${locale}/services#${s.slug}`}
-                  className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-x-4 py-7 md:grid-cols-[6rem_1fr_auto_auto] md:gap-x-10 md:py-10"
+                  className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-x-4 gap-y-3 py-8 md:grid-cols-[6rem_1fr_11rem_auto] md:gap-x-10 md:py-11"
                 >
-                  <span className="num self-start pt-3 text-sm text-muted">{localizeDigits(s.index, locale)}</span>
+                  <span className="num self-start pt-2 text-sm text-muted">{localizeDigits(s.index, locale)}</span>
                   <span className="transition-transform duration-700 ease-cine group-hover:translate-x-3 rtl:group-hover:-translate-x-3">
-                    <span className="display t-1 block">{s.title}</span>
+                    <span className="display t-2 block">{s.title}</span>
+                    <span className="mt-3 block text-glow">{s.tagline}</span>
+                    <span className="mt-3 block max-w-2xl text-muted">{s.description}</span>
                   </span>
-                  <span className="relative hidden h-24 w-40 overflow-hidden rounded-xl opacity-0 transition-opacity duration-700 ease-cine group-hover:opacity-100 group-focus-visible:opacity-100 md:block">
-                    <Image src={s.image} alt="" fill sizes="160px" className="photo object-cover" />
+                  <span className="relative hidden h-28 w-44 overflow-hidden rounded-xl md:block">
+                    <Image src={s.image} alt="" fill sizes="176px" className="photo object-cover transition-transform duration-[1.4s] ease-cine group-hover:scale-105" />
                   </span>
                   <span
                     aria-hidden
@@ -79,14 +116,96 @@ export default async function HomePage({ params }: LocaleParams) {
         </div>
       </section>
 
-      {/* Selected work, sideways */}
+      {/* 4 · PRINCIPLES — how we work */}
+      <section aria-labelledby="principles-title" className="py-section">
+        <div className="container">
+          <p className="label" data-reveal>
+            {h.principles.label}
+          </p>
+          <Heading id="principles-title" text={h.principles.title} size="t-2" className="mt-5" />
+          <div className="mt-12 grid items-start gap-x-10 gap-y-12 md:mt-16 lg:grid-cols-12">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl lg:col-span-5" data-reveal="clip">
+              <div data-parallax="10" className="absolute inset-[-7%]">
+                <Image src="/images/story-main.jpg" alt="" fill sizes="(min-width:1024px) 40vw, 100vw" className="photo object-cover" />
+              </div>
+            </div>
+            <dl className="grid gap-x-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
+              {h.principles.items.map((it, i) => (
+                <div key={it.title} className="border-t border-fg/25 pb-10 pt-5" data-reveal>
+                  <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+                  <dt className="display t-3 mt-6">{it.title}</dt>
+                  <dd className="mt-3 text-muted">{it.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 · SELECTED WORK — sideways */}
       <Reel
         locale={locale}
         label={h.projects.label}
         title={h.projects.title}
         allLabel={h.projects.all}
-        slides={projects.map((p) => ({ slug: p.slug, code: p.code, title: p.title, place: p.location.split(/[—,،]/).pop()!.trim(), image: p.image }))}
+        slides={projects.map((p) => ({
+          slug: p.slug,
+          code: p.code,
+          title: p.title,
+          place: p.location,
+          meta: `${t.projects.categories[p.category]} · ${formatNumber(p.area, locale)} ${t.projects.sqm}`,
+          summary: p.summary,
+          image: p.image,
+        }))}
       />
+
+      {/* 6 · PARTNERSHIP — own land? */}
+      <section aria-labelledby="venture-title" className="py-section">
+        <div className="container">
+          <div className="theme-dark grid items-center gap-10 overflow-hidden rounded-[1.75rem] p-8 md:p-14 lg:grid-cols-12 lg:p-20">
+            <div className="lg:col-span-7">
+              <p className="label" data-reveal>
+                {h.venture.label}
+              </p>
+              <Heading id="venture-title" text={h.venture.title} size="t-2" className="mt-5" />
+              <p className="lead mt-6 max-w-md" data-reveal>
+                {h.venture.text}
+              </p>
+              <Link href={`/${locale}/collaboration#calculator`} className="btn-glow mt-9" data-reveal>
+                {h.venture.cta}
+                <span aria-hidden className="arrow">
+                  →
+                </span>
+              </Link>
+            </div>
+            <PlotDrawing className="mx-auto w-full max-w-sm text-fg lg:col-span-4 lg:col-start-9" />
+          </div>
+        </div>
+      </section>
+
+      {/* 7 · CONTACT */}
+      <section aria-labelledby="contact-title" className="theme-surface py-section">
+        <div className="container grid gap-x-10 gap-y-14 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <p className="label" data-reveal>
+              {h.contact.label}
+            </p>
+            <Heading id="contact-title" text={h.contact.title} size="t-2" className="mt-5" />
+            <p className="lead mt-6 max-w-md" data-reveal>
+              {h.contact.lead}
+            </p>
+            <p className="mt-10 flex flex-col items-start gap-1" data-reveal>
+              <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3">
+                {localizeDigits(site.phones.office.display, locale)}
+              </a>
+              <span className="text-sm text-muted">{site.hours[locale]}</span>
+            </p>
+          </div>
+          <div className="lg:col-span-6 lg:col-start-7" data-reveal>
+            <LeadForm locale={locale} t={t.form} source="home" />
+          </div>
+        </div>
+      </section>
     </>
   );
 }

@@ -20,7 +20,7 @@ export default async function ServicesPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHead label={s.label} title={s.title}>
+      <PageHead label={s.label} title={s.title} lead={s.lead}>
         <nav aria-label={s.label} className="enter mt-10 flex flex-wrap gap-2" style={{ animationDelay: '0.4s' }}>
           {services.map((svc) => (
             <a key={svc.slug} href={`#${svc.slug}`} className="chip">
@@ -40,8 +40,11 @@ export default async function ServicesPage({ params }: LocaleParams) {
                   {localizeDigits(svc.index, locale)}
                 </p>
                 <SplitText id={`${svc.slug}-title`} text={svc.title} className="display t-2 mt-4" />
-                <p className="mt-5 max-w-md text-muted" data-reveal>
+                <p className="mt-5 text-glow" data-reveal>
                   {svc.tagline}
+                </p>
+                <p className="mt-4 max-w-md text-muted" data-reveal>
+                  {svc.description}
                 </p>
                 <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded-2xl" data-reveal="clip">
                   <Image data-zoom src={svc.image} alt="" fill sizes="(min-width:1024px) 40vw, 100vw" className="photo object-cover" />

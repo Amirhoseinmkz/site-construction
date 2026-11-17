@@ -42,8 +42,10 @@ export default async function ProjectPage({ params }: Params) {
   // four facts, not a table
   const facts: [string, string][] = [
     [p.category, p.categories[project.category]],
+    [p.location, project.location],
     [p.area, `${formatNumber(project.area, locale)} ${p.sqm}`],
     ...(project.floors ? ([[p.floors, formatNumber(project.floors, locale)]] as [string, string][]) : []),
+    [p.structure, project.structure],
     [p.statusLabel, p.status[project.status]],
   ];
 
@@ -73,11 +75,11 @@ export default async function ProjectPage({ params }: Params) {
 
       {/* the facts */}
       <section className="py-12 md:py-16">
-        <dl className="container grid grid-cols-2 gap-y-8 md:grid-cols-4">
+        <dl className="container grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-3">
           {facts.map(([k, v]) => (
             <div key={k} data-reveal>
               <dt className="label">{k}</dt>
-              <dd className="display t-3 mt-2">{v}</dd>
+              <dd className="mt-2 text-xl font-medium">{v}</dd>
             </div>
           ))}
         </dl>
