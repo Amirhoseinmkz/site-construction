@@ -36,7 +36,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHead label={p.label} title={p.title} />
+      <PageHead label={p.label} title={p.title} lead={p.lead} />
       <section className="pb-section">
         <div className="container">
           <ProjectIndex locale={locale} items={items} filters={filters} filterLabel={p.filterLabel} emptyLabel={p.empty} />

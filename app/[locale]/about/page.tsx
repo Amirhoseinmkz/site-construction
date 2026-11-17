@@ -18,7 +18,7 @@ export default async function AboutPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHead label={a.label} title={a.title} />
+      <PageHead label={a.label} title={a.title} lead={a.lead} />
 
       {/* figures */}
       <section aria-label={a.label} className="pb-section">
@@ -48,9 +48,11 @@ export default async function AboutPage({ params }: LocaleParams) {
               {a.storyLabel}
             </p>
             <Heading id="story-title" text={a.storyTitle} size="t-2" className="mt-5" />
-            <p className="mt-6 text-muted" data-reveal>
-              {a.story[0]}
-            </p>
+            {a.story.slice(0, -1).map((para) => (
+              <p key={para} className="mt-6 text-muted" data-reveal>
+                {para}
+              </p>
+            ))}
           </div>
         </div>
         <div className="container mt-section">

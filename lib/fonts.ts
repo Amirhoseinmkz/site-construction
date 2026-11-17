@@ -5,9 +5,13 @@ import localFont from 'next/font/local';
  * nothing depends on a network fetch at dev, build or run time.
  */
 
-/** Persian — Vazirmatn, variable weight. The non-Latin cut lets Latin text fall through to the Latin faces. */
+/**
+ * Persian — Vazirmatn, variable weight 100–900. This is the full family (Latin
+ * letters and digits included), because on Persian pages *everything* is set
+ * in Vazirmatn: menus, headings, buttons, forms, numbers.
+ */
 export const fontPersian = localFont({
-  src: './../app/fonts/Vazirmatn-NL.woff2',
+  src: './../app/fonts/Vazirmatn.woff2',
   weight: '100 900',
   display: 'swap',
   variable: '--font-persian',

@@ -15,6 +15,8 @@ export interface ReelSlide {
   code: string;
   title: string;
   place: string;
+  meta: string;
+  summary: string;
   image: { src: string; width: number; height: number };
 }
 
@@ -91,7 +93,7 @@ export function Reel({ locale, label, title, allLabel, slides }: Props) {
             <Link
               key={p.slug}
               href={`/${locale}/projects/${p.slug}`}
-              className="group block w-[78vw] shrink-0 sm:w-[52vw] min-[900px]:w-[min(38svh,30vw)]"
+              className="group block w-[78vw] shrink-0 sm:w-[52vw] min-[900px]:w-[min(38svh,28vw)]"
             >
               <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-surface">
                 <Image
@@ -104,9 +106,10 @@ export function Reel({ locale, label, title, allLabel, slides }: Props) {
               </div>
               <div className="mt-5 flex items-baseline gap-4">
                 <span className="num label">{localizeDigits(String(i + 1).padStart(2, '0'), locale)}</span>
-                <span className="text-sm text-muted">{p.place}</span>
+                <span className="text-sm text-muted">{p.meta}</span>
               </div>
               <h3 className="display t-3 mt-2">{p.title}</h3>
+              <p className="mt-2 line-clamp-2 text-sm text-muted">{p.summary}</p>
             </Link>
           ))}
         </div>

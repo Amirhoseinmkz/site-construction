@@ -33,7 +33,7 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
-      <PageHead label={c.label} title={c.title} />
+      <PageHead label={c.label} title={c.title} lead={c.lead} />
 
       <section className="pb-section">
         <div className="container grid gap-x-10 gap-y-14 lg:grid-cols-12">

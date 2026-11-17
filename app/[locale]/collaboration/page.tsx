@@ -18,7 +18,7 @@ export default async function CollaborationPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHead label={c.label} title={c.title} />
+      <PageHead label={c.label} title={c.title} lead={c.lead} />
 
       <section className="pb-section">
         <div className="container grid gap-6 md:grid-cols-2 md:gap-8">
@@ -26,6 +26,7 @@ export default async function CollaborationPage({ params }: LocaleParams) {
             <article key={tr.title} className="rounded-[1.75rem] border border-line p-7 md:p-12" data-reveal>
               <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
               <h2 className="display t-2 mt-10 md:mt-20">{tr.title}</h2>
+              <p className="mt-5 max-w-md text-muted">{tr.text}</p>
               <ul className="mt-8 border-t border-fg">
                 {tr.items.map((it) => (
                   <li key={it} className="border-b border-line py-3.5">

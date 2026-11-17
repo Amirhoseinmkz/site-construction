@@ -12,12 +12,14 @@ gsap.registerPlugin(ScrollTrigger);
 export interface FilmProps {
   label: string;
   title: [string, string];
+  lead: string;
   scroll: string;
   /** The four process phases, as the film's chapters */
-  chapters: { index: string; title: string }[];
+  chapters: { index: string; title: string; text: string; points: string[] }[];
   /** The chapter count as text, localised ("04" / "۰۴") */
   total: string;
   finaleTitle: string;
+  finaleLead: string;
   cta: string;
   ctaHref: string;
 }
@@ -44,7 +46,7 @@ const chapterAt = (p: number) => CUTS.filter((c) => p >= c).length;
  * no wrapper is injected into DOM that React owns. Without JS or with reduced
  * motion it stays a still "morning" frame with the headline.
  */
-export function Film({ label, title, scroll, chapters, total, finaleTitle, cta, ctaHref }: FilmProps) {
+export function Film({ label, title, lead, scroll, chapters, total, finaleTitle, finaleLead, cta, ctaHref }: FilmProps) {
   const root = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -118,6 +120,9 @@ export function Film({ label, title, scroll, chapters, total, finaleTitle, cta, 
                 </span>,
               ]}
             />
+            <p className="lead enter mt-7 max-w-[26rem]" style={{ animationDelay: '0.5s' }}>
+              {lead}
+            </p>
           </div>
           <div className="film-hero film-ui absolute bottom-7 start-[var(--gutter)] hidden md:block" style={{ animationDelay: '1.6s' }}>
             <p className="scroll-cue label enter gap-4 [animation-delay:1.6s]">
@@ -133,14 +138,28 @@ export function Film({ label, title, scroll, chapters, total, finaleTitle, cta, 
               data-i={i + 1}
               className="film-cap absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+clamp(1rem,4svh,3rem))]"
             >
-              <p className="num label">{c.index} / {total}</p>
-              <p className="display t-1 mt-5 max-w-[86vw] md:max-w-[44vw]">{c.title}</p>
+              <div className="max-w-[86vw] md:max-w-[42vw]">
+                <p className="num label">
+                  {c.index} / {total}
+                </p>
+                <p className="display t-2 mt-4">{c.title}</p>
+                <p className="lead mt-5 max-w-[34rem] !text-[0.98rem] md:!text-[1.08rem]">{c.text}</p>
+                <ul className="mt-6 hidden space-y-2.5 text-[0.95rem] md:block">
+                  {c.points.map((pt) => (
+                    <li key={pt} className="flex gap-4">
+                      <span aria-hidden className="mt-[0.85em] h-px w-6 shrink-0 bg-glow" />
+                      {pt}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
 
           {/* the finale — handover, and the way in */}
           <div className="film-finale pointer-events-auto absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+clamp(1rem,4svh,3rem))]">
             <p className="display t-1 max-w-[86vw] md:max-w-[40vw]">{finaleTitle}</p>
+            <p className="lead mt-6 max-w-[26rem]">{finaleLead}</p>
             <Link href={ctaHref} className="btn-glow mt-8">
               {cta}
               <span aria-hidden className="arrow">
