@@ -576,7 +576,7 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
 }
 .film-dolly {
   transform-box: view-box;
-  transform-origin: 800px 760px;
+  transform-origin: 1100px 760px;
   transform: scale(calc(1 + var(--p, 0) * 0.16)) translateY(calc(var(--p, 0) * 18px));
 }
 .film-far {
@@ -585,17 +585,34 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
 .film-near {
   transform: translateX(calc(var(--p, 0) * 46px));
 }
-/* Portrait screens: keep the site at a readable size and centre the building on the screen
-   (the building sits at 60% of the artwork, 40% once mirrored for RTL). */
+/* Portrait screens: the text takes the top of the screen and the whole building sits below it.
+   The building is at 75% of the artwork (25% once mirrored for RTL); centre it on the screen. */
 @media (max-aspect-ratio: 1/1) {
   .film-art {
     inset: auto auto 0 auto;
     height: 100%;
-    width: 120svh;
-    left: calc(50vw - 72svh);
+    width: 94svh;
+    left: calc(50vw - 70.5svh);
   }
   [dir='rtl'] .film-art {
-    left: calc(50vw - 48svh);
+    left: calc(50vw - 23.5svh);
+  }
+}
+/* Squarer landscape screens (small laptops, tablets held sideways) have less room beside the text */
+@media (min-aspect-ratio: 1/1) and (max-aspect-ratio: 4/3) {
+  .film-shift {
+    transform: translateX(120px);
+  }
+}
+
+/* Tall tablets show the four key points too, so the drawing is smaller and stays below them */
+@media (max-aspect-ratio: 1/1) and (min-width: 600px) {
+  .film-art {
+    width: 68svh;
+    left: calc(50vw - 51svh);
+  }
+  [dir='rtl'] .film-art {
+    left: calc(50vw - 17svh);
   }
 }
 
