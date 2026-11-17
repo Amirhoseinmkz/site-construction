@@ -20,7 +20,7 @@ export default async function ServicesPage({ params }: LocaleParams) {
 
   return (
     <>
-      <PageHead label={s.label} title={s.title} lead={s.lead}>
+      <PageHead compact label={s.label} title={s.title} lead={s.lead}>
         <nav aria-label={s.label} className="enter mt-10 flex flex-wrap gap-2" style={{ animationDelay: '0.4s' }}>
           {services.map((svc) => (
             <a key={svc.slug} href={`#${svc.slug}`} className="chip">

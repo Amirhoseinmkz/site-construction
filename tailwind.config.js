@@ -23,7 +23,7 @@ module.exports = {
         brand: ['var(--font-brand)', 'var(--font-sans)', 'sans-serif'],
       },
       spacing: {
-        section: 'clamp(6rem, 13vw, 13rem)',
+        section: 'clamp(4.5rem, 10vw, 10rem)',
       },
       transitionTimingFunction: {
         cine: 'cubic-bezier(0.22, 1, 0.36, 1)',

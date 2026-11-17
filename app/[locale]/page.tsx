@@ -6,8 +6,11 @@ import { getProcessPhases, getProjects, getServices } from '@/lib/db/content';
 import { site } from '@/data/site';
 import { Heading } from '@/components/ui/Heading';
 import { LeadForm } from '@/components/ui/LeadForm';
-import { Film } from '@/components/home/Film';
-import { Reel } from '@/components/home/Reel';
+import { SiteArt } from '@/components/home/SiteArt';
+import { HeroTone } from '@/components/home/HeroTone';
+import { Chapters } from '@/components/home/Chapters';
+import { Showcase } from '@/components/home/Showcase';
+import { SplitText } from '@/components/motion/SplitText';
 import { PlotDrawing } from '@/components/home/PlotDrawing';
 
 export default async function HomePage({ params }: LocaleParams) {
@@ -19,21 +22,67 @@ export default async function HomePage({ params }: LocaleParams) {
 
   return (
     <>
-      {/* 1 · THE FILM — a site is surveyed, drawn, built and handed over as you scroll */}
-      <Film
-        label={h.hero.label}
-        title={h.hero.title as [string, string]}
-        lead={h.hero.lead}
-        scroll={h.hero.scroll}
-        chapters={phases.map((p) => ({ index: localizeDigits(p.index, locale), title: p.title, text: p.text, points: p.points }))}
+      {/* 1 · HERO — a morning on site that turns to night. Text and drawing sit in their own columns. */}
+      <section
+        id="hero"
+        aria-labelledby="hero-title"
+        data-header-tone="light"
+        data-tone="light"
+        className="hero-stage relative isolate overflow-hidden border-b border-fg/20 pt-[calc(var(--header-h)+1rem)]"
+      >
+        <HeroTone stageId="hero" />
+        {/* a warm horizon that glows up as it gets dark */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-[radial-gradient(60%_70%_at_70%_100%,rgb(var(--glow)/0.3),transparent_72%)] rtl:bg-[radial-gradient(60%_70%_at_30%_100%,rgb(var(--glow)/0.3),transparent_72%)]"
+          style={{ opacity: 'clamp(0.25, calc(0.25 + var(--n, 0) * 0.9), 1)' }}
+        />
+        <div className="container grid min-h-[calc(100svh-var(--header-h)-1rem)] items-end gap-x-10 gap-y-8 lg:grid-cols-12">
+          <div className="pb-2 lg:col-span-6 lg:self-center lg:pb-[6svh]">
+            <p className="label enter">{h.hero.label}</p>
+            <SplitText
+              as="h1"
+              id="hero-title"
+              css
+              delay={0.1}
+              className="display t-hero mt-5"
+              lines={[
+                h.hero.title[0],
+                <span key="accent" className="accent">
+                  {h.hero.title[1]}
+                </span>,
+              ]}
+            />
+            <p className="lead enter mt-7 max-w-[28rem]" style={{ animationDelay: '0.45s' }}>
+              {h.hero.lead}
+            </p>
+            <div className="enter mt-8 flex flex-wrap gap-3" style={{ animationDelay: '0.55s' }}>
+              <Link href={`/${locale}/contact`} className="btn-glow">
+                {h.hero.primary}
+                <span aria-hidden className="arrow">
+                  →
+                </span>
+              </Link>
+              <Link href={`/${locale}/projects`} className="btn-ghost">
+                {h.hero.secondary}
+              </Link>
+            </div>
+          </div>
+          <div className="lg:col-span-6">
+            <SiteArt id="hero" view="640 30 1000 816" className="rtl:-scale-x-100" />
+          </div>
+        </div>
+      </section>
+
+      {/* 2 · THE FOUR STAGES — each its own section, the drawing builds as you scroll past */}
+      <Chapters
+        label={h.process.label}
+        title={h.process.title}
         total={localizeDigits(String(phases.length).padStart(2, '0'), locale)}
-        finaleTitle={h.contact.title}
-        finaleLead={h.contact.lead}
-        cta={t.nav.cta}
-        ctaHref={`/${locale}/contact`}
+        chapters={phases.map((p) => ({ index: localizeDigits(p.index, locale), title: p.title, text: p.text, points: p.points }))}
       />
 
-      {/* 2 · WHO WE ARE — one sentence, lit word by word, and the numbers behind it */}
+      {/* 3 · WHO WE ARE — one sentence, lit word by word, and the numbers behind it */}
       <section aria-label={t.nav.about} className="py-section">
         <div className="container grid gap-y-10 lg:grid-cols-12">
           <p className="label self-start lg:col-span-3 lg:mt-4" data-reveal>
@@ -69,7 +118,7 @@ export default async function HomePage({ params }: LocaleParams) {
         </dl>
       </section>
 
-      {/* 3 · SERVICES — four ways in, each in a sentence */}
+      {/* 4 · SERVICES — four ways in, each in a sentence */}
       <section aria-labelledby="services-title" className="theme-surface py-section">
         <div className="container">
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -116,7 +165,7 @@ export default async function HomePage({ params }: LocaleParams) {
         </div>
       </section>
 
-      {/* 4 · PRINCIPLES — how we work */}
+      {/* 5 · PRINCIPLES — how we work */}
       <section aria-labelledby="principles-title" className="py-section">
         <div className="container">
           <p className="label" data-reveal>
@@ -142,15 +191,14 @@ export default async function HomePage({ params }: LocaleParams) {
         </div>
       </section>
 
-      {/* 5 · SELECTED WORK — sideways */}
-      <Reel
+      {/* 6 · SELECTED WORK */}
+      <Showcase
         locale={locale}
         label={h.projects.label}
         title={h.projects.title}
         allLabel={h.projects.all}
-        slides={projects.map((p) => ({
+        items={projects.map((p) => ({
           slug: p.slug,
-          code: p.code,
           title: p.title,
           place: p.location,
           meta: `${t.projects.categories[p.category]} · ${formatNumber(p.area, locale)} ${t.projects.sqm}`,
@@ -159,7 +207,7 @@ export default async function HomePage({ params }: LocaleParams) {
         }))}
       />
 
-      {/* 6 · PARTNERSHIP — own land? */}
+      {/* 7 · PARTNERSHIP — own land? */}
       <section aria-labelledby="venture-title" className="py-section">
         <div className="container">
           <div className="theme-dark grid items-center gap-10 overflow-hidden rounded-[1.75rem] p-8 md:p-14 lg:grid-cols-12 lg:p-20">
@@ -183,7 +231,7 @@ export default async function HomePage({ params }: LocaleParams) {
         </div>
       </section>
 
-      {/* 7 · CONTACT */}
+      {/* 8 · CONTACT */}
       <section aria-labelledby="contact-title" className="theme-surface py-section">
         <div className="container grid gap-x-10 gap-y-14 lg:grid-cols-12">
           <div className="lg:col-span-5">

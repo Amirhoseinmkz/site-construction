@@ -1,14 +1,17 @@
 import type { CSSProperties } from 'react';
 
 /**
- * The building site of the home-page film, as plain SVG geometry.
+ * The building site, as plain SVG geometry. Used by the home hero and by the
+ * four process chapters; it holds no state of its own.
  *
- * Everything responds to `--p` (scroll progress 0 → 1, written by Film.tsx):
- *  - `.film-draw`  strokes draw themselves between progress `--a` and `--a + --d`
- *  - `.film-lights` windows switch on at progress `--t`
- *  - `.film-night`  sky details (stars, moon) fade in
- * Elements inside `.draw` groups instead draw in on load (pure CSS).
- * Without `--p` the scene is the quiet "morning" frame: ground, neighbours, trees.
+ * It responds to two CSS variables set on any ancestor:
+ *  - `--p` (0 → 1) build progress: `.film-draw` strokes draw themselves between
+ *    `--a` and `--a + --d`; the crane leaves at the end; the camera pushes in.
+ *  - `--n` (0 → 1) nightfall: sun sets, moon and stars appear, windows light up
+ *    one by one (each at its own `--t`).
+ * Elements inside `.draw` groups draw in on load (pure CSS).
+ * Both variables default (via @property) to the finished building in daylight,
+ * so without JS or animation the drawing is complete.
  */
 
 const GY = 760; // ground line
@@ -39,19 +42,20 @@ for (const k of floors)
   for (const i of bays) {
     if ((k * 5 + i * 3) % 7 >= 4) continue;
     const order = (k * 13 + i * 7) % 40;
-    LIT.push({ x: COLS[i] + 14, y: GY - k * FH + 12, t: 0.8 + order * 0.0042, lit: 0.55 + ((k + i) % 4) * 0.12 });
+    LIT.push({ x: COLS[i] + 14, y: GY - k * FH + 12, t: 0.2 + order * 0.019, lit: 0.55 + ((k + i) % 4) * 0.12 });
   }
 
+/** Stars stay inside the part of the sky the crops show, so none ever drifts behind the hero text */
 const STARS: [number, number, number][] = [
-  [80, 70, 1.6], [210, 150, 1.1], [330, 60, 1.3], [470, 130, 1], [560, 40, 1.5], [690, 100, 1],
-  [880, 50, 1.2], [1010, 120, 1], [1120, 60, 1.4], [1330, 90, 1.1], [1460, 150, 1.3], [1540, 60, 1], [1390, 250, 1],
+  [760, 70, 1.6], [820, 160, 1.1], [900, 60, 1.3], [1000, 130, 1], [1100, 40, 1.5], [1180, 100, 1],
+  [1260, 50, 1.2], [1420, 130, 1], [1480, 56, 1.4], [1560, 96, 1.1], [1520, 250, 1.3], [780, 300, 1],
 ];
 
-export function FilmArt() {
+export function SiteArt({ id, view = '0 0 1600 900', className = '' }: { id: string; view?: string; className?: string }) {
   return (
     <svg
-      className="film-art"
-      viewBox="0 0 1600 900"
+      className={`site-art ${className}`}
+      viewBox={view}
       preserveAspectRatio="xMidYMax meet"
       fill="none"
       stroke="currentColor"
@@ -60,23 +64,23 @@ export function FilmArt() {
       aria-hidden
     >
       <defs>
-        <radialGradient id="moon-glow">
+        <radialGradient id={`${id}-moon`}>
           <stop offset="0" stopColor="rgb(var(--glow))" stopOpacity="0.32" />
           <stop offset="1" stopColor="rgb(var(--glow))" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      <g className="film-shift">
+      <g>
         {/* sun, then moon */}
         <g className="film-sun">
           <circle cx={1340} cy={104} r={32} strokeOpacity={0.55} />
           <circle cx={1340} cy={104} r={50} strokeOpacity={0.18} />
         </g>
-        <g className="film-night" style={v({ '--t': 0.62 })}>
-          <circle cx={1340} cy={104} r={88} fill="url(#moon-glow)" stroke="none" />
+        <g className="film-night" style={v({ '--t': 0.28 })}>
+          <circle cx={1340} cy={104} r={88} fill={`url(#${id}-moon)`} stroke="none" />
           <circle cx={1340} cy={104} r={24} strokeOpacity={0.6} />
         </g>
-        <g className="film-night film-stars" stroke="none" style={v({ '--t': 0.7 })}>
+        <g className="film-night film-stars" stroke="none" style={v({ '--t': 0.4 })}>
           {STARS.map(([cx, cy, r], n) => (
             <circle key={n} cx={cx} cy={cy} r={r} style={v({ '--d': `${(n % 5) * 0.9}s` })} />
           ))}
@@ -205,7 +209,7 @@ export function FilmArt() {
               <rect key={n} x={w.x} y={w.y} width={72} height={30} style={v({ '--t': w.t, '--lit': w.lit })} />
             ))}
           </g>
-          <circle className="film-night" cx={960} cy={TOP - 84} r={5} fill="rgb(var(--glow))" stroke="none" style={v({ '--t': 0.9 })} />
+          <circle className="film-night" cx={960} cy={TOP - 84} r={5} fill="rgb(var(--glow))" stroke="none" style={v({ '--t': 0.85 })} />
           </g>
         </g>
       </g>
