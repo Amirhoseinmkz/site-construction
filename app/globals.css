@@ -5,7 +5,7 @@
 /* ════════════════════════════════════════════════════════════════
    DESIGN TOKENS
    "Blue hour": a blue-black night, limestone type and one warm light.
-   A day theme (limestone ground, ink type) is a toggle in the menu.
+   A day theme (limestone ground, ink type) is a toggle in the header.
    Components only use the semantic roles (bg / surface / fg / muted /
    glow), so `.theme-dark` / `.theme-light` can force any section.
    ════════════════════════════════════════════════════════════════ */
@@ -17,9 +17,14 @@
   --danger: 240 150 130;
   --glow: 255 196 119; /* the warm work-light */
 
-  --header-h: 5rem;
+  --header-h: 5rem; /* on phones the nav pill sits under the logo, so the bar is taller */
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
   color-scheme: dark;
+}
+@media (max-width: 767px) {
+  :root {
+    --header-h: 8.4rem;
+  }
 }
 
 /* On Persian pages every text face is Vazirmatn (the wordmark in the logo is the one exception) */
@@ -765,33 +770,6 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
     gap: 2rem;
     will-change: transform;
   }
-}
-
-/* ── Full-screen menu ── */
-.menu {
-  --ox: calc(100% - 3.25rem);
-  clip-path: circle(0% at var(--ox) 2.75rem);
-  visibility: hidden;
-  transition: clip-path 0.95s cubic-bezier(0.76, 0, 0.24, 1), visibility 0s linear 0.95s;
-}
-[dir='rtl'] .menu {
-  --ox: 3.25rem;
-}
-.menu[data-open='true'] {
-  clip-path: circle(150% at var(--ox) 2.75rem);
-  visibility: visible;
-  transition-delay: 0s;
-}
-.menu-item {
-  opacity: 0;
-  transform: translateY(2.5rem);
-  transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0s;
-}
-.menu[data-open='true'] .menu-item {
-  opacity: 1;
-  transform: none;
-  transition-delay: calc(0.35s + var(--i, 0) * 70ms);
 }
 
 /* Hairline reading progress along the very top (where scroll-driven animation exists) */

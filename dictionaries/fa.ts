@@ -7,8 +7,6 @@ export const fa = {
   },
   a11y: {
     skip: 'رفتن به محتوای اصلی',
-    openMenu: 'باز کردن منو',
-    closeMenu: 'بستن منو',
     switchLang: 'Switch to English',
     backToTop: 'بازگشت به بالا',
     mainNav: 'ناوبری اصلی',
@@ -22,8 +20,6 @@ export const fa = {
     collaboration: 'همکاری',
     contact: 'تماس',
     cta: 'درخواست مشاوره',
-    menu: 'منو',
-    close: 'بستن',
     day: 'روز',
     night: 'شب',
     langShort: 'EN',
