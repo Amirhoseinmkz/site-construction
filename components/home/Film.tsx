@@ -138,12 +138,12 @@ export function Film({ label, title, lead, scroll, chapters, total, finaleTitle,
               data-i={i + 1}
               className="film-cap absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+clamp(1rem,4svh,3rem))]"
             >
-              <div className="max-w-[86vw] md:max-w-[42vw]">
+              <div className="max-w-[86vw] md:max-w-[min(42vw,34rem)]">
                 <p className="num label">
                   {c.index} / {total}
                 </p>
                 <p className="display t-2 mt-4">{c.title}</p>
-                <p className="lead mt-5 max-w-[34rem] !text-[0.98rem] md:!text-[1.08rem]">{c.text}</p>
+                <p className="lead mt-5 max-w-[30rem] !text-[0.98rem] md:!text-[1.08rem]">{c.text}</p>
                 <ul className="mt-6 hidden space-y-2.5 text-[0.95rem] md:block">
                   {c.points.map((pt) => (
                     <li key={pt} className="flex gap-4">

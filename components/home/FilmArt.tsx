@@ -16,6 +16,8 @@ const COLS = [760, 860, 960, 1060, 1160]; // structural columns
 const N = 10; // floors
 const FH = 54; // floor height
 const TOP = GY - N * FH; // 220
+/** The building and its crane sit this far right, so the text column on the other side never touches the drawing */
+const SHIFT = 240;
 
 const v = (o: Record<string, number | string>) => o as CSSProperties;
 
@@ -67,12 +69,12 @@ export function FilmArt() {
       <g className="film-shift">
         {/* sun, then moon */}
         <g className="film-sun">
-          <circle cx={1230} cy={130} r={34} strokeOpacity={0.55} />
-          <circle cx={1230} cy={130} r={54} strokeOpacity={0.18} />
+          <circle cx={1340} cy={104} r={32} strokeOpacity={0.55} />
+          <circle cx={1340} cy={104} r={50} strokeOpacity={0.18} />
         </g>
         <g className="film-night" style={v({ '--t': 0.62 })}>
-          <circle cx={1230} cy={130} r={90} fill="url(#moon-glow)" stroke="none" />
-          <circle cx={1230} cy={130} r={25} strokeOpacity={0.6} />
+          <circle cx={1340} cy={104} r={88} fill="url(#moon-glow)" stroke="none" />
+          <circle cx={1340} cy={104} r={24} strokeOpacity={0.6} />
         </g>
         <g className="film-night film-stars" stroke="none" style={v({ '--t': 0.7 })}>
           {STARS.map(([cx, cy, r], n) => (
@@ -80,21 +82,12 @@ export function FilmArt() {
           ))}
         </g>
 
-        {/* far skyline — drifts slowly against the camera */}
+        {/* far skyline — low rooftops only, so nothing sits under the text column */}
         <g className="film-far draw" strokeOpacity={0.4}>
           <Li i={4}>
-            <rect pathLength={1} x={110} y={520} width={210} height={240} />
-            <rect pathLength={1} x={345} y={610} width={170} height={150} />
-            <rect pathLength={1} x={1290} y={560} width={190} height={200} />
-            <rect pathLength={1} x={1500} y={640} width={140} height={120} />
-          </Li>
-          <Li i={7}>
-            {[580, 640, 700].map((y) => (
-              <line key={y} pathLength={1} x1={110} y1={y} x2={320} y2={y} />
-            ))}
-            {[640, 690].map((y) => (
-              <line key={y} pathLength={1} x1={1290} y1={y} x2={1480} y2={y} />
-            ))}
+            <rect pathLength={1} x={120} y={700} width={190} height={60} />
+            <rect pathLength={1} x={340} y={722} width={130} height={38} />
+            <rect pathLength={1} x={1530} y={650} width={140} height={110} />
           </Li>
         </g>
 
@@ -102,32 +95,37 @@ export function FilmArt() {
           {/* ground */}
           <g className="draw">
             <Li i={0}>
-              <line pathLength={1} x1={-200} y1={GY} x2={1800} y2={GY} />
+              <line pathLength={1} x1={-900} y1={GY} x2={2500} y2={GY} />
             </Li>
             <Li i={3}>
-              <line pathLength={1} x1={-200} y1={GY + 34} x2={1800} y2={GY + 34} strokeOpacity={0.25} />
+              <line pathLength={1} x1={-900} y1={GY + 34} x2={2500} y2={GY + 34} strokeOpacity={0.25} />
             </Li>
           </g>
 
-          {/* site hoarding and trees, a little closer than the building */}
+          {/* site hoarding on the text side, a little closer than the building */}
           <g className="film-near draw">
             <Li i={5}>
-              <line pathLength={1} x1={-100} y1={GY - 34} x2={430} y2={GY - 34} strokeOpacity={0.55} />
-              {[-100, -40, 20, 80, 140, 200, 260, 320, 380, 430].map((x) => (
+              <line pathLength={1} x1={-300} y1={GY - 34} x2={430} y2={GY - 34} strokeOpacity={0.55} />
+              {[-300, -240, -180, -120, -60, 0, 60, 120, 180, 240, 300, 360, 430].map((x) => (
                 <line key={x} pathLength={1} x1={x} y1={GY - 34} x2={x} y2={GY} strokeOpacity={0.55} />
               ))}
+            </Li>
+          </g>
+
+          {/* everything below belongs to the building: it is shifted away from the text */}
+          <g transform={`translate(${SHIFT} 0)`}>
+          <g className="film-near draw">
+            <Li i={5}>
               <circle pathLength={1} cx={1390} cy={GY - 92} r={46} />
               <line pathLength={1} x1={1390} y1={GY - 46} x2={1390} y2={GY} />
-              <circle pathLength={1} cx={1470} cy={GY - 58} r={26} />
-              <line pathLength={1} x1={1470} y1={GY - 32} x2={1470} y2={GY} />
               <circle pathLength={1} cx={1228} cy={GY - 58} r={26} strokeOpacity={0.8} />
               <line pathLength={1} x1={1228} y1={GY - 32} x2={1228} y2={GY} strokeOpacity={0.8} />
               <line pathLength={1} x1={560} y1={GY - 34} x2={700} y2={GY - 34} strokeOpacity={0.55} />
               <line pathLength={1} x1={560} y1={GY - 34} x2={560} y2={GY} strokeOpacity={0.55} />
               <line pathLength={1} x1={630} y1={GY - 34} x2={630} y2={GY} strokeOpacity={0.55} />
               <line pathLength={1} x1={700} y1={GY - 34} x2={700} y2={GY} strokeOpacity={0.55} />
-              <circle pathLength={1} cx={470} cy={GY - 70} r={34} strokeOpacity={0.7} />
-              <line pathLength={1} x1={470} y1={GY - 36} x2={470} y2={GY} strokeOpacity={0.7} />
+              <circle pathLength={1} cx={500} cy={GY - 66} r={32} strokeOpacity={0.7} />
+              <line pathLength={1} x1={500} y1={GY - 34} x2={500} y2={GY} strokeOpacity={0.7} />
             </Li>
           </g>
 
@@ -208,6 +206,7 @@ export function FilmArt() {
             ))}
           </g>
           <circle className="film-night" cx={960} cy={TOP - 84} r={5} fill="rgb(var(--glow))" stroke="none" style={v({ '--t': 0.9 })} />
+          </g>
         </g>
       </g>
     </svg>
