@@ -25,7 +25,7 @@ export function SocialIcon({ name, className = 'h-[1.1em] w-[1.1em]' }: { name: 
   );
 }
 
-/** Round icon buttons, used in the footer and the mobile menu. */
+/** Round icon buttons, used in the footer. */
 export function SocialLinks({ className = '' }: { className?: string }) {
   return (
     <ul className={`flex flex-wrap gap-2.5 ${className}`}>

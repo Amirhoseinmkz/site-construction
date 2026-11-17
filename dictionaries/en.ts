@@ -8,8 +8,6 @@ export const en: Dictionary = {
   },
   a11y: {
     skip: 'Skip to main content',
-    openMenu: 'Open menu',
-    closeMenu: 'Close menu',
     switchLang: 'تغییر زبان به فارسی',
     backToTop: 'Back to top',
     mainNav: 'Main navigation',
@@ -23,8 +21,6 @@ export const en: Dictionary = {
     collaboration: 'Partner',
     contact: 'Contact',
     cta: 'Book a consultation',
-    menu: 'Menu',
-    close: 'Close',
     day: 'Day',
     night: 'Night',
     langShort: 'فا',

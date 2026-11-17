@@ -2,14 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
 import type { Dictionary } from '@/dictionaries';
-import { site } from '@/data/site';
-import { localizeDigits } from '@/lib/i18n';
 import { Logo } from './Logo';
-import { useLenis } from '@/components/motion/MotionProvider';
-import { SocialLinks } from '@/components/ui/Social';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 type NavKey = 'home' | 'services' | 'projects' | 'about' | 'collaboration' | 'contact';
@@ -22,18 +18,26 @@ const NAV: { key: NavKey; path: string }[] = [
   { key: 'contact', path: '/contact' },
 ];
 
+/**
+ * The bar is always visible: a floating glass pill with the six pages, a
+ * sliding highlight that follows the pointer (and rests on the current page),
+ * the language switch, the day/night toggle and the call to action.
+ * On phones the pill drops under the logo as a swipeable row — no hidden menu.
+ */
 export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav' | 'a11y'> }) {
   const pathname = usePathname();
-  const lenis = useLenis();
-  const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [tone, setTone] = useState<'dark' | 'light' | null>(null);
+  const [hover, setHover] = useState<number | null>(null);
+  const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
   const lastY = useRef(0);
-  const button = useRef<HTMLButtonElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+  const items = useRef<(HTMLLIElement | null)[]>([]);
 
   const rest = pathname.replace(/^\/(fa|en)/, '');
   const other: Locale = locale === 'fa' ? 'en' : 'fa';
   const isActive = (path: string) => (path === '' ? rest === '' : rest === path || rest.startsWith(`${path}/`));
+  const activeIndex = NAV.findIndex((n) => isActive(n.path));
 
   // Hide on the way down, return on the way up; take the tone of whatever is under the bar
   useEffect(() => {
@@ -63,117 +67,97 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     };
   }, [pathname]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  // Place the highlight under the hovered link, or the current page
+  const target = hover ?? (activeIndex >= 0 ? activeIndex : null);
+  useLayoutEffect(() => {
+    const place = () => {
+      const el = target === null ? null : items.current[target];
+      setPill(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);
+    };
+    place();
+    window.addEventListener('resize', place);
+    document.fonts?.ready.then(place);
+    return () => window.removeEventListener('resize', place);
+  }, [target, locale]);
 
-  // While the menu is open: stop scrolling, close on Escape
+  // On phones the row scrolls: keep the current page in view
   useEffect(() => {
-    if (!open) return;
-    lenis?.stop();
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setOpen(false);
-        button.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      lenis?.start();
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open, lenis]);
+    const el = activeIndex >= 0 ? items.current[activeIndex] : null;
+    if (el && list.current?.parentElement) {
+      const box = list.current.parentElement;
+      box.scrollTo({ left: el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2, behavior: 'smooth' });
+    }
+  }, [activeIndex, pathname]);
 
   const rememberLocale = () => {
     document.cookie = `NEXT_LOCALE=${other}; path=/; max-age=31536000; samesite=lax`;
   };
-  const toneClass = open || tone === 'dark' ? 'theme-dark' : tone === 'light' ? 'theme-light' : '';
+  const toneClass = tone === 'dark' ? 'theme-dark' : tone === 'light' ? 'theme-light' : '';
 
   return (
-    <>
-      <header
-        className={`fixed inset-x-0 top-0 z-[70] !bg-transparent transition-transform duration-700 ease-cine ${toneClass} ${
-          hidden && !open ? '-translate-y-full' : ''
-        }`}
-      >
-        <div className="container flex h-[var(--header-h)] items-center justify-between gap-6">
-          <Link href={`/${locale}`} aria-label={t.nav.home} className="shrink-0">
-            <Logo />
+    <header
+      className={`fixed inset-x-0 top-0 z-[70] !bg-transparent transition-transform duration-700 ease-cine ${toneClass} ${
+        hidden ? '-translate-y-full' : ''
+      }`}
+    >
+      <div className="container flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-3.5 md:h-[var(--header-h)] md:flex-nowrap md:py-0">
+        <Link href={`/${locale}`} aria-label={t.nav.home} className="shrink-0">
+          <Logo />
+        </Link>
+
+        <nav
+          aria-label={t.a11y.mainNav}
+          className="order-3 -mx-[var(--gutter)] w-[calc(100%+var(--gutter)*2)] overflow-x-auto px-[var(--gutter)] pb-3 [scrollbar-width:none] md:order-none md:mx-0 md:w-auto md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+        >
+          <ul
+            ref={list}
+            onPointerLeave={() => setHover(null)}
+            className="relative mx-auto flex w-max items-center gap-0.5 rounded-full border border-fg/15 bg-bg/70 p-1 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur-xl"
+          >
+            {pill && (
+              <span
+                aria-hidden
+                className="absolute inset-y-1 left-0 rounded-full bg-fg/10 transition-[transform,width] duration-500 ease-cine"
+                style={{ width: pill.w, transform: `translateX(${pill.x}px)` }}
+              />
+            )}
+            {NAV.map((item, i) => (
+              <li key={item.key} ref={(el) => void (items.current[i] = el)} className="relative">
+                <Link
+                  href={`/${locale}${item.path}`}
+                  aria-current={isActive(item.path) ? 'page' : undefined}
+                  onPointerEnter={() => setHover(i)}
+                  onFocus={() => setHover(i)}
+                  onBlur={() => setHover(null)}
+                  className="relative block whitespace-nowrap rounded-full px-4 py-2 text-[0.92rem] text-muted transition-colors duration-300 hover:text-fg aria-[current=page]:text-fg"
+                >
+                  {t.nav[item.key]}
+                  {isActive(item.path) && (
+                    <span aria-hidden className="absolute inset-x-4 bottom-1 h-px bg-glow" />
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="flex items-center gap-1.5">
+          <ThemeToggle dayLabel={t.nav.day} nightLabel={t.nav.night} />
+          <Link
+            href={`/${other}${rest}`}
+            hrefLang={other}
+            lang={other}
+            onClick={rememberLocale}
+            aria-label={t.a11y.switchLang}
+            className="grid h-10 min-w-10 place-items-center rounded-full px-2 text-[0.92rem] text-muted transition-colors duration-300 hover:bg-fg/10 hover:text-fg"
+          >
+            {t.nav.langShort}
           </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/${other}${rest}`}
-              hrefLang={other}
-              lang={other}
-              onClick={rememberLocale}
-              aria-label={t.a11y.switchLang}
-              className="nav-link px-2 text-[0.95rem]"
-            >
-              {t.nav.langShort}
-            </Link>
-            <button
-              ref={button}
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls="site-menu"
-              className="group inline-flex items-center gap-3 rounded-full border border-fg/25 py-2.5 ps-5 pe-4 text-[0.95rem] transition-colors duration-500 ease-cine hover:border-fg"
-            >
-              <span>{open ? t.nav.close : t.nav.menu}</span>
-              <span aria-hidden className="relative block h-2.5 w-5">
-                <span className={`absolute inset-x-0 top-0 h-px bg-current transition-transform duration-500 ease-cine ${open ? 'translate-y-[5px] rotate-45' : ''}`} />
-                <span className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-500 ease-cine ${open ? '-translate-y-[4px] -rotate-45' : ''}`} />
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Full-screen menu */}
-      <div
-        id="site-menu"
-        data-open={open}
-        inert={!open}
-        aria-hidden={!open}
-        className="menu theme-dark fixed inset-0 z-[60] flex flex-col overflow-y-auto pt-[var(--header-h)]"
-      >
-        <div className="container grid flex-1 content-center gap-12 py-10 lg:grid-cols-12">
-          <nav aria-label={t.a11y.mainNav} className="lg:col-span-8">
-            <ul>
-              {NAV.map((item, i) => (
-                <li key={item.key} className="menu-item overflow-hidden" style={{ ['--i' as string]: i }}>
-                  <Link
-                    href={`/${locale}${item.path}`}
-                    aria-current={isActive(item.path) ? 'page' : undefined}
-                    className="group flex items-baseline gap-5 py-1.5 transition-opacity duration-500 aria-[current=page]:text-glow"
-                  >
-                    <span className="num w-8 shrink-0 text-xs text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
-                    <span className="display t-1 transition-transform duration-700 ease-cine [font-size:clamp(2.3rem,min(7vw,9.5svh),6.25rem)] group-hover:translate-x-3 rtl:group-hover:-translate-x-3">
-                      {t.nav[item.key]}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="menu-item flex flex-col justify-end gap-8 lg:col-span-4" style={{ ['--i' as string]: 6 }}>
-            <div>
-              <p className="label !flex">{t.nav.contact}</p>
-              <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3 mt-3">
-                {localizeDigits(site.phones.office.display, locale)}
-              </a>
-              <br />
-              <a href={`tel:${site.phones.mobile.tel}`} className="nav-link ltr display t-3 mt-1">
-                {localizeDigits(site.phones.mobile.display, locale)}
-              </a>
-              <p className="mt-3 text-sm text-muted">{site.hours[locale]}</p>
-            </div>
-            <SocialLinks />
-            <ThemeToggle dayLabel={t.nav.day} nightLabel={t.nav.night} />
-          </div>
+          <Link href={`/${locale}/contact`} className="btn-glow ms-1 hidden !px-6 !py-2.5 text-sm xl:inline-flex">
+            {t.nav.cta}
+          </Link>
         </div>
       </div>
-    </>
+    </header>
   );
 }
