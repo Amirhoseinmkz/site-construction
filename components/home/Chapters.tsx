@@ -114,16 +114,6 @@ export function Chapters({ locale, label, title, stageWord, chapters }: Props) {
                 </div>
                 <div className={`lg:col-span-6 ${flip ? 'lg:order-first' : 'lg:col-start-7'}`}>
                   <ChapterArt id={`chapter-${i + 1}`} p={stage.p} n={stage.n} ground={stage.ground} pins={pins} />
-                  <div className="mt-4 flex items-center justify-between gap-4 text-sm text-muted">
-                    <span>
-                      {stageWord} {plain(i + 1, locale)} / {plain(chapters.length, locale)}
-                    </span>
-                    <span aria-hidden className="flex gap-1.5">
-                      {chapters.map((_, k) => (
-                        <span key={k} className={`h-1 w-10 rounded-full ${k <= i ? 'bg-glow' : 'bg-fg/20'}`} />
-                      ))}
-                    </span>
-                  </div>
                 </div>
               </li>
             );

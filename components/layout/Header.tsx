@@ -19,19 +19,21 @@ const NAV: { key: NavKey; path: string }[] = [
 ];
 
 /**
- * The bar is always visible: a floating glass pill with the six pages, a
- * sliding highlight that follows the pointer (and rests on the current page),
- * the language switch, the day/night toggle and the call to action.
- * On phones the pill drops under the logo as a swipeable row — no hidden menu.
+ * The bar is always visible: the six pages as plain links, with a thin line
+ * that slides to the hovered link and rests under the current page, then the
+ * day/night toggle, the language switch and the call to action. No frame
+ * around the links. On phones the links spread evenly across a second row
+ * under the logo (nothing scrolls sideways, nothing is hidden). Once the page
+ * has moved, the bar gets a soft backdrop so it never overprints content.
  */
 export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav' | 'a11y'> }) {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [tone, setTone] = useState<'dark' | 'light' | null>(null);
   const [hover, setHover] = useState<number | null>(null);
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
   const lastY = useRef(0);
-  const list = useRef<HTMLUListElement>(null);
   const items = useRef<(HTMLLIElement | null)[]>([]);
 
   const rest = pathname.replace(/^\/(fa|en)/, '');
@@ -47,6 +49,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
+        setScrolled(y > 12);
         if (y > 300 && y > lastY.current + 6) setHidden(true);
         else if (y < lastY.current - 6 || y <= 300) setHidden(false);
         lastY.current = y;
@@ -80,15 +83,6 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     return () => window.removeEventListener('resize', place);
   }, [target, locale]);
 
-  // On phones the row scrolls: keep the current page in view
-  useEffect(() => {
-    const el = activeIndex >= 0 ? items.current[activeIndex] : null;
-    if (el && list.current?.parentElement) {
-      const box = list.current.parentElement;
-      box.scrollTo({ left: el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2, behavior: 'smooth' });
-    }
-  }, [activeIndex, pathname]);
-
   const rememberLocale = () => {
     document.cookie = `NEXT_LOCALE=${other}; path=/; max-age=31536000; samesite=lax`;
   };
@@ -96,29 +90,22 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[70] !bg-transparent transition-transform duration-700 ease-cine ${toneClass} ${
-        hidden ? '-translate-y-full' : ''
-      }`}
+      className={`fixed inset-x-0 top-0 z-[70] border-b transition-[transform,background-color,border-color] duration-500 ease-cine ${toneClass} ${
+        scrolled ? '!bg-bg/85 border-line backdrop-blur-md' : '!bg-transparent border-transparent'
+      } ${hidden ? '-translate-y-full' : ''}`}
     >
-      <div className="container flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-3.5 md:h-[var(--header-h)] md:flex-nowrap md:py-0">
+      <div className="container flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 pt-3.5 md:h-[var(--header-h)] md:gap-x-6 md:flex-nowrap md:py-0">
         <Link href={`/${locale}`} aria-label={t.nav.home} className="shrink-0">
           <Logo />
         </Link>
 
-        <nav
-          aria-label={t.a11y.mainNav}
-          className="order-3 -mx-[var(--gutter)] w-[calc(100%+var(--gutter)*2)] overflow-x-auto px-[var(--gutter)] pb-3 [scrollbar-width:none] md:order-none md:mx-0 md:w-auto md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
-        >
-          <ul
-            ref={list}
-            onPointerLeave={() => setHover(null)}
-            className="relative mx-auto flex w-max items-center gap-0.5 rounded-full border border-fg/15 bg-bg/70 p-1 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur-xl"
-          >
+        <nav aria-label={t.a11y.mainNav} className="order-3 w-full overflow-x-auto pb-1 [scrollbar-width:none] md:order-none md:w-auto md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
+          <ul onPointerLeave={() => setHover(null)} className="relative flex w-full min-w-max items-center justify-between md:w-auto md:min-w-0 md:justify-start md:gap-1">
             {pill && (
               <span
                 aria-hidden
-                className="absolute inset-y-1 left-0 rounded-full bg-fg/10 transition-[transform,width] duration-500 ease-cine"
-                style={{ width: pill.w, transform: `translateX(${pill.x}px)` }}
+                className="absolute bottom-0 left-0 h-px bg-glow transition-[transform,width] duration-500 ease-cine md:bottom-1"
+                style={{ width: Math.max(pill.w - 16, 8), transform: `translateX(${pill.x + 8}px)` }}
               />
             )}
             {NAV.map((item, i) => (
@@ -129,12 +116,9 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
                   onPointerEnter={() => setHover(i)}
                   onFocus={() => setHover(i)}
                   onBlur={() => setHover(null)}
-                  className="relative block whitespace-nowrap rounded-full px-4 py-2 text-[0.92rem] text-muted transition-colors duration-300 hover:text-fg aria-[current=page]:text-fg"
+                  className="block whitespace-nowrap px-1 py-2.5 text-[clamp(0.72rem,3.2vw,0.85rem)] text-muted transition-colors duration-300 hover:text-fg aria-[current=page]:text-fg md:px-4 md:py-2 md:text-[0.95rem]"
                 >
                   {t.nav[item.key]}
-                  {isActive(item.path) && (
-                    <span aria-hidden className="absolute inset-x-4 bottom-1 h-px bg-glow" />
-                  )}
                 </Link>
               </li>
             ))}
