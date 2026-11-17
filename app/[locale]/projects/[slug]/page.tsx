@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDictionary } from '@/dictionaries';
 import { getProject, getProjects, getProjectSlugs } from '@/lib/db/content';
-import { formatNumber, isLocale, localizeDigits, locales } from '@/lib/i18n';
+import { formatNumber, isLocale, localizeDigits, locales, plain } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { SplitText } from '@/components/motion/SplitText';
 import { Heading } from '@/components/ui/Heading';
@@ -94,7 +94,7 @@ export default async function ProjectPage({ params }: Params) {
           <ul className="grid gap-x-8 sm:grid-cols-2 lg:col-span-12 lg:grid-cols-4">
             {project.highlights.map((hl, i) => (
               <li key={hl} className="border-t border-fg/25 pb-8 pt-5" data-reveal>
-                <span className="num text-sm text-muted">{localizeDigits(String(i + 1).padStart(2, '0'), locale)}</span>
+                <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
                 <p className="mt-6 text-lg">{hl}</p>
               </li>
             ))}

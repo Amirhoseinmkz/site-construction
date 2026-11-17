@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { localizeDigits } from '@/lib/i18n';
+import { localizeDigits, plain } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { PageHead } from '@/components/ui/PageHead';
@@ -69,7 +69,7 @@ export default async function AboutPage({ params }: LocaleParams) {
           <dl className="mt-12 grid gap-x-8 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
             {a.values.map((v, i) => (
               <div key={v.title} className="border-t border-fg pb-10 pt-5" data-reveal>
-                <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+                <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
                 <dt className="display t-3 mt-10 md:mt-16">{v.title}</dt>
                 <dd className="mt-3 text-sm text-muted">{v.text}</dd>
               </div>

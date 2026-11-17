@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
-import { localizeDigits } from '@/lib/i18n';
+import { plain } from '@/lib/i18n';
 import { Heading } from '@/components/ui/Heading';
 
 export interface ShowcaseItem {
@@ -42,7 +42,7 @@ export function Showcase({ locale, label, title, allLabel, items }: Props) {
         </div>
       </div>
       <div className="mt-5 flex items-baseline gap-4">
-        <span className="num label">{localizeDigits(String(n).padStart(2, '0'), locale)}</span>
+        <span className="num label">{plain(n, locale)}</span>
         <span className="text-sm text-muted">{p.meta}</span>
       </div>
       <h3 className="display t-3 mt-2">{p.title}</h3>

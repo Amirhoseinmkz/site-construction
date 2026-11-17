@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { localizeDigits } from '@/lib/i18n';
+import { plain } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { getServices } from '@/lib/db/content';
@@ -24,7 +24,7 @@ export default async function ServicesPage({ params }: LocaleParams) {
         <nav aria-label={s.label} className="enter mt-10 flex flex-wrap gap-2" style={{ animationDelay: '0.4s' }}>
           {services.map((svc) => (
             <a key={svc.slug} href={`#${svc.slug}`} className="chip">
-              <span className="num text-xs opacity-60">{localizeDigits(svc.index, locale)}</span>
+              <span className="num text-xs opacity-60">{plain(svc.index, locale)}</span>
               {svc.title}
             </a>
           ))}
@@ -37,7 +37,7 @@ export default async function ServicesPage({ params }: LocaleParams) {
             <div className="lg:col-span-5">
               <div className="lg:sticky lg:top-28">
                 <p className="num display t-1 text-muted/50" data-reveal>
-                  {localizeDigits(svc.index, locale)}
+                  {plain(svc.index, locale)}
                 </p>
                 <SplitText id={`${svc.slug}-title`} text={svc.title} className="display t-2 mt-4" />
                 <p className="mt-5 text-glow" data-reveal>
@@ -66,7 +66,7 @@ export default async function ServicesPage({ params }: LocaleParams) {
                 {svc.stages.map((stage, i) => (
                   <details key={i} className="border-b border-line" data-reveal>
                     <summary className="flex items-center gap-5 py-6">
-                      <span className="num w-8 shrink-0 text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+                      <span className="num w-8 shrink-0 text-sm text-muted">{plain(i + 1, locale)}</span>
                       <span className="display t-3 flex-1">{stage.short}</span>
                       <span aria-hidden className="plus" />
                     </summary>

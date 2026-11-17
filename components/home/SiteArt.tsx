@@ -51,12 +51,14 @@ const STARS: [number, number, number][] = [
   [1260, 50, 1.2], [1420, 130, 1], [1480, 56, 1.4], [1560, 96, 1.1], [1520, 250, 1.3], [780, 300, 1],
 ];
 
-export function SiteArt({ id, view = '0 0 1600 900', className = '' }: { id: string; view?: string; className?: string }) {
+export function SiteArt({ id, view = '0 0 1600 900', className = '', fill = false }: { id: string; view?: string; className?: string; fill?: boolean }) {
   return (
     <svg
       className={`site-art ${className}`}
       viewBox={view}
       preserveAspectRatio="xMidYMax meet"
+      // `.site-art` is unlayered CSS, so it would beat a Tailwind `h-full`: size to the box explicitly
+      style={fill ? { height: '100%' } : undefined}
       fill="none"
       stroke="currentColor"
       strokeWidth={1.6}

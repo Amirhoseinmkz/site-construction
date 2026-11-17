@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatNumber, localizeDigits } from '@/lib/i18n';
+import { formatNumber, localizeDigits, plain } from '@/lib/i18n';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { getProcessPhases, getProjects, getServices } from '@/lib/db/content';
 import { site } from '@/data/site';
@@ -76,10 +76,11 @@ export default async function HomePage({ params }: LocaleParams) {
 
       {/* 2 · THE FOUR STAGES — each its own section, the drawing builds as you scroll past */}
       <Chapters
+        locale={locale}
         label={h.process.label}
         title={h.process.title}
-        total={localizeDigits(String(phases.length).padStart(2, '0'), locale)}
-        chapters={phases.map((p) => ({ index: localizeDigits(p.index, locale), title: p.title, text: p.text, points: p.points }))}
+        stageWord={h.process.stage}
+        chapters={phases.map((p) => ({ title: p.title, text: p.text, points: p.points }))}
       />
 
       {/* 3 · WHO WE ARE — one sentence, lit word by word, and the numbers behind it */}
@@ -143,7 +144,7 @@ export default async function HomePage({ params }: LocaleParams) {
                   href={`/${locale}/services#${s.slug}`}
                   className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-x-4 gap-y-3 py-8 md:grid-cols-[6rem_1fr_11rem_auto] md:gap-x-10 md:py-11"
                 >
-                  <span className="num self-start pt-2 text-sm text-muted">{localizeDigits(s.index, locale)}</span>
+                  <span className="num self-start pt-2 text-sm text-muted">{plain(s.index, locale)}</span>
                   <span className="transition-transform duration-700 ease-cine group-hover:translate-x-3 rtl:group-hover:-translate-x-3">
                     <span className="display t-2 block">{s.title}</span>
                     <span className="mt-3 block text-glow">{s.tagline}</span>
@@ -181,7 +182,7 @@ export default async function HomePage({ params }: LocaleParams) {
             <dl className="grid gap-x-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
               {h.principles.items.map((it, i) => (
                 <div key={it.title} className="border-t border-fg/25 pb-10 pt-5" data-reveal>
-                  <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+                  <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
                   <dt className="display t-3 mt-6">{it.title}</dt>
                   <dd className="mt-3 text-muted">{it.text}</dd>
                 </div>

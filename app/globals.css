@@ -615,6 +615,37 @@ html[lang='fa'] :is(input, textarea, select, button, option) {
   animation-delay: var(--d, 0s);
 }
 
+/* A pin on the drawing and the same number in the list beside it highlight together */
+.chapter-pin circle,
+.chapter-pin text {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.chapter:has([data-pin-item='1']:is(:hover, :focus-within)) [data-pin='1'] > *,
+.chapter:has([data-pin-item='2']:is(:hover, :focus-within)) [data-pin='2'] > *,
+.chapter:has([data-pin-item='3']:is(:hover, :focus-within)) [data-pin='3'] > *,
+.chapter:has([data-pin-item='4']:is(:hover, :focus-within)) [data-pin='4'] > *,
+.chapter:has([data-pin-item='5']:is(:hover, :focus-within)) [data-pin='5'] > * {
+  transform: scale(1.45);
+}
+.pin-badge {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 9999px;
+  background: rgb(var(--glow));
+  color: #0a0e14;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+li:hover > .pin-badge {
+  transform: scale(1.15);
+}
+
 /* ── Hero: a morning on site that turns to night, once, over ~9 seconds ──
    The stage colours are computed from `--n`, so every token (text, buttons,
    lines) follows the sky with no JavaScript. */

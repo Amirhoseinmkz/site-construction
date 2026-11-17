@@ -44,7 +44,7 @@ export const en: Dictionary = {
       'We are a family practice. We design every project ourselves, build it ourselves, and stand behind it until the day we hand over the keys.',
     services: { label: 'Services', title: 'Four paths. One standard.', link: 'All services' },
     projects: { label: 'Selected work', title: 'Work that carries our signature.', all: 'All projects' },
-    process: { label: 'Process', title: 'Four stages. Zero ambiguity.', link: 'The process in detail' },
+    process: { label: 'Process', title: 'Four stages. Zero ambiguity.', link: 'The process in detail', stage: 'Stage' },
     principles: {
       label: 'Principles',
       title: 'Fewer promises. More paperwork.',

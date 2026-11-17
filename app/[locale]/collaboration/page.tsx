@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { localizeDigits } from '@/lib/i18n';
+import { plain } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
 import { PageHead } from '@/components/ui/PageHead';
@@ -25,7 +25,7 @@ export default async function CollaborationPage({ params }: LocaleParams) {
         <div className="container grid gap-6 md:grid-cols-2 md:gap-8">
           {c.tracks.slice(0, 2).map((tr, i) => (
             <article key={tr.title} className="rounded-[1.75rem] border border-line p-7 md:p-12" data-reveal>
-              <span className="num text-sm text-muted">{localizeDigits(`0${i + 1}`, locale)}</span>
+              <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
               <h2 className="display t-2 mt-10 md:mt-20">{tr.title}</h2>
               <p className="mt-5 max-w-md text-muted">{tr.text}</p>
               <ul className="mt-8 border-t border-fg">
@@ -45,7 +45,7 @@ export default async function CollaborationPage({ params }: LocaleParams) {
         <div className="container grid gap-6 md:grid-cols-3 md:gap-8">
           {c.tracks.slice(2).map((tr, i) => (
             <article key={tr.title} className="group rounded-[1.5rem] border border-line p-7 transition-colors duration-500 ease-cine hover:border-fg/50" data-reveal>
-              <span className="num text-sm text-muted">{localizeDigits(`0${i + 3}`, locale)}</span>
+              <span className="num text-sm text-muted">{plain(i + 3, locale)}</span>
               <h2 className="display t-3 mt-8">{tr.title}</h2>
               <p className="mt-4 text-sm text-muted">{tr.text}</p>
               <ul className="mt-6 space-y-2 text-sm">
@@ -71,7 +71,7 @@ export default async function CollaborationPage({ params }: LocaleParams) {
           <ol className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
             {c.steps.map((st, i) => (
               <li key={st.title} className="border-t border-fg pt-5" data-reveal>
-                <span className="display t-stat block text-fg/25">{localizeDigits(`0${i + 1}`, locale)}</span>
+                <span className="display t-stat block text-fg/25">{plain(i + 1, locale)}</span>
                 <h3 className="display t-3 mt-6">{st.title}</h3>
                 <p className="mt-3 text-muted">{st.text}</p>
               </li>

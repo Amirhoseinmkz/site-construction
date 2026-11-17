@@ -26,6 +26,11 @@ export function localizeDigits(s: string, locale: Locale) {
   return s.replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
 }
 
+/** A plain ordinal for lists and steps: 1, 2, 3 (never 01, 02) — in Persian digits on Persian pages. */
+export function plain(n: number | string, locale: Locale) {
+  return localizeDigits(String(Number(n)), locale);
+}
+
 /** Build a localized path. `path` should start with "/" (e.g. "/projects") or be "" for home */
 export function href(locale: Locale, path = '') {
   return `/${locale}${path === '/' ? '' : path}`;
