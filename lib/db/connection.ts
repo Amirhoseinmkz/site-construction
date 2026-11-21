@@ -13,7 +13,7 @@ const DB_PATH = path.join(DB_DIR, 'mirkazemi.db');
  * Bump this whenever the seed files in /data/seed change in a way that must reach existing databases.
  * On a mismatch the content tables (never `leads`) are dropped and re-seeded.
  */
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 const CONTENT_TABLES = [
   'faq_translations', 'faqs',
   'process_phase_translations', 'process_phases',

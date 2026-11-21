@@ -23,8 +23,8 @@ export interface Project {
   beforeAfter?: { before: string; after: string };
 }
 
-/** One neutral drawing-style placeholder until the real photos arrive. */
-const PLACEHOLDER = { src: '/images/project-placeholder.jpg', width: 1600, height: 1067 };
+/** Stock photos stand in until the real ones arrive (each project gets one in turn). */
+const STOCK = ['proj-res-1', 'proj-com-1', 'proj-res-2', 'proj-villa-1', 'proj-com-2', 'proj-ren-1'].map((n) => ({ src: `/images/${n}.jpg`, width: 800, height: 533 }));
 
 /**
  * SEED DATA — copied into the database when it is empty (or when SEED_VERSION in lib/db/connection.ts changes).
@@ -44,7 +44,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[0],
   },
   {
     slug: 'amirabad-26th-st-no-9',
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[1],
   },
   {
     slug: 'amirabad-26th-st-no-47',
@@ -70,7 +70,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[2],
   },
   {
     slug: 'amirabad-26th-st-no-12',
@@ -83,7 +83,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[3],
   },
   {
     slug: 'dodangeh',
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[4],
   },
   {
     slug: 'north-amirabad-no-19',
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[5],
   },
   {
     slug: 'qeytarieh-district-1',
@@ -122,7 +122,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[0],
   },
   {
     slug: 'qeytarieh-2',
@@ -135,7 +135,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[1],
   },
   {
     slug: 'ghazvin-st-shop-renovation',
@@ -148,7 +148,21 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[2],
+  },
+  {
+    slug: 'ghazvin-st-building',
+    code: '',
+    category: 'construction',
+    status: 'completed',
+    area: null,
+    floors: 4, // owner unsure: 4 or 5 floors — confirm
+    title: { fa: 'ساختمان خیابان قزوین', en: 'Ghazvin Street Building' },
+    location: { fa: 'خیابان قزوین، تهران', en: 'Ghazvin Street, Tehran' },
+    structure: { fa: '', en: '' },
+    summary: { fa: '', en: '' },
+    highlights: { fa: [], en: [] },
+    image: STOCK[3],
   },
   {
     slug: 'amirabad-27th-st-renovation',
@@ -161,7 +175,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[4],
   },
   {
     slug: 'yousefabad-20th-st',
@@ -174,7 +188,7 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[5],
   },
   {
     slug: 'sadeghieh-29th-st',
@@ -187,6 +201,6 @@ export const projects: Project[] = [
     structure: { fa: '', en: '' },
     summary: { fa: '', en: '' },
     highlights: { fa: [], en: [] },
-    image: PLACEHOLDER,
+    image: STOCK[0],
   },
 ];

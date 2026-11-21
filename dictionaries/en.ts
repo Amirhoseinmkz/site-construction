@@ -36,7 +36,8 @@ export const en: Dictionary = {
     },
     stats: [
       { value: 27, suffix: '', label: 'Years of practice, since 1999' },
-      { value: 12, suffix: '', label: 'Projects' },
+      { value: 13, suffix: '', label: 'Projects' },
+      { value: 2, suffix: '', label: 'Generations, one family' },
     ],
     manifesto:
       'We are a construction company helping you with consulting, renovation, joint-venture construction and buying and selling property.',

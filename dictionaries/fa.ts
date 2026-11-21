@@ -35,7 +35,8 @@ export const fa = {
     },
     stats: [
       { value: 27, suffix: '', label: 'سال سابقه، از ۱۳۷۸' },
-      { value: 12, suffix: '', label: 'پروژه' },
+      { value: 13, suffix: '', label: 'پروژه' },
+      { value: 2, suffix: '', label: 'نسل، یک خانواده' },
     ],
     manifesto:
       'ما یک شرکت ساختمانی هستیم که در زمینه مشاوره، بازسازی، مشارکت در ساخت و خرید و فروش ملک به شما کمک می‌کنیم.',
