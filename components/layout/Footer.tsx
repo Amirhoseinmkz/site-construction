@@ -31,9 +31,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
             <p className="mt-6 max-w-xs text-sm text-muted">{t.footer.tagline}</p>
           </div>
           <div className="md:col-span-5">
-            <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3">
-              {localizeDigits(site.phones.office.display, locale)}
-            </a>
+            <p className="display t-3">{site.city[locale]}</p>
             <p className="mt-2 text-sm text-muted">{site.hours[locale]}</p>
           </div>
           <div className="md:col-span-3 md:justify-self-end">

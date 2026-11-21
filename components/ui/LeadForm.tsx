@@ -23,7 +23,7 @@ export function LeadForm({
   locale,
   t,
   source,
-  types = ['consultation', 'architecture', 'management', 'partnership', 'renovation'],
+  types = ['consultation', 'management', 'partnership', 'renovation', 'trading'],
   defaultType,
   showArea = true,
 }: Props) {

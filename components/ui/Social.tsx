@@ -10,7 +10,7 @@ const ICONS = {
 
 export type SocialName = keyof typeof ICONS;
 
-export const SOCIALS: { name: SocialName; url: string }[] = [
+export const SOCIALS: { name: SocialName; url: string | null }[] = [
   { name: 'Instagram', url: site.social.instagram },
   { name: 'Telegram', url: site.social.telegram },
   { name: 'WhatsApp', url: site.social.whatsapp },
@@ -31,16 +31,22 @@ export function SocialLinks({ className = '' }: { className?: string }) {
     <ul className={`flex flex-wrap gap-2.5 ${className}`}>
       {SOCIALS.map(({ name, url }) => (
         <li key={name}>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={name}
-            title={name}
-            className="grid h-11 w-11 place-items-center rounded-full border border-fg/20 transition-colors duration-500 ease-cine hover:border-fg hover:bg-fg hover:text-bg"
-          >
-            <SocialIcon name={name} className="h-[1.05rem] w-[1.05rem]" />
-          </a>
+          {url ? (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={name}
+              title={name}
+              className="grid h-11 w-11 place-items-center rounded-full border border-fg/20 transition-colors duration-500 ease-cine hover:border-fg hover:bg-fg hover:text-bg"
+            >
+              <SocialIcon name={name} className="h-[1.05rem] w-[1.05rem]" />
+            </a>
+          ) : (
+            <span title={name} className="grid h-11 w-11 place-items-center rounded-full border border-fg/15 opacity-45">
+              <SocialIcon name={name} className="h-[1.05rem] w-[1.05rem]" />
+            </span>
+          )}
         </li>
       ))}
     </ul>

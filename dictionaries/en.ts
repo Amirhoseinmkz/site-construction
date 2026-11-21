@@ -4,7 +4,7 @@ export const en: Dictionary = {
   meta: {
     title: 'Mirkazemi Construction Group | Design, Build & Development',
     description:
-      'Mirkazemi Construction Group — architecture, construction management, joint-venture development and renovation in Tehran, led on site by senior engineers since 2009.',
+      'Mirkazemi Construction Group — consulting, renovation, joint-venture construction, property trading and project management contracts in Tehran, since 1999.',
   },
   a11y: {
     skip: 'Skip to main content',
@@ -27,22 +27,20 @@ export const en: Dictionary = {
   },
   home: {
     hero: {
-      label: 'Tehran — since 2009',
+      label: 'Tehran — since 1999',
       title: ['We build', 'with precision.'],
-      lead: 'Design, construction and turnkey delivery — supervised on site by senior engineers.',
+      lead: 'Consulting, renovation, joint-venture construction and property trading.',
       primary: 'Book a consultation',
       secondary: 'View projects',
       scroll: 'Scroll',
     },
     stats: [
-      { value: 15, suffix: '+', label: 'Years of practice' },
-      { value: 40, suffix: '+', label: 'Projects delivered' },
-      { value: 100, suffix: '%', label: 'Delivered to contract' },
-      { value: 2, suffix: '', label: 'Generations, one family' },
+      { value: 27, suffix: '', label: 'Years of practice, since 1999' },
+      { value: 12, suffix: '', label: 'Projects' },
     ],
     manifesto:
-      'We are a family practice. We design every project ourselves, build it ourselves, and stand behind it until the day we hand over the keys.',
-    services: { label: 'Services', title: 'Four paths. One standard.', link: 'All services' },
+      'We are a construction company helping you with consulting, renovation, joint-venture construction and buying and selling property.',
+    services: { label: 'Services', title: 'Five paths. One standard.', link: 'All services' },
     projects: { label: 'Selected work', title: 'Work that carries our signature.', all: 'All projects' },
     process: { label: 'Process', title: 'Four stages. Zero ambiguity.', link: 'The process in detail', stage: 'Stage' },
     principles: {
@@ -69,7 +67,7 @@ export const en: Dictionary = {
   },
   services: {
     label: 'Services',
-    title: 'Four pillars. One building standard.',
+    title: 'Five services. One standard of work.',
     lead: 'From land feasibility to handing over the keys — each service with clear stages, deliverables and ownership.',
     stages: 'Stages',
     actions: 'In this stage',
@@ -83,7 +81,7 @@ export const en: Dictionary = {
     lead: 'A selection of work designed and built by our team.',
     filterLabel: 'Filter by project type',
     all: 'All',
-    categories: { residential: 'Residential', commercial: 'Commercial', renovation: 'Renovation', villa: 'Villa' },
+    categories: { construction: 'Construction', renovation: 'Renovation' },
     status: { completed: 'Completed', inProgress: 'In progress' },
     specs: 'Specifications',
     area: 'Built area',
@@ -113,12 +111,12 @@ export const en: Dictionary = {
   },
   about: {
     label: 'About',
-    title: 'A family practice with an engineering mind.',
-    lead: 'A father-and-son partnership: decades of building experience, paired with modern project management.',
+    title: 'A construction company with an engineering mind.',
+    lead: 'In Tehran since 1999: years of building experience paired with modern project management.',
     storyLabel: 'Our story',
-    storyTitle: 'From a small office to dozens of projects.',
+    storyTitle: 'Over two decades of building in Tehran.',
     story: [
-      'We began with small contracting jobs. Today we run residential, commercial and renovation projects in parallel. Family scale is our advantage: fast decisions, direct supervision and accountability without intermediaries.',
+      'We have worked in Tehran since 1999. Today we help with consulting, renovation, joint-venture construction, property trading and project management contracts; most of our projects are in Amirabad, Yousefabad, Sadeghieh and Qeytarieh.',
       'Our greatest asset is the client who comes back for the next project.',
     ],
     valuesLabel: 'Principles',
@@ -185,6 +183,7 @@ export const en: Dictionary = {
     lead: 'An initial consultation, a site visit or a cost estimate. The first meeting is free.',
     office: 'Head office',
     mobile: 'Management & technical advice',
+    soon: 'Coming soon',
     hours: 'Office hours',
     social: 'Messengers & social',
     formTitle: 'Consultation request',
@@ -196,7 +195,7 @@ export const en: Dictionary = {
     type: 'Request type',
     types: {
       consultation: 'General consultation',
-      architecture: 'Architectural design',
+      trading: 'Buying & selling property',
       management: 'Construction management',
       partnership: 'Joint venture',
       renovation: 'Renovation',
@@ -226,7 +225,7 @@ export const en: Dictionary = {
     sqm: 'm²',
   },
   footer: {
-    tagline: 'Design, construction and turnkey delivery — directly supervised, since 2009.',
+    tagline: 'Consulting, renovation, joint-venture construction and property trading — in Tehran since 1999.',
     pages: 'Pages',
     services: 'Services',
     contact: 'Contact',

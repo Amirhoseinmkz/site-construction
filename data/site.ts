@@ -7,11 +7,9 @@ import type { L } from '@/lib/i18n';
 export const site = {
   name: { fa: 'گروه ساختمانی میرکاظمی', en: 'Mirkazemi Construction Group' } as L,
   shortName: 'Mirkazemi',
-  foundedYear: 2009, // ۱۳۸۸
-  phones: {
-    office: { display: '021-22408931', tel: '+982122408931' },
-    mobile: { display: '0912-1883276', tel: '+989121883276' },
-  },
+  foundedYear: 1999, // ۱۳۷۸
+  // Phone numbers are intentionally not published for now (owner's decision).
+  phones: null as { office: { display: string; tel: string }; mobile: { display: string; tel: string } } | null,
   hours: {
     fa: 'شنبه تا پنجشنبه، ۹:۰۰ تا ۱۸:۰۰',
     en: 'Saturday – Thursday, 9:00 – 18:00',
@@ -20,10 +18,11 @@ export const site = {
   // TODO: add real office address and email when available
   address: null as L | null,
   email: null as string | null,
+  /** Accounts are not created yet: the icons show, the links stay empty until a URL is added here. */
   social: {
-    whatsapp: 'https://wa.me/989121883276',
-    telegram: 'https://t.me/mirkazemi_construction',
-    instagram: 'https://instagram.com/mirkazemi.group',
-    linkedin: 'https://linkedin.com/company/mirkazemi-construction',
+    instagram: null as string | null,
+    telegram: null as string | null,
+    whatsapp: null as string | null,
+    linkedin: null as string | null,
   },
 } as const;

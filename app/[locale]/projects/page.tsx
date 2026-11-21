@@ -27,8 +27,8 @@ export default async function ProjectsPage({ params }: LocaleParams) {
     place: pr.location,
     facts: [
       { label: p.category, value: p.categories[pr.category] },
-      { label: p.area, value: `${formatNumber(pr.area, locale)} ${p.sqm}` },
-      { label: p.statusLabel, value: p.status[pr.status] },
+      ...(pr.area ? [{ label: p.area, value: `${formatNumber(pr.area, locale)} ${p.sqm}` }] : []),
+      ...(pr.status === 'inProgress' ? [{ label: p.statusLabel, value: p.status.inProgress }] : []),
     ],
     image: pr.image,
   }));
@@ -39,11 +39,11 @@ export default async function ProjectsPage({ params }: LocaleParams) {
     ...categories.map((c) => ({ key: c, label: p.categories[c], count: formatNumber(projects.filter((pr) => pr.category === c).length, locale) })),
   ];
 
-  const totalArea = projects.reduce((n, pr) => n + pr.area, 0);
+  const totalArea = projects.reduce((n, pr) => n + (pr.area ?? 0), 0);
   const underway = projects.filter((pr) => pr.status === 'inProgress').length;
   const summary = [
     [formatNumber(projects.length, locale), p.label],
-    [`${formatNumber(totalArea, locale)} ${p.sqm}`, p.area],
+    ...(totalArea ? [[`${formatNumber(totalArea, locale)} ${p.sqm}`, p.area]] : []),
     ...(underway ? [[formatNumber(underway, locale), p.status.inProgress]] : []),
   ];
 
@@ -52,7 +52,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
       <PageHead compact label={p.label} title={p.title} lead={p.lead} />
       <section className="pb-section">
         <div className="container">
-          <dl className="mb-12 grid max-w-2xl grid-cols-3 gap-6 md:mb-16" data-reveal>
+          <dl className="mb-12 flex max-w-2xl flex-wrap gap-x-12 gap-y-6 md:mb-16" data-reveal>
             {summary.map(([v, k]) => (
               <div key={k}>
                 <dd className="display t-3">{v}</dd>

@@ -46,7 +46,7 @@ export function Showcase({ locale, label, title, allLabel, items }: Props) {
         <span className="text-sm text-muted">{p.meta}</span>
       </div>
       <h3 className="display t-3 mt-2">{p.title}</h3>
-      <p className="mt-2 line-clamp-2 max-w-md text-sm text-muted">{p.summary}</p>
+      {p.summary && <p className="mt-2 line-clamp-2 max-w-md text-sm text-muted">{p.summary}</p>}
     </Link>
   );
 

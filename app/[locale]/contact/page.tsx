@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { localizeDigits } from '@/lib/i18n';
 import { site } from '@/data/site';
 import { buildMetadata } from '@/lib/seo';
 import { resolveLocale, type LocaleParams } from '@/lib/page';
@@ -9,7 +8,7 @@ import { Heading } from '@/components/ui/Heading';
 import { LeadForm } from '@/components/ui/LeadForm';
 import { SOCIALS, SocialIcon } from '@/components/ui/Social';
 
-const SUBJECTS = ['architecture', 'management', 'partnership', 'renovation', 'consultation', 'subcontractor'] as const;
+const SUBJECTS = ['trading', 'management', 'partnership', 'renovation', 'consultation', 'subcontractor'] as const;
 type Subject = (typeof SUBJECTS)[number];
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
@@ -39,14 +38,6 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
         <div className="container grid gap-x-10 gap-y-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="space-y-10">
-              {([[c.office, site.phones.office], [c.mobile, site.phones.mobile]] as const).map(([label, phone]) => (
-                <div key={label} data-reveal>
-                  <p className="label">{label}</p>
-                  <a href={`tel:${phone.tel}`} className="nav-link ltr display t-2 mt-3">
-                    {localizeDigits(phone.display, locale)}
-                  </a>
-                </div>
-              ))}
               <div data-reveal>
                 <p className="label">{c.hours}</p>
                 <p className="mt-3">{site.hours[locale]}</p>
@@ -55,10 +46,17 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
               <ul className="flex flex-wrap gap-2" data-reveal>
                 {SOCIALS.map(({ name, url }) => (
                   <li key={name}>
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="chip !py-2.5">
-                      <SocialIcon name={name} />
-                      {name}
-                    </a>
+                    {url ? (
+                      <a href={url} target="_blank" rel="noopener noreferrer" className="chip !py-2.5">
+                        <SocialIcon name={name} />
+                        {name}
+                      </a>
+                    ) : (
+                      <span className="chip !py-2.5 opacity-50" title={c.soon}>
+                        <SocialIcon name={name} />
+                        {name}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -71,7 +69,7 @@ export default async function ContactPage({ params, searchParams }: LocaleParams
               locale={locale}
               t={t.form}
               source="contact"
-              types={['consultation', 'architecture', 'management', 'partnership', 'renovation', 'subcontractor']}
+              types={['consultation', 'management', 'partnership', 'renovation', 'trading', 'subcontractor']}
               defaultType={defaultType}
             />
           </div>

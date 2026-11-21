@@ -74,7 +74,7 @@ export function ProjectSheets({ locale, items, filters, filterLabel, emptyLabel 
                     sizes="(min-width:1280px) 30vw, (min-width:768px) 46vw, 92vw"
                     className="photo object-cover group-hover:scale-[1.05]"
                   />
-                  <span className="theme-dark num absolute start-3 top-3 rounded-full px-3 py-1 text-xs">{p.code}</span>
+                  {p.code && <span className="theme-dark num absolute start-3 top-3 rounded-full px-3 py-1 text-xs">{p.code}</span>}
                   {p.inProgress && <span className="theme-dark absolute end-3 top-3 rounded-full px-3 py-1 text-xs text-glow">{p.statusLabel}</span>}
                   <span
                     aria-hidden
@@ -89,9 +89,9 @@ export function ProjectSheets({ locale, items, filters, filterLabel, emptyLabel 
                   <p className="mt-1.5 text-sm text-muted">{p.place}</p>
                 </div>
 
-                <dl className="mx-2 mt-5 grid grid-cols-3 border-t border-line pt-3 text-sm">
+                <dl className="mx-2 mt-5 flex border-t border-line pt-3 text-sm">
                   {p.facts.map((f, k) => (
-                    <div key={f.label} className={`min-w-0 ${k > 0 ? 'border-s border-line ps-3' : ''}`}>
+                    <div key={f.label} className={`min-w-0 flex-1 ${k > 0 ? 'border-s border-line ps-3' : ''}`}>
                       <dt className="text-xs text-muted">{f.label}</dt>
                       <dd className="mt-0.5 truncate" title={f.value}>
                         {f.value}

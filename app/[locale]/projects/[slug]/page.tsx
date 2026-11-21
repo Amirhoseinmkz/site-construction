@@ -30,7 +30,7 @@ async function resolve(params: Params['params']) {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { locale, project } = await resolve(params);
-  return buildMetadata({ locale, path: `/projects/${project.slug}`, title: project.title, description: project.summary, image: project.image.src });
+  return buildMetadata({ locale, path: `/projects/${project.slug}`, title: project.title, description: project.summary || `${project.title} — ${project.location}`, image: project.image.src });
 }
 
 export default async function ProjectPage({ params }: Params) {
@@ -43,10 +43,10 @@ export default async function ProjectPage({ params }: Params) {
   const facts: [string, string][] = [
     [p.category, p.categories[project.category]],
     [p.location, project.location],
-    [p.area, `${formatNumber(project.area, locale)} ${p.sqm}`],
+    ...(project.area ? ([[p.area, `${formatNumber(project.area, locale)} ${p.sqm}`]] as [string, string][]) : []),
     ...(project.floors ? ([[p.floors, formatNumber(project.floors, locale)]] as [string, string][]) : []),
-    [p.structure, project.structure],
-    [p.statusLabel, p.status[project.status]],
+    ...(project.structure ? ([[p.structure, project.structure]] as [string, string][]) : []),
+    ...(project.status === 'inProgress' ? ([[p.statusLabel, p.status.inProgress]] as [string, string][]) : []),
   ];
 
   return (
@@ -67,7 +67,7 @@ export default async function ProjectPage({ params }: Params) {
             {p.back}
           </Link>
           <p className="enter num label mt-8 !flex" style={{ animationDelay: '0.1s' }}>
-            {project.code} · {project.location}
+            {project.code ? `${project.code} · ` : ''}{project.location}
           </p>
           <SplitText as="h1" text={project.title} className="display t-1 mt-5 max-w-[14ch]" delay={0.1} css />
         </div>
@@ -85,22 +85,28 @@ export default async function ProjectPage({ params }: Params) {
         </dl>
       </section>
 
-      {/* one paragraph, four highlights */}
-      <section className="py-section pt-8">
-        <div className="container grid gap-x-8 gap-y-14 lg:grid-cols-12">
-          <p className="statement lg:col-span-10" data-reveal>
-            {project.summary}
-          </p>
-          <ul className="grid gap-x-8 sm:grid-cols-2 lg:col-span-12 lg:grid-cols-4">
-            {project.highlights.map((hl, i) => (
-              <li key={hl} className="border-t border-fg/25 pb-8 pt-5" data-reveal>
-                <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
-                <p className="mt-6 text-lg">{hl}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* one paragraph, four highlights — only when there is something to say */}
+      {(project.summary || project.highlights.length > 0) && (
+        <section className="py-section pt-8">
+          <div className="container grid gap-x-8 gap-y-14 lg:grid-cols-12">
+            {project.summary && (
+              <p className="statement lg:col-span-10" data-reveal>
+                {project.summary}
+              </p>
+            )}
+            {project.highlights.length > 0 && (
+              <ul className="grid gap-x-8 sm:grid-cols-2 lg:col-span-12 lg:grid-cols-4">
+                {project.highlights.map((hl, i) => (
+                  <li key={hl} className="border-t border-fg/25 pb-8 pt-5" data-reveal>
+                    <span className="num text-sm text-muted">{plain(i + 1, locale)}</span>
+                    <p className="mt-6 text-lg">{hl}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
 
       {project.beforeAfter && (
         <section className="pb-section" aria-labelledby="ba-title">

@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 const bootScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('mkz-theme');if(t==='light'||t==='dark')d.dataset.theme=t;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-motion');setTimeout(function(){if(!window.__mkzMotion){d.classList.remove('js-motion')}},3500)}}catch(e){}})();`;
 
 function jsonLd(locale: Locale) {
+  const sameAs = Object.values(site.social).filter((u): u is string => !!u);
   return {
     '@context': 'https://schema.org',
     '@type': 'GeneralContractor',
@@ -51,7 +52,6 @@ function jsonLd(locale: Locale) {
     logo: `${siteUrl}/icon.svg`,
     image: `${siteUrl}/images/proj-villa-1.jpg`,
     foundingDate: String(site.foundedYear),
-    telephone: site.phones.office.tel,
     areaServed: { '@type': 'City', name: locale === 'fa' ? 'تهران' : 'Tehran' },
     address: { '@type': 'PostalAddress', addressLocality: 'Tehran', addressCountry: 'IR' },
     openingHoursSpecification: {
@@ -60,7 +60,7 @@ function jsonLd(locale: Locale) {
       opens: '09:00',
       closes: '18:00',
     },
-    sameAs: [site.social.instagram, site.social.linkedin, site.social.telegram],
+    ...(sameAs.length ? { sameAs } : {}),
   };
 }
 

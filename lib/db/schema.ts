@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS projects (
   code          TEXT NOT NULL,
   category      TEXT NOT NULL,
   status        TEXT NOT NULL,
-  area          INTEGER NOT NULL,
+  area          INTEGER,
   floors        INTEGER,
   image_src     TEXT NOT NULL,
   image_width   INTEGER NOT NULL,

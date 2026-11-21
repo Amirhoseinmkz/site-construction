@@ -202,7 +202,7 @@ export default async function HomePage({ params }: LocaleParams) {
           slug: p.slug,
           title: p.title,
           place: p.location,
-          meta: `${t.projects.categories[p.category]} · ${formatNumber(p.area, locale)} ${t.projects.sqm}`,
+          meta: `${t.projects.categories[p.category]} · ${p.location}`,
           summary: p.summary,
           image: p.image,
         }))}
@@ -244,9 +244,7 @@ export default async function HomePage({ params }: LocaleParams) {
               {h.contact.lead}
             </p>
             <p className="mt-10 flex flex-col items-start gap-1" data-reveal>
-              <a href={`tel:${site.phones.office.tel}`} className="nav-link ltr display t-3">
-                {localizeDigits(site.phones.office.display, locale)}
-              </a>
+              <span className="display t-3">{site.city[locale]}</span>
               <span className="text-sm text-muted">{site.hours[locale]}</span>
             </p>
           </div>

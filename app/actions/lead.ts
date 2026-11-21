@@ -15,7 +15,7 @@ export type LeadState =
       values?: Record<string, string>;
     };
 
-const REQUEST_TYPES = ['consultation', 'architecture', 'management', 'partnership', 'renovation', 'subcontractor'] as const;
+const REQUEST_TYPES = ['consultation', 'management', 'partnership', 'renovation', 'trading', 'subcontractor'] as const;
 
 const toLatinDigits = (s: string) =>
   s.replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));

@@ -5,7 +5,7 @@ import { getDb } from './connection';
 
 /* ───────── Localized content types (what pages consume) ───────── */
 
-export type ProjectCategory = 'residential' | 'commercial' | 'renovation' | 'villa';
+export type ProjectCategory = 'construction' | 'renovation';
 export type ProjectStatus = 'completed' | 'inProgress';
 export interface ImageRef {
   src: string;
@@ -18,7 +18,7 @@ export interface Project {
   code: string;
   category: ProjectCategory;
   status: ProjectStatus;
-  area: number;
+  area: number | null;
   floors: number | null;
   image: ImageRef;
   gallery: ImageRef[];
@@ -80,7 +80,7 @@ function toProject(r: Row): Project {
     code: String(r.code),
     category: r.category as ProjectCategory,
     status: r.status as ProjectStatus,
-    area: Number(r.area),
+    area: r.area === null ? null : Number(r.area),
     floors: r.floors === null ? null : Number(r.floors),
     image: { src: String(r.image_src), width: Number(r.image_width), height: Number(r.image_height) },
     gallery: json<ImageRef[]>(r.gallery_json),
